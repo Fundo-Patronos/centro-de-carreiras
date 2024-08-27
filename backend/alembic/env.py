@@ -18,9 +18,11 @@ if config.config_file_name is not None:
 # Add your model's MetaData object here
 target_metadata = Base.metadata
 
+
 def get_database_url():
     # Get DATABASE_URL from environment or use a default value
     return os.getenv("DATABASE_URL", DEVELOPMENT_DATABASE_URL)
+
 
 def run_migrations_offline():
     url = get_database_url()
@@ -30,6 +32,7 @@ def run_migrations_offline():
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online():
     connectable = create_engine(
@@ -44,6 +47,7 @@ def run_migrations_online():
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
