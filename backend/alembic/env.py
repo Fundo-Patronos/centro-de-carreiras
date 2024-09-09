@@ -6,7 +6,7 @@ from alembic import context
 
 # Import your models here
 from app.models import Base
-from app.database import DEVELOPMENT_DATABASE_URL
+from backend.app.database.database import DEVELOPMENT_DATABASE_URL
 
 # Alembic Config object
 config = context.config
