@@ -4,6 +4,7 @@ venv/
 __pycache__/
 *.pyc
 *.db
+env/
 
 # pytest
 .pytest_cache
