@@ -1,6 +1,7 @@
 from abc import ABC
 from pydantic import BaseModel
 
+
 class User(BaseModel, ABC):
     id: int
     username: str
