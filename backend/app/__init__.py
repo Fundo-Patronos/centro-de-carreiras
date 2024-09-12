@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.routes import student as student_routes
-
 
 app = FastAPI()
 
-app.include_router(student_routes.router)
+@app.get("/")
+def read_root():
+    return {"message": "Bem-vindo ao back-end do Centro de Carreiras Patronos"}
