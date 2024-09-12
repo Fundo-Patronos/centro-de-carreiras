@@ -42,8 +42,6 @@ class Database(ABC):
 
         """
 
-        print("data", data)
-        data["Id"] = 2
         response = requests.post(
             url=Database._url.format(table_id=table_id),
             headers={"xc-token": Database._api_key},
@@ -84,9 +82,7 @@ class Database(ABC):
         Returns:
             dict: A dict containing the record data.
         """
-
-        print("LINE ID", line_id)
-
+        
         response = requests.get(
             url=Database._url.format(table_id=table_id) + f"/{line_id}",
             headers={"xc-token": Database._api_key}
