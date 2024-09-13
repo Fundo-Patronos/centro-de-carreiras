@@ -3,7 +3,7 @@ import os
 from app.database.database import Database
 from app.models.opportunity import Opportunity
 
-class OpportunitiesDatabase(Database):
+class OpportunitiesTable(Database):
 
     """Static class to handle all database operations for opportunities"""
 
@@ -22,7 +22,7 @@ class OpportunitiesDatabase(Database):
         """
 
         params = {"where": f"(title,eq,{title})"}
-        opportunity = OpportunitiesDatabase._get_table(table_id=OpportunitiesDatabase.table_id, params=params)[0]
+        opportunity = OpportunitiesTable._get_table(table_id=OpportunitiesTable.table_id, params=params)[0]
         return Opportunity(**opportunity)
 
     @staticmethod
@@ -34,7 +34,7 @@ class OpportunitiesDatabase(Database):
             list[Opportunity]: A list of all opportunities in the database.
         """
 
-        opportunities = OpportunitiesDatabase._get_table(table_id=OpportunitiesDatabase.table_id)
+        opportunities = OpportunitiesTable._get_table(table_id=OpportunitiesTable.table_id)
         opportunities = [Opportunity(**opportunity) for opportunity in opportunities]
         return opportunities
 
@@ -47,7 +47,7 @@ class OpportunitiesDatabase(Database):
             opportunity (Opportunity): The opportunity to be created.
         """
 
-        OpportunitiesDatabase._set_record(table_id=OpportunitiesDatabase.table_id, data=opportunity.model_dump())
+        OpportunitiesTable._set_record(table_id=OpportunitiesTable.table_id, data=opportunity.model_dump())
 
     @staticmethod
     def update_opportunity(opportunity: Opportunity):
@@ -58,4 +58,4 @@ class OpportunitiesDatabase(Database):
             opportunity (Opportunity): The opportunity to be updated.
         """
 
-        OpportunitiesDatabase._update_record(table_id=OpportunitiesDatabase.table_id, data=opportunity.model_dump())
+        OpportunitiesTable._update_record(table_id=OpportunitiesTable.table_id, data=opportunity.model_dump())
