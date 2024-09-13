@@ -4,7 +4,7 @@ from app.database.database import Database
 from app.models.user import User
 
 
-class UsersDatabase(Database):
+class UsersTable(Database):
     """Static class to handle all database operations for users"""
 
     table_id: str = os.getenv("USERS_TABLE_ID")
@@ -31,8 +31,8 @@ class UsersDatabase(Database):
         """
 
         params = {"where": f"(username,eq,{username})"}
-        user = UsersDatabase._get_table(
-            table_id=UsersDatabase.table_id, params=params
+        user = UsersTable._get_table(
+            table_id=UsersTable.table_id, params=params
         )[0]
         return User(**user)
 
@@ -43,8 +43,8 @@ class UsersDatabase(Database):
             user (User): The user to be created.
         """
 
-        UsersDatabase._set_record(
-            table_id=UsersDatabase.table_id, data=user.model_dump()
+        UsersTable._set_record(
+            table_id=UsersTable.table_id, data=user.model_dump()
         )
 
     def update_user(user: User) -> None:
@@ -54,6 +54,6 @@ class UsersDatabase(Database):
             user (User): The user to be updated.
         """
 
-        UsersDatabase._update_record(
-            table_id=UsersDatabase.table_id, data=user.model_dump()
+        UsersTable._update_record(
+            table_id=UsersTable.table_id, data=user.model_dump()
         )
