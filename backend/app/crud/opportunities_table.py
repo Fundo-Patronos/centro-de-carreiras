@@ -1,16 +1,25 @@
 import os
+from fastapi import Depends
+
+from app.database import get_db
 
 from app.database.database import Database
 from app.models.opportunity import Opportunity
 
 
-class OpportunitiesTable(Database):
+class OpportunitiesTable:
     """Static class to handle all database operations for opportunities"""
 
-    table_id: str = os.getenv("OPPORTUNITIES_TABLE_ID")
+    def __init__(self, db: Database = Depends(get_db)):
+        optional_table_id = os.getenv("OPPORTUNITIES_TABLE_ID")
+        if optional_table_id is None:
+            raise ValueError(
+                "OPPORTUNITIES_TABLE_ID environment variable is not set."
+            )
+        self.table_id = optional_table_id
+        self.db = db
 
-    @staticmethod
-    def get_opportunity(title: str) -> Opportunity:
+    def get_opportunity(self, title: str) -> Opportunity:
         """Gets an opportunity from the database.
 
         Args:
@@ -20,50 +29,37 @@ class OpportunitiesTable(Database):
             Opportunity: The opportunity retrieved from the database.
         """
 
-        params = {"where": f"(title,eq,{title})"}
-        opportunity = OpportunitiesTable._get_table(
-            table_id=OpportunitiesTable.table_id, params=params
-        )[0]
+        params = {"title": title}
+        opportunity = self.db.read_one(table_id=self.table_id, params=params)
         return Opportunity(**opportunity)
 
-    @staticmethod
-    def get_all_opportunities():
+    def get_all_opportunities(self):
         """Gets all opportunities from the database.
 
         Returns:
             list[Opportunity]: A list of all opportunities in the database.
         """
 
-        opportunities = OpportunitiesTable._get_table(
-            table_id=OpportunitiesTable.table_id
-        )
         opportunities = [
-            Opportunity(**opportunity) for opportunity in opportunities
+            Opportunity(**opportunity)
+            for opportunity in self.db.read_all(table_id=self.table_id)
         ]
         return opportunities
 
-    @staticmethod
-    def create_opportunity(opportunity: Opportunity):
+    def create_opportunity(self, opportunity: Opportunity):
         """Creates a new opportunity in the database.
 
         Args:
             opportunity (Opportunity): The opportunity to be created.
         """
 
-        OpportunitiesTable._set_record(
-            table_id=OpportunitiesTable.table_id,
-            data=opportunity.model_dump(),
-        )
+        self.db.create(table_id=self.table_id, items=[opportunity])
 
-    @staticmethod
-    def update_opportunity(opportunity: Opportunity):
+    def update_opportunity(self, opportunity: Opportunity):
         """Updates an opportunity in the database.
 
         Args:
             opportunity (Opportunity): The opportunity to be updated.
         """
 
-        OpportunitiesTable._update_record(
-            table_id=OpportunitiesTable.table_id,
-            data=opportunity.model_dump(),
-        )
+        self.db.update(table_id=self.table_id, item=opportunity)

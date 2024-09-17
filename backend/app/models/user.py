@@ -1,12 +1,13 @@
 from abc import ABC
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class User(BaseModel, ABC):
     id: int
     username: str
     name: str
-    email: str
+    email: EmailStr
+    encrypted_password: str
     linkedin: str
     description: str
     role: str
