@@ -4,6 +4,9 @@ from app import app
 from fastapi.testclient import TestClient
 
 from tests.in_memory_db import InMemoryDatabase
+from dotenv import load_dotenv
+
+load_dotenv()
 
 @pytest.fixture(scope="function")
 def test_db():
