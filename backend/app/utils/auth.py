@@ -2,9 +2,8 @@ from __future__ import annotations
 from typing import Optional
 import jwt
 import os
-import datetime
 
-from passlib.context import CryptContext
+import bcrypt
 from pydantic import EmailStr
 
 
@@ -19,22 +18,22 @@ class Auth:
         return cls._instance
 
     def __init__(self):
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.jwt_key = os.getenv("JWT_KEY", None)
+        optional_jwt_key = os.getenv("JWT_KEY", None)
+        if optional_jwt_key is None:
+            raise ValueError("JWT_KEY environment variable is not set.")
+        self.jwt_key = optional_jwt_key
 
     def get_password_hash(self, password: str) -> str:
-        return self.pwd_context.hash(password)
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
     def does_password_match(
         self, plain_password: str, hashed_password: str
     ) -> bool:
-        return self.pwd_context.verify(plain_password, hashed_password)
+        return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
 
     def create_jwt_token_from_email(self, email: EmailStr) -> str:
         payload = {
-            "data": {"email": email},
-            "exp": datetime.datetime.now()
-            + datetime.timedelta(minutes=30), # Token expires in 30 minutes
+            "email": email,
         }
         return self.create_jwt_token(payload)
 
