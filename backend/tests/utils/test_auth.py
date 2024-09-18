@@ -38,7 +38,7 @@ def test_jwt_token_expiration(monkeypatch):
         @classmethod
         def now(cls, time_zone=None):
             return original_date_time.now(time_zone) - datetime.timedelta(
-                minutes=Auth.EXPIRE_TIME_IN_MINUTES + 1
+                minutes=Auth.JWT_TOKEN_EXPIRE_TIME_IN_MINUTES + 1
             )
 
     monkeypatch.setattr(datetime, "datetime", MockDateTime)
