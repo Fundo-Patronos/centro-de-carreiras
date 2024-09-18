@@ -1,6 +1,5 @@
 import pytest
 from app.crud.users_table import UsersTable
-from app.models.user import User
 from app.schemas.user import UserCreate
 
 
