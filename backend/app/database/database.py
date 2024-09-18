@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import abstractmethod
 from typing import Any, Optional
 
 from pydantic import BaseModel
@@ -17,8 +18,9 @@ class Database:
             cls._instances[cls] = super(Database, cls).__new__(cls)
         return cls._instances[cls]
 
+    @abstractmethod
     def read_one(
-        self, table_id: str, params: Optional[dict[str, Any]] = None
+        self, table_id: str, params: dict[str, Any]
     ) -> dict:
         """Gets a single record from the database.
 
@@ -31,6 +33,7 @@ class Database:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def read_all(
         self, table_id: str, params: Optional[dict[str, Any]] = None
     ) -> list[dict]:
@@ -45,6 +48,7 @@ class Database:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def create(self, table_id: str, items: list[BaseModel]) -> None:
         """Creates a new record in the database.
 
@@ -57,6 +61,7 @@ class Database:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def update(self, table_id: str, item: BaseModel) -> None:
         """Updates a record in the database.
 
@@ -69,6 +74,7 @@ class Database:
         """
         raise NotImplementedError
 
+    @abstractmethod
     def delete(self, table_id: str, item: BaseModel) -> None:
         """Deletes a record in the database.
 

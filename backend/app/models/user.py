@@ -7,10 +7,13 @@ class User(BaseModel, ABC):
     username: str
     name: str
     email: EmailStr
-    encrypted_password: str
+    password: str
     linkedin: str
-    description: str
-    role: str
-    tags: str
     graduation_year: int
     course: str
+
+    # Optional fields
+    description: str = ""
+    tags: str = ""
+    role: str = "STUDENT"
+    is_verified: bool = False

@@ -3,7 +3,7 @@ from app.database import get_db
 from app import app
 from fastapi.testclient import TestClient
 
-from tests.in_memory_db import InMemoryDatabase
+from app.database.in_memory_db import InMemoryDatabase
 
 
 # Sets up the environment variables for the tests

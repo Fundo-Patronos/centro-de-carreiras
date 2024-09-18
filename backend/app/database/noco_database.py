@@ -22,7 +22,7 @@ class NocoDatabase(Database):
         self._api_key = optional_api_key
 
     def read_one(
-        self, table_id: str, params: Optional[dict[str, Any]] = None
+        self, table_id: str, params: dict[str, Any]
     ) -> dict:
         """Gets a single record from the database.
 

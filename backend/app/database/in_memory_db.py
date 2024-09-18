@@ -6,11 +6,15 @@ from app.database.database import Database
 class InMemoryDatabase(Database):
     def __init__(self):
         self.data = {}
+        self.current_id = 0
 
     def create(self, table_id: str, items: list[BaseModel]):
         if table_id not in self.data:
             self.data[table_id] = []
-        self.data[table_id].extend([item.model_dump() for item in items])
+        self.data[table_id].extend(
+            [item.model_dump() | {"id": self.current_id} for item in items]
+        )
+        self.current_id += 1
 
     def read_all(
         self, table_id: str, params: Optional[dict[str, Any]] = None
@@ -25,10 +29,8 @@ class InMemoryDatabase(Database):
         ]
 
     def read_one(
-        self, table_id: str, params: Optional[dict[str, Any]] = None
+        self, table_id: str, params: dict[str, Any]
     ) -> dict:
-        if params is None:
-            raise ValueError("More than one item found!")
         for item in self.data.get(table_id, []):
             if all(item[key] == value for key, value in params.items()):
                 return item

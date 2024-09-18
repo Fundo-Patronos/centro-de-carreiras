@@ -2,15 +2,15 @@ import os
 
 from fastapi import Depends
 
-from app.database import get_db
 from app.database.database import Database
 from app.models.user import User
+from app.schemas.user import UserCreate
 
 
 class UsersTable:
     """Static class to handle all database operations for users"""
 
-    def __init__(self, db: Database = Depends(get_db)):
+    def __init__(self, db: Database):
         optional_table_id = os.getenv("USERS_TABLE_ID")
         if optional_table_id is None:
             raise ValueError("USERS_TABLE_ID environment variable is not set.")
@@ -42,14 +42,28 @@ class UsersTable:
         user = self.db.read_one(table_id=self.table_id, params=params)
         return User(**user)
 
-    def create_user(self, user: User) -> None:
+    def get_user_by_email(self, email: str) -> User:
+        """
+        Gets a user from the database by email.
+
+        Args:
+            email (str): The email of the user to be retrieved.
+
+        Returns:
+            User: The user retrieved from the database.
+        """
+        params = {"email": email}
+        user = self.db.read_one(table_id=self.table_id, params=params)
+        return User(**user)
+
+    def create_user(self, user: UserCreate) -> None:
         """Creates a new user in the database.
 
         Args:
             user (User): The user to be created.
         """
 
-        return self.db.create(table_id=self.table_id, items=[user])
+        self.db.create(table_id=self.table_id, items=[user])
 
     def update_user(self, user: User) -> None:
         """Updates a user in the database.
@@ -58,4 +72,4 @@ class UsersTable:
             user (User): The user to be updated.
         """
 
-        return self.db.update(table_id=self.table_id, item=user)
+        self.db.update(table_id=self.table_id, item=user)

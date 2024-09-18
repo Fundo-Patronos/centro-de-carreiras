@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional
 import jwt
 import os
+import datetime
 
 import bcrypt
 from pydantic import EmailStr
@@ -33,9 +34,16 @@ class Auth:
 
     def create_jwt_token_from_email(self, email: EmailStr) -> str:
         payload = {
-            "email": email,
+            "data": {
+                "email": email,
+            },
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
         }
         return self.create_jwt_token(payload)
+
+    def decode_jwt_token_to_email(self, token: str) -> EmailStr:
+        payload = self.decode_jwt_token(token)
+        return payload["email"]
 
     def create_jwt_token(self, data: dict) -> str:
         return jwt.encode(data, self.jwt_key, algorithm="HS256")
