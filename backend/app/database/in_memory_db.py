@@ -4,9 +4,8 @@ from app.database.database import Database
 
 
 class InMemoryDatabase(Database):
-    def __init__(self):
-        self.data: dict[str, Any] = {}
-        self.current_id: int = 0
+    data: dict[str, Any] = {}
+    current_id: int = 0
 
     def create(self, table_id: str, items: list[BaseModel]):
         if table_id not in self.data:

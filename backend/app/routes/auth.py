@@ -16,7 +16,11 @@ router = APIRouter()
         409: {
             "model": ErrorResponse,
             "description": "Conflict - Email already in use",
-        }
+        },
+        500: {
+            "model": ErrorResponse,
+            "description": "Internal Server Error - Failed to register user",
+        },
     },
     summary="User Signup",
     description=(
@@ -39,17 +43,28 @@ async def signup(
         )
     except ValueError:
         pass
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
 
     # Hash the password
     user.password = auth.get_password_hash(user.password)
 
-    users_table.create_user(**user.model_dump())
+    users_table.create_user(user)
 
     # Generate a token for email verification
     token = auth.create_jwt_token_from_email(user.email)
 
     # Send email verification
-    await Auth.send_verification_email(user.email, token)
+    try:
+        await Auth.send_verification_email(user.email, token)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send email. Message: " + str(e),
+        )
 
     return {
         "email": user.email,
@@ -58,8 +73,8 @@ async def signup(
     }
 
 
-@router.post(
-    "/verify",
+@router.get(
+    "/verify/{token}",
     response_model=UserResponse,
     responses={
         408: {
@@ -81,6 +96,7 @@ async def signup(
 async def verify(
     token: str, users_table: UsersTable = Depends(get_users_table)
 ):
+    print("token received:", token)
     auth = Auth()
     try:
         email = auth.decode_jwt_token_to_email(token)
@@ -94,7 +110,19 @@ async def verify(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Invalid token",
         )
-    user = users_table.get_user_by_email(email)
-    user.is_verified = True
-    users_table.update_user(user)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    try:
+        user = users_table.get_user_by_email(email)
+        user.is_verified = True
+        users_table.update_user(user)
+    except RuntimeError | ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
     return {"email": email, "username": user.username, "is_verified": True}

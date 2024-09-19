@@ -3,6 +3,7 @@ from typing import Optional
 import jwt
 import os
 import datetime
+from dotenv import load_dotenv
 
 import bcrypt
 
@@ -66,6 +67,7 @@ class Auth:
 
     @staticmethod
     async def send_verification_email(email: EmailStr, token: str) -> None:
+        load_dotenv()
         mail_username = os.getenv("MAIL_USERNAME", None)
         mail_password = os.getenv("MAIL_PASSWORD", None)
         mail_from = os.getenv("MAIL_FROM", None)
@@ -98,6 +100,7 @@ class Auth:
             raise ValueError(
                 "FRONT_END_BASE_URL environment variable is not set."
             )
+
         verification_url = f"{base_url}/verify/{token}"
         message = MessageSchema(
             subject="Verificação de Email",

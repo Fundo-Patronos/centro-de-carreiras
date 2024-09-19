@@ -21,9 +21,7 @@ class NocoDatabase(Database):
         )
         self._api_key = optional_api_key
 
-    def read_one(
-        self, table_id: str, params: dict[str, Any]
-    ) -> dict:
+    def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
         """Gets a single record from the database.
 
         Args:
@@ -50,20 +48,28 @@ class NocoDatabase(Database):
         Returns:
             list[dict]: A list of dicts containing the table data.
         """
-        noco_params = {
-            "where": "~and".join(
-                [
-                    "(" + key + ",eq," + value + ")"
-                    for key, value in params.items()
-                ]
-            )
-        } if params is not None else None
+        noco_params = (
+            {
+                "where": "~and".join(
+                    [
+                        "(" + key + ",eq," + value + ")"
+                        for key, value in params.items()
+                    ]
+                )
+            }
+            if params is not None
+            else None
+        )
 
         response = requests.get(
             url=self._url.format(table_id=table_id),
             headers={"xc-token": self._api_key},
             params=noco_params,
         )
+        if response.status_code != 200:
+            raise RuntimeError(
+                f"Failed to retrieve data from NocoDB table."
+            )
         return response.json()["list"]
 
     def create(self, table_id: str, items: list[BaseModel]) -> None:
