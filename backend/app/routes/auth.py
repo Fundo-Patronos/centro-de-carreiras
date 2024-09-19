@@ -91,7 +91,7 @@ async def signup(
 
 @router.get(
     "/verify/{token}",
-    response_model=UserResponse,
+    status_code=status.HTTP_204_NO_CONTENT,
     responses={
         408: {
             "model": ErrorResponse,
@@ -150,4 +150,3 @@ async def verify(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    return {"email": email, "username": user.username, "is_verified": True}
