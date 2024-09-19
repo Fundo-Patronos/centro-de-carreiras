@@ -4,6 +4,7 @@ import requests
 import os
 
 from app.database.database import Database
+from app.exceptions import DataNotFound
 
 
 class NocoDatabase(Database):
@@ -33,7 +34,7 @@ class NocoDatabase(Database):
         """
         all_items = self.read_all(table_id=table_id, params=params)
         if len(all_items) == 0:
-            raise ValueError("No items found with the given parameters.")
+            raise DataNotFound("No items found with the given parameters.")
         return all_items[0]
 
     def read_all(
@@ -67,10 +68,15 @@ class NocoDatabase(Database):
             params=noco_params,
         )
         if response.status_code != 200:
-            raise RuntimeError(
-                f"Failed to retrieve data from NocoDB table."
-            )
-        return response.json()["list"]
+            raise RuntimeError(f"Failed to retrieve data from NocoDB table.")
+        return [
+            {
+                key: value
+                for key, value in item.items()
+                if key not in ["CreatedAt", "UpdatedAt"] # Removes metadata
+            }
+            for item in response.json()["list"]
+        ]
 
     def create(self, table_id: str, items: list[BaseModel]) -> None:
         """Creates a new record in the database.
@@ -85,7 +91,7 @@ class NocoDatabase(Database):
         response = requests.post(
             url=self._url.format(table_id=table_id),
             headers={"xc-token": self._api_key},
-            json=items,
+            json=[item.model_dump() for item in items],
         )
         response.raise_for_status()
 
@@ -103,7 +109,7 @@ class NocoDatabase(Database):
         response = requests.patch(
             url=self._url.format(table_id=table_id),
             headers={"xc-token": self._api_key},
-            json=item,
+            json=item.model_dump(),
         )
         response.raise_for_status()
 

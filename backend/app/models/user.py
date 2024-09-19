@@ -1,9 +1,10 @@
 from abc import ABC
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
 class User(BaseModel, ABC):
-    id: int
+    Id: int
     username: str
     name: str
     email: EmailStr
@@ -13,5 +14,7 @@ class User(BaseModel, ABC):
     course: str
 
     # Optional fields
+    tags: Optional[str] = None
+    description: Optional[str] = None
     role: str = "STUDENT"
     is_verified: bool = False

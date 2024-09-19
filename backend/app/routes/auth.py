@@ -5,6 +5,7 @@ from app.dependencies import get_users_table
 from app.schemas.user import UserCreate, UserResponse
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
+from app.exceptions import DataNotFound
 
 router = APIRouter()
 
@@ -41,7 +42,7 @@ async def signup(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Email already in use by {existing_user.username}",
         )
-    except ValueError:
+    except DataNotFound:
         pass
     except RuntimeError as e:
         raise HTTPException(
@@ -120,7 +121,12 @@ async def verify(
         user = users_table.get_user_by_email(email)
         user.is_verified = True
         users_table.update_user(user)
-    except RuntimeError | ValueError as e:
+    except RuntimeError  as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+    except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
