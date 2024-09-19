@@ -101,6 +101,10 @@ async def signup(
             "model": ErrorResponse,
             "description": "Not Acceptable - Invalid token",
         },
+        500: {
+            "model": ErrorResponse,
+            "description": "Internal Server Error - Failed to verify user",
+        },
     },
     summary="User Verification",
     description=(
@@ -141,7 +145,7 @@ async def verify(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    except ValueError as e:
+    except DataNotFound as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
