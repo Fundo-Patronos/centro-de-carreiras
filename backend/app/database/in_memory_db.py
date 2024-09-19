@@ -5,8 +5,8 @@ from app.database.database import Database
 
 class InMemoryDatabase(Database):
     def __init__(self):
-        self.data = {}
-        self.current_id = 0
+        self.data: dict[str, Any] = {}
+        self.current_id: int = 0
 
     def create(self, table_id: str, items: list[BaseModel]):
         if table_id not in self.data:
@@ -28,9 +28,7 @@ class InMemoryDatabase(Database):
             if all(item[key] == value for key, value in params.items())
         ]
 
-    def read_one(
-        self, table_id: str, params: dict[str, Any]
-    ) -> dict:
+    def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
         for item in self.data.get(table_id, []):
             if all(item[key] == value for key, value in params.items()):
                 return item
@@ -45,8 +43,5 @@ class InMemoryDatabase(Database):
         self.data[table_id] = [
             table_item
             for table_item in self.data.get(table_id, [])
-            if not all(
-                table_item[key] == value
-                for key, value in item.model_dump().items()
-            )
+            if not table_item["id"] == item.model_dump()["id"]
         ]

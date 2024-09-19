@@ -1,10 +1,8 @@
 import os
 
-from fastapi import Depends
-
 from app.database.database import Database
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import DefaultValuesUserCreate, UserCreate
 
 
 class UsersTable:
@@ -63,7 +61,10 @@ class UsersTable:
             user (User): The user to be created.
         """
 
-        self.db.create(table_id=self.table_id, items=[user])
+        self.db.create(
+            table_id=self.table_id,
+            items=[DefaultValuesUserCreate(**user.model_dump())],
+        )
 
     def update_user(self, user: User) -> None:
         """Updates a user in the database.

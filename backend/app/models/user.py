@@ -13,7 +13,5 @@ class User(BaseModel, ABC):
     course: str
 
     # Optional fields
-    description: str = ""
-    tags: str = ""
     role: str = "STUDENT"
     is_verified: bool = False
