@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserCreateRequest, UserResponse
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
@@ -32,7 +32,7 @@ router = APIRouter()
     ),
 )
 async def signup(
-    user: UserCreate, users_table: UsersTable = Depends(get_users_table)
+    user: UserCreateRequest, users_table: UsersTable = Depends(get_users_table)
 ):
     auth = Auth()
     # Check if user already exists
@@ -53,10 +53,25 @@ async def signup(
     # Hash the password
     user.password = auth.get_password_hash(user.password)
 
-    users_table.create_user(user)
+    users_table.create_user(
+        UserCreate(
+            **{
+                key: value
+                for key, value in user.model_dump().items()
+                if key != "is_domain_valid"
+            }
+        )
+    )
 
     # Generate a token for email verification
     token = auth.create_jwt_token_from_email(user.email)
+
+    if not user.is_domain_valid:
+        return {
+            "email": user.email,
+            "username": user.username,
+            "email_sent": False,
+        }
 
     # Send email verification
     try:
@@ -70,7 +85,7 @@ async def signup(
     return {
         "email": user.email,
         "username": user.username,
-        "is_verified": False,
+        "email_sent": True,
     }
 
 
