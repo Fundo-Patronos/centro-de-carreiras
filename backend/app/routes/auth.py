@@ -47,7 +47,7 @@ async def signup(user: UserCreate, users_table = Depends(get_users_table)):
     token = auth.create_jwt_token_from_email(user.email)
 
     # Send email verification
-    await auth.send_verification_email(user.email, token)
+    await Auth.send_verification_email(user.email, token)
 
     return {
         "email": user.email,
