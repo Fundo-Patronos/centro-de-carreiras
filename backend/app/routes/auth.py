@@ -70,7 +70,7 @@ async def signup(
     return {
         "email": user.email,
         "username": user.username,
-        "is_verified": False,
+        "is_verified": "true",
     }
 
 
@@ -119,9 +119,9 @@ async def verify(
 
     try:
         user = users_table.get_user_by_email(email)
-        user.is_verified = True
+        user.is_verified = "true"
         users_table.update_user(user)
-    except RuntimeError  as e:
+    except RuntimeError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
@@ -131,4 +131,4 @@ async def verify(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    return {"email": email, "username": user.username, "is_verified": True}
+    return {"email": email, "username": user.username, "is_verified": "true"}

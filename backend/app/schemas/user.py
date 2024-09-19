@@ -12,9 +12,9 @@ class UserCreate(BaseModel):
 
 class DefaultValuesUserCreate(UserCreate):
     role: str = "STUDENT"
-    is_verified: bool = False
+    is_verified: str = "false"
 
 class UserResponse(BaseModel):
     username: str
     email: EmailStr
-    is_verified: bool
+    is_verified: str

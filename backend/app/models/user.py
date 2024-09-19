@@ -17,4 +17,4 @@ class User(BaseModel, ABC):
     tags: Optional[str] = None
     description: Optional[str] = None
     role: str = "STUDENT"
-    is_verified: bool = False
+    is_verified: str = "false"
