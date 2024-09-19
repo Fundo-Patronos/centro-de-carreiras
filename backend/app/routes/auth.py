@@ -70,7 +70,7 @@ async def signup(
     return {
         "email": user.email,
         "username": user.username,
-        "is_verified": True,
+        "is_verified": False,
     }
 
 
