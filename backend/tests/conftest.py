@@ -19,6 +19,7 @@ def set_env_vars(monkeypatch):
 
 @pytest.fixture(scope="function")
 def test_db():
+    InMemoryDatabase.reset()
     yield InMemoryDatabase()
 
 
