@@ -19,9 +19,7 @@ class Database:
         return cls._instances[cls]
 
     @abstractmethod
-    def read_one(
-        self, table_id: str, params: dict[str, Any]
-    ) -> dict:
+    def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
         """Gets a single record from the database.
 
         Args:
@@ -31,7 +29,6 @@ class Database:
         Returns:
             dict: A dict containing the record data.
         """
-        raise NotImplementedError
 
     @abstractmethod
     def read_all(
@@ -46,7 +43,6 @@ class Database:
         Returns:
             list[dict]: A list of dicts containing the table data.
         """
-        raise NotImplementedError
 
     @abstractmethod
     def create(self, table_id: str, items: list[BaseModel]) -> None:
@@ -59,7 +55,6 @@ class Database:
         Returns:
 
         """
-        raise NotImplementedError
 
     @abstractmethod
     def update(self, table_id: str, item: BaseModel) -> None:
@@ -72,7 +67,6 @@ class Database:
         Returns:
 
         """
-        raise NotImplementedError
 
     @abstractmethod
     def delete(self, table_id: str, item: BaseModel) -> None:
@@ -85,4 +79,3 @@ class Database:
         Returns:
 
         """
-        raise NotImplementedError
