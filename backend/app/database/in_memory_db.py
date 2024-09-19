@@ -1,6 +1,7 @@
 from typing import Any, Optional
 from pydantic import BaseModel
 from app.database.database import Database
+from app.exceptions import DataNotFound
 
 
 class InMemoryDatabase(Database):
@@ -36,7 +37,7 @@ class InMemoryDatabase(Database):
         for item in self.data.get(table_id, []):
             if all(item[key] == value for key, value in params.items()):
                 return item
-        raise ValueError("No item found!")
+        raise DataNotFound("No item found!")
 
     def update(self, table_id: str, item: BaseModel):
         for table_item in self.data.get(table_id, []):
