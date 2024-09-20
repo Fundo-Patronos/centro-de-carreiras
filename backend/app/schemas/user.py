@@ -24,3 +24,14 @@ class UserResponse(BaseModel):
     username: str
     email: EmailStr
     email_sent: bool
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserLoginResponse(BaseModel):
+    username: str
+    email: EmailStr
+    token: str

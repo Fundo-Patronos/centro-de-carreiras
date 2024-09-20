@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
-from app.schemas.user import UserCreate, UserCreateRequest, UserResponse
+from app.schemas.user import UserCreate, UserCreateRequest, UserResponse, UserLogin, UserLoginResponse
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
 
 router = APIRouter()
-
 
 @router.post(
     "/signup",
@@ -150,3 +149,58 @@ async def verify(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
+    
+
+@router.post(
+    "/signin",
+    response_model=UserLoginResponse,
+    responses={
+        401: {
+            "model": ErrorResponse,
+            "description": "Unauthorized - Invalid email or password",
+        },
+        500: {
+            "model": ErrorResponse,
+            "description": "Internal Server Error - Failed to login user",
+        },
+    },
+    summary="User Signin",
+    description=(
+        "Authenticate an existing user. This endpoint checks the user's credentials "
+        "by verifying the email and password, and returns a JWT token if the authentication is "
+        "successful. If the credentials are invalid, it returns an unauthorized status."
+    ),
+)
+async def signin(
+    user: UserLogin, users_table: UsersTable = Depends(get_users_table)
+):
+    auth = Auth()
+
+    try:
+        existing_user = users_table.get_user_by_email(user.email)
+
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    if not auth.does_password_match(user.password, existing_user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    token = auth.create_jwt_token_from_email(user.email)
+
+    return {
+        "email": existing_user.email,
+        "username": existing_user.username,
+        "token": token,
+    }
+
