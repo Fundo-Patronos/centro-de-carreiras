@@ -179,10 +179,10 @@ async def signin(
     try:
         existing_user = users_table.get_user_by_email(user.email)
 
-    except ValueError:
+    except DataNotFound:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid email",
         )
     except RuntimeError as e:
         raise HTTPException(
@@ -193,7 +193,7 @@ async def signin(
     if not auth.does_password_match(user.password, existing_user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password",
+            detail="Invalid password",
         )
 
     token = auth.create_jwt_token_from_email(user.email)
