@@ -1,5 +1,6 @@
 import pytest
 from app.crud.users_table import UsersTable
+from app.exceptions import DataNotFound
 from app.schemas.user import UserCreate
 
 
@@ -53,7 +54,7 @@ def test_get_all_users(test_db):
         "testuser2",
     }
 
-def test_get_user_WHEN_user_does_not_exist_THEN_raises_value_error(test_db):
+def test_get_user_WHEN_user_does_not_exist_THEN_raises_DataNotFound(test_db):
     users_table = UsersTable(db=test_db)
-    with pytest.raises(ValueError):
+    with pytest.raises(DataNotFound):
         users_table.get_user("testuser")

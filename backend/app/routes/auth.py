@@ -2,12 +2,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
-from app.schemas.user import UserCreate, UserCreateRequest, UserResponse, UserLogin, UserLoginResponse
+from app.schemas.user import (
+    UserCreate,
+    UserCreateRequest,
+    UserResponse,
+    UserLogin,
+    UserLoginResponse,
+)
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
 
 router = APIRouter()
+
 
 @router.post(
     "/signup",
@@ -163,7 +170,7 @@ async def verify(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    
+
 
 @router.post(
     "/signin",
@@ -218,3 +225,10 @@ async def signin(
         "token": token,
     }
 
+
+@router.post("/test")
+def test_webhook(request: dict):
+    data = request["data"]
+    print("Previous data:", data["previous_rows"][0], "\n")
+    print("Current data:", data["rows"][0])
+    return {}
