@@ -15,7 +15,7 @@ router = APIRouter()
     responses={
         409: {
             "model": ErrorResponse,
-            "description": "Conflict - Email already in use",
+            "description": "Conflict - Email or username already in use",
         },
         500: {
             "model": ErrorResponse,
@@ -40,6 +40,20 @@ async def signup(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Email already in use by {existing_user.username}",
+        )
+    except DataNotFound:
+        pass
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    try:
+        existing_user = users_table.get_user(user.username)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Username already in use",
         )
     except DataNotFound:
         pass
