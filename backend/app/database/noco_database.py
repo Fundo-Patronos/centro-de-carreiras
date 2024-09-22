@@ -69,14 +69,7 @@ class NocoDatabase(Database):
         )
         if response.status_code != 200:
             raise RuntimeError(f"Failed to retrieve data from NocoDB table.")
-        return [
-            {
-                key: value
-                for key, value in item.items()
-                if key not in ["CreatedAt", "UpdatedAt"] # Removes metadata
-            }
-            for item in response.json()["list"]
-        ]
+        return response.json()["list"]
 
     def create(self, table_id: str, items: list[BaseModel]) -> None:
         """Creates a new record in the database.
