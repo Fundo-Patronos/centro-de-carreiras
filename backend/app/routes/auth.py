@@ -225,10 +225,3 @@ async def signin(
         "token": token,
     }
 
-
-@router.post("/test")
-def test_webhook(request: dict):
-    data = request["data"]
-    print("Previous data:", data["previous_rows"][0], "\n")
-    print("Current data:", data["rows"][0])
-    return {}
