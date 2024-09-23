@@ -224,4 +224,3 @@ async def signin(
         "username": existing_user.username,
         "token": token,
     }
-
