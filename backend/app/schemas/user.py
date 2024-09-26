@@ -1,3 +1,4 @@
+from typing import Literal
 from pydantic import BaseModel, EmailStr
 
 
@@ -35,3 +36,12 @@ class UserLoginResponse(BaseModel):
     username: str
     email: EmailStr
     token: str
+
+
+class UserVerificationUpdate(BaseModel):
+    email: EmailStr
+    is_verified: bool
+
+
+class UserUpdateWebhook(BaseModel):
+    data: dict[Literal["previous_rows", "rows"], UserVerificationUpdate]

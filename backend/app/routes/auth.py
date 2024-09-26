@@ -8,6 +8,7 @@ from app.schemas.user import (
     UserResponse,
     UserLogin,
     UserLoginResponse,
+    UserUpdateWebhook,
 )
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
@@ -225,3 +226,21 @@ async def signin(
         "token": token,
     }
 
+
+@router.post(
+    "/notify",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="User verification notification from webhook",
+    description=(
+        "Receive a notification from a webhook. This endpoint accepts a JSON payload "
+        "from a webhook and sends a notification to the user's email to verify their account."
+    ),
+)
+async def notify(webhookData: UserUpdateWebhook):
+    old_user = webhookData.data["previous_rows"]
+    new_user = webhookData.data["rows"]
+
+    if not new_user.is_verified or old_user.is_verified:
+        return
+
+    await Auth.send_verification_notification_email(new_user.email)

@@ -66,7 +66,7 @@ class Auth:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
     @staticmethod
-    async def send_verification_email(email: EmailStr, token: str) -> None:
+    async def _send_email(email: EmailStr, subject: str, body: str) -> None:
         load_dotenv()
         mail_username = os.getenv("MAIL_USERNAME", None)
         mail_password = os.getenv("MAIL_PASSWORD", None)
@@ -93,6 +93,17 @@ class Auth:
             USE_CREDENTIALS=True,
         )
 
+        message = MessageSchema(
+            subject=subject,
+            recipients=[email],
+            body=body,
+            subtype=MessageType.html,
+        )
+        fm = FastMail(email_configuration)
+        await fm.send_message(message)
+
+    @staticmethod
+    async def send_verification_email(email: EmailStr, token: str) -> None:
         base_url = os.getenv(
             "FRONT_END_BASE_URL", None
         )  # Default to localhost if not set
@@ -102,11 +113,16 @@ class Auth:
             )
 
         verification_url = f"{base_url}/verify/{token}"
-        message = MessageSchema(
-            subject="Verificação de Email",
-            recipients=[email],
-            body=f"Verifique o seu email clicando no link: <a href='{verification_url}'>Verificar Email</a>",
-            subtype=MessageType.html,
+        await Auth._send_email(
+            email,
+            "Verificação de Email",
+            f"Verifique o seu email clicando no link: <a href='{verification_url}'>Verificar Email</a>",
         )
-        fm = FastMail(email_configuration)
-        await fm.send_message(message)
+
+    @staticmethod
+    async def send_verification_notification_email(email: EmailStr) -> None:
+        await Auth._send_email(
+            email,
+            "Email Verificado",
+            "Seu email foi verificado! Agora você pode fazer login.",
+        )
