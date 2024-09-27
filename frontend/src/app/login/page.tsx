@@ -1,6 +1,6 @@
 "use client";
 
-import GradientButton from '../../components/GradientButton';
+import Button from '../../components/GradientButton';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; 
@@ -13,80 +13,89 @@ interface LoginFormValues {
     password: string;
 }
 
-const MobileLayout = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
+interface LayoutProps {
+    handleSubmit: (values: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => Promise<void>; 
+    showPassword: boolean; 
+    setShowPassword: (show: boolean) => void; 
+    loginError: string | null;
+}
+
+const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
         <div className="min-h-screen flex items-center justify-center bg-white ">
-            <div className="w-full h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[18vw] md:px-[24vw] ">
+            <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
                 <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
 
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={validationSchemaLogin}
-                    onSubmit={handleSubmit}>
+                    onSubmit={handleSubmit}
+                    >
                     {({ isSubmitting }) => (
                         <Form className="w-full">
-                            {/* E-MAIL */}
-                            <div className="mb-4">
-                                <label htmlFor="email" className="block text-md text-black">Email</label>
-                                <Field
-                                    name="email"
-                                    type="email"
-                                    className="w-full p-2 lg:p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                                    style={{
-                                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                                        border: 'none',
-                                    }}
-                                />
-                                <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
+                        {/* E-MAIL */}
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block text-md text-black">Email</label>
+                            <Field
+                            name="email"
+                            type="email"
+                            className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                            style={{
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                border: 'none',
+                            }}
+                            />
+                            <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
+                        </div>
+
+                        {/* SENHA */}
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block text-black">Senha</label>
+                            <div className="relative">
+                            <Field
+                                name="password"
+                                type={showPassword ? 'text' : 'password'}
+                                className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                                style={{
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                border: 'none',
+                                }}
+                            />
+                            <span
+                                className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? (
+                                <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                                ) : (
+                                <EyeIcon className="h-5 w-5 text-gray-700" />
+                                )}
+                            </span>
                             </div>
+                            <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                        </div>
 
-                            {/* SENHA */}
-                            <div className="mb-4">
-                                <label htmlFor="password" className="block text-black">Senha</label>
-                                <div className="relative">
-                                    <Field
-                                        name="password"
-                                        type={showPassword ? 'text' : 'password'}
-                                        className="w-full p-2 lg:p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                                        style={{
-                                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                                            border: 'none',
-                                        }}
-                                    />
-                                    <span
-                                        className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? (
-                                            <EyeSlashIcon className="h-5 w-5 text-gray-700" />
-                                        ) : (
-                                            <EyeIcon className="h-5 w-5 text-gray-700" />
-                                        )}
-                                    </span>
-                                </div>
-                                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                        {/* ESQUECI MINHA SENHA */}
+                        <div className="mb-4 flex justify-between items-center">
+                            <div className="flex items-center">
+                            <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
+                            <label htmlFor="rememberMe" className="text-black">Lembrar de mim</label>
                             </div>
+                            <Link href="/reset-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
+                            Esqueci minha senha
+                            </Link>
+                        </div>
 
-                            {/* ESQUECI MINHA SENHA */}
-                            <div className="mb-4 flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
-                                    <label htmlFor="rememberMe" className="text-black">Lembrar de mim</label>
-                                </div>
-                                <Link href="/reset-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
-                                    Esqueci minha senha
-                                </Link>
-                            </div>
+                        {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
 
-                            {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
-
-                            {/* BOTÃO DE LOGIN */}
-                            <GradientButton type="submit" disabled={isSubmitting} className="mb-4">
-                                {isSubmitting ? 'Enviando...' : 'Login'}
-                            </GradientButton>
+                        {/* BOTÃO DE LOGIN */}
+                        <Button type="submit" disabled={isSubmitting} className="mb-4">
+                            {isSubmitting ? 'Enviando...' : 'Login'}
+                        </Button>
                         </Form>
                     )}
-                </Formik>
+                    </Formik>
+
 
                 {/* CADASTRE-SE */}
                 <div className="mt-6 text-center">
@@ -99,7 +108,7 @@ const MobileLayout = ({ handleSubmit, showPassword, setShowPassword, loginError 
     </div>
 );
 
-const DesktopLayout = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
+const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
     <div className="min-h-screen flex">
         {/* HERO*/}
         <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
@@ -176,9 +185,9 @@ const DesktopLayout = ({ handleSubmit, showPassword, setShowPassword, loginError
                         {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
 
                         {/* BOTÃO DE LOGIN */}
-                        <GradientButton type="submit" disabled={isSubmitting} className="mb-4">
+                        <Button type="submit" disabled={isSubmitting} className="mb-4">
                             {isSubmitting ? 'Enviando...' : 'Login'}
-                        </GradientButton>
+                        </Button>
                     </Form>
                 )}
             </Formik>

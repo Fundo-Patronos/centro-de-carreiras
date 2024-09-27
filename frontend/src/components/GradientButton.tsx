@@ -1,4 +1,10 @@
-export default function GradientButton({ children, onClick, className = '', ...props }) {
+interface GradientButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    children: React.ReactNode;
+    onClick?: () => void;
+    className?: string;
+}
+
+export default function GradientButton({ children, onClick, className = '', ...props }: GradientButtonProps)  {
     return (
         <button
             onClick={onClick}
