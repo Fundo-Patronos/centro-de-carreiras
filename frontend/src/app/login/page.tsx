@@ -8,6 +8,8 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import { validationSchemaLogin } from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 interface LoginFormValues {
     email: string;
     password: string;
@@ -222,7 +224,7 @@ export default function Login() {
 
     const handleSubmit = async (values: LoginFormValues, { setSubmitting }: FormikHelpers<LoginFormValues>) => {
         try {
-            const response = await fetch('${apiUrl}/login', {
+            const response = await fetch('${apiUrl}/signin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
