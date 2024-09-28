@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const ALLOWED_DOMAINS = ['@dac.unicamp.br'];
+const ALLOWED_DOMAINS = ['@dac.unicamp.br', '@unicamp.br'];
 
 export const isEmailValid = (email) => {
     return ALLOWED_DOMAINS.some(domain => email.endsWith(domain));
