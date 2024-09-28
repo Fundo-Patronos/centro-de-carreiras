@@ -38,7 +38,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
                 <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, crie sua conta para conhecer nossa plataforma</p>
 
-                <h1 className="text-4xl font-bold text-black mb-6">Cadastre-se</h1>
+                <h1 className="text-4xl font-semibold text-[#2F2B3D]/[90%] mb-4">Cadastre-se</h1>
 
                 <Formik
                     initialValues={{
@@ -265,7 +265,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
                 <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, crie sua conta para conhecer nossa plataforma</p>
 
-                <h1 className="text-4xl font-bold text-black mb-6">Cadastre-se</h1>
+                <h1 className="text-4xl font-semibold text-[#2F2B3D]/[90%] mb-4">Cadastre-se</h1>
 
                 <Formik
                     initialValues={{
