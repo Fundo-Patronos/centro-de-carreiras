@@ -59,7 +59,7 @@ class Auth:
                 "type": "refresh",
             },
             "exp": datetime.datetime.now(datetime.timezone.utc)
-            + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),  # Set expiration for refresh token
+            + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),
         }
         return self.create_jwt_token(payload)
 
