@@ -56,3 +56,32 @@ def test_jwt_invalid_token():
     token = auth.create_jwt_token({"email": "email"})
     with pytest.raises(jwt.InvalidTokenError):
         auth.decode_jwt_token_to_email(token)
+
+
+def test_jwt_refresh_token_expiration(monkeypatch):
+    original_date_time = datetime.datetime
+
+    class MockDateTime:
+        @classmethod
+        def now(cls, time_zone=None):
+            return original_date_time.now(time_zone) - datetime.timedelta(
+                days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS + 1
+            )
+
+    monkeypatch.setattr(datetime, "datetime", MockDateTime)
+
+    auth = Auth()
+    email = "test@test.com"
+    token = auth.create_refresh_token_from_email(email)
+    with pytest.raises(jwt.ExpiredSignatureError):
+        auth.decode_jwt_refresh_token_to_email(token)
+
+
+def test_jwt_refresh_token_type():
+    auth = Auth()
+    email = "test@test.com"
+
+    token = auth.create_jwt_token_from_email(email)
+
+    with pytest.raises(jwt.InvalidTokenError, match="Token is not a refresh token"):
+        auth.decode_jwt_refresh_token_to_email(token)
