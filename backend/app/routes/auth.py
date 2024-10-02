@@ -224,7 +224,7 @@ async def signin(
         "email": existing_user.email,
         "username": existing_user.username,
         "token": token,
-        "refresh_token": refresh_token
+        "refresh_token": refresh_token,
     }
 
 
@@ -283,13 +283,11 @@ async def refresh_token(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    
+
     new_access_token = auth.create_jwt_token_from_email(user.email)
     return {
         "email": user.email,
         "username": user.username,
         "token": new_access_token,
-        "refresh_token": refresh_token
+        "refresh_token": refresh_token,
     }
-
-

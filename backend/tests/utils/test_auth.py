@@ -83,5 +83,7 @@ def test_jwt_refresh_token_type():
 
     token = auth.create_jwt_token_from_email(email)
 
-    with pytest.raises(jwt.InvalidTokenError, match="Token is not a refresh token"):
+    with pytest.raises(
+        jwt.InvalidTokenError, match="Token is not a refresh token"
+    ):
         auth.decode_jwt_refresh_token_to_email(token)

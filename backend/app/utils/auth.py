@@ -51,7 +51,7 @@ class Auth:
             ),
         }
         return self.create_jwt_token(payload)
-    
+
     def create_refresh_token_from_email(self, email: EmailStr) -> str:
         payload = {
             "data": {
@@ -70,13 +70,15 @@ class Auth:
             raise jwt.InvalidTokenError("Token does not contain data")
 
         return data.get("email")
-    
-    def decode_jwt_refresh_token_to_email(self, refresh_token: str) -> EmailStr:
+
+    def decode_jwt_refresh_token_to_email(
+        self, refresh_token: str
+    ) -> EmailStr:
         payload = self.decode_jwt_token(refresh_token)
         data = payload.get("data")
         if data is None:
             raise jwt.InvalidTokenError("Token does not contain data")
-        
+
         if data.get("type") != "refresh":
             raise jwt.InvalidTokenError("Token is not a refresh token")
 
