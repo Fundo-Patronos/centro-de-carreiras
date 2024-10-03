@@ -1,19 +1,173 @@
-import Link from 'next/link';
+import Navbar from "@/components/Navbar";
+import { Button } from "@/components/Button";
+import Image from "next/image";
 
-export default function Home(){
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-center">
-            <h1 className="text-4xl font-black text-black mb-8">Patronos</h1>
-            <h1 className="text-5xl font-black text-black mb-12">Centro de Carreiras</h1>
-            {/* Links to other pages */}
-            <div className="space-x-4">
-                <Link className="bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300" href="/login">
-                    Login
-                </Link>
-                <Link className='bg-green-600 text-white py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition duration-300' href="/mentoria">
-                    Mentoria
-                </Link>
-            </div>
+export default function Home() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Primeira Seção com Imagem de Fundo */}
+      <section className="relative w-full h-[600px]">
+        <Image
+          src="/images/background-image.jpeg"
+          alt="Background Image"
+          layout="fill"
+          objectFit="cover"
+          className="absolute inset-0 w-full h-full z-[-1]"
+        />
+        {/* Adicionando o overlay de escurecimento */}
+        <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
+
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+          <h1 className="text-5xl font-black max-w-[70%] md:max-w-[50%]">
+            Centro de Carreiras Patronos
+          </h1>
+          <p className="mt-4 text-lg max-w-[70%] md:max-w-[50%]">
+            Alavanque sua carreira com mentorias de ex-alunos da Universidade
+            Estadual de Campinas
+          </p>
+          <div className="mt-8 space-x-4">
+            <Button href="/mentoria" className="bg-red-600 hover:bg-red-700">
+              Visualizar mentores
+            </Button>
+            <Button
+              href="/saber-mais"
+              className="bg-gray-600 hover:bg-gray-700"
+            >
+              Saber mais
+            </Button>
+          </div>
         </div>
-    );
+      </section>
+
+      {/* Segunda Seção - Sobre o Centro de Carreiras */}
+      <section className="flex flex-col md:flex-row justify-between items-center px-32 py-16 bg-white">
+        <div className="flex flex-col justify-center text-center md:text-left">
+          <h2 className="flex items-center text-lg text-black font-light text-left mb-8 sm:text-xl -mx-10">
+            <span className="inline-block w-12 h-0.5 bg-black mr-2 "></span>
+            Sobre o centro de carreiras
+          </h2>
+          <h2 className="text-3xl text-black font-semibold mb-4">
+            Um espaço para se conectar e participar de mentorias com ex-alunos
+            da Universidade Estadual de Campinas
+          </h2>
+          <p className="text-gray-600 mb-4 max-w-[90%] md:max-w-[80%]">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
+            cursus, mi quis viverra ornare, eros dolor interdum nulla.
+            <br /> <br />
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus
+            quod beatae, odit dignissimos repellendus officiis animi modi minima
+            dolores quo cupiditate rem voluptatem maxime a hic laudantium
+            nostrum? Deserunt, velit.
+          </p>
+          <div className="mt-4 space-x-4">
+            <Button href="/mentores" className="bg-red-600 hover:bg-red-700">
+              Visualizar mentores
+            </Button>
+          </div>
+        </div>
+        <Image
+          src="/images/mentoria.jpeg"
+          alt="Mentoria"
+          width={500}
+          height={300}
+          className="rounded-lg"
+        />
+      </section>
+
+      {/* Terceira Seção - Missão */}
+      <section className="px-32 py-16 bg-white">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="flex items-center text-lg text-black font-light text-left sm:text-xl">
+            <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
+            Nossa missão
+          </h2>
+        </div>
+
+        {/* Card Container */}
+        <div className="flex flex-col md:flex-row justify-center gap-8">
+          {/* Card 1 */}
+          <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
+            <Image
+              src="/images/impulsionar.jpg"
+              alt="Impulsionar sua carreira"
+              width={400}
+              height={200}
+              className="rounded-lg"
+            />
+            <h3 className="text-xl font-semibold mt-4">
+              Impulsionar sua carreira
+            </h3>
+            <p className="text-gray-600 mt-2">
+              Entre em contato com mentores selecionados de diversas empresas.
+            </p>
+            <Button
+              href="/mentores"
+              className="bg-red-600 hover:bg-red-700 mt-4"
+            >
+              Mentores
+            </Button>
+          </div>
+
+          {/* Card 2 */}
+          <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
+            <Image
+              src="/images/vagas.jpg"
+              alt="Te conectar ao mercado"
+              width={400}
+              height={200}
+              className="rounded-lg"
+            />
+            <h3 className="text-xl font-semibold mt-4">
+              Te conectar ao mercado
+            </h3>
+            <p className="text-gray-600 mt-2">
+              Tenha acesso a vagas selecionadas pelos mentores presentes no
+              centro de carreiras.
+            </p>
+            <Button href="/vagas" className="bg-red-600 hover:bg-red-700 mt-4">
+              Vagas selecionadas
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Quarta Seção - Testemunho */}
+      <section className="relative w-full h-[400px] bg-gray-900">
+        <Image
+          src="/images/testimonial-background.jpeg"
+          alt="Background Image"
+          layout="fill"
+          objectFit="cover"
+          className="absolute inset-0 w-full h-full z-[-1]"
+        />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
+          <blockquote className="text-2xl font-semibold max-w-2xl">
+            &quot;Este aplicativo mudou minha vida! Agora eu consigo agendar
+            mentorias facilmente e aprender com os melhores.&quot;
+          </blockquote>
+          <cite className="mt-4">— Usuário do Centro de Carreiras</cite>
+        </div>
+      </section>
+
+      {/* Seção do Footer */}
+      <footer className="bg-black text-white py-12 text-center">
+        <div className="container mx-auto">
+          <h2 className="text-3xl font-semibold mb-4">
+            Centro de Carreiras Patronos
+          </h2>
+          <p className="text-lg mb-8">Entre em contato conosco</p>
+          <Button
+            href="https://www.patronos.org"
+            className="text-black bg-white hover:bg-gray-200 rounded-md"
+          >
+            Visitar site Patronos
+          </Button>
+        </div>
+      </footer>
+    </div>
+  );
 }
