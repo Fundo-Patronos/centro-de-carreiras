@@ -21,11 +21,11 @@ export default function Navbar({ currentPage }) {
           Home
         </Link>
         <Link
-          href="/mentoria"
-          className={`${currentPage === "mentoria" ? "text-red-600 font-bold" : "text-gray-800"
+          href="/mentores"
+          className={`${currentPage === "mentores" ? "text-red-600 font-bold" : "text-gray-800"
             } hover:text-red-600`}
         >
-          Mentoria
+          Mentores
         </Link>
         <Link
           href="/vagas"
