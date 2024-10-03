@@ -8,7 +8,7 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import { validationSchemaLogin } from '../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface LoginFormValues {
     email: string;
@@ -50,7 +50,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                             <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
                         </div>
 
-                        {/* SENHA */}
+                        {/* Password*/}
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-black">Senha</label>
                             <div className="relative">
@@ -77,7 +77,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                             <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                         </div>
 
-                        {/* ESQUECI MINHA SENHA */}
+                        {/* Forgot my password */}
                         <div className="mb-4 flex justify-between items-center">
                             <div className="flex items-center">
                             <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
@@ -90,7 +90,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
 
                         {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
 
-                        {/* BOTÃO DE LOGIN */}
+                        {/* Login Button */}
                         <Button type="submit" disabled={isSubmitting} className="mb-4">
                             {isSubmitting ? 'Enviando...' : 'Login'}
                         </Button>
@@ -99,7 +99,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                     </Formik>
 
 
-                {/* CADASTRE-SE */}
+                {/* Sign Up */}
                 <div className="mt-6 text-center">
                     <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Novo na plataforma? </p>
                     <Link href="/signup" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
@@ -146,7 +146,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                             <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
                         </div>
 
-                        {/* SENHA */}
+                        {/* Password */}
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-black">Senha</label>
                             <div className="relative">
@@ -173,7 +173,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                             <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                         </div>
 
-                        {/* ESQUECI MINHA SENHA */}
+                        {/* Forgot my password */}
                         <div className="mb-4 flex justify-between items-center">
                             <div className="flex items-center">
                                 <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
@@ -186,7 +186,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
 
                         {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
 
-                        {/* BOTÃO DE LOGIN */}
+                        {/* Login Button */}
                         <Button type="submit" disabled={isSubmitting} className="mb-4">
                             {isSubmitting ? 'Enviando...' : 'Login'}
                         </Button>
@@ -194,7 +194,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 )}
             </Formik>
 
-            {/* CADASTRE-SE */}
+            {/* Sign Up */}
             <div className="mt-6 text-center">
                 <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Novo na plataforma? </p>
                 <Link href="/signup" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
@@ -224,7 +224,7 @@ export default function Login() {
 
     const handleSubmit = async (values: LoginFormValues, { setSubmitting }: FormikHelpers<LoginFormValues>) => {
         try {
-            const response = await fetch('${apiUrl}/signin', {
+            const response = await fetch(`${apiUrl}/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -233,7 +233,7 @@ export default function Login() {
             });
 
             if (response.ok) {
-                router.push('/homepage');
+                router.push('/home');
             } else {
                 setLoginError('Usuário ou senha inválido');
             }

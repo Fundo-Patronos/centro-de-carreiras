@@ -8,17 +8,16 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
 import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface SignUpFormValues {
     username: string;
-    fullName: string;
+    name: string;
     email: string;
     password: string;
-    confirmPassword: string;
-    graduationYear: number | '';
+    graduation_year: number | '';
     course: string;
-    linkedIn?: string;
+    linkedin?: string;
     is_domain_valid: boolean; 
 }
 
@@ -43,13 +42,12 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 <Formik
                     initialValues={{
                         username: '',
-                        fullName: '',
+                        name: '',
                         email: '',
                         password: '',
-                        confirmPassword: '',
-                        graduationYear: '',
+                        graduation_year: '',
                         course: '',
-                        linkedIn: '',
+                        linkedin: '',
                         is_domain_valid: false 
                     }}
                     validationSchema={validationSchemaSignUp}
@@ -59,7 +57,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 >
                     {({  setFieldTouched, isSubmitting, touched, errors }) => (
                         <Form className="w-full space-y-6">
-                            {/* Nome do Usuário */}
+                            {/* Username */}
                             <div className="relative flex items-center">
                                 <Field
                                     name="username"
@@ -77,10 +75,10 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                             </div>
 
 
-                            {/* Nome Completo */}
+                            {/* Full Name */}
                             <div className="relative flex items-center">
                                 <Field
-                                    name="fullName"
+                                    name="name"
                                     type="text"
                                     placeholder="Nome Completo"
                                     className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
@@ -89,7 +87,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                         border: 'none',
                                     }}
                                 />
-                                {touched.fullName && errors.fullName && (
+                                {touched.name && errors.name && (
                                         <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">*</span>
                                     )}
                             </div>
@@ -123,7 +121,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                 <ErrorMessage name="email" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* Curso */}
+                            {/* Course */}
                             <div className="relative flex items-center">
                                 <Field
                                     name="course"
@@ -140,11 +138,11 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                     )}
                             </div>
 
-                            {/* Ano de Graduação */}
+                            {/* Graduation Year */}
                             <div className = "relative">
                                 <div className="relative flex items-center">
                                     <Field
-                                        name="graduationYear"
+                                        name="graduation_year"
                                         type="number"
                                         placeholder="Ano de Graduação"
                                         className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
@@ -153,15 +151,15 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                             border: 'none',
                                         }}
                                     />
-                                    {touched.graduationYear && errors.graduationYear && (
+                                    {touched.graduation_year && errors.graduation_year && (
                                             <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">*</span>
                                         )}
                                 </div>
-                                <ErrorMessage name="graduationYear" component="div" className="absolute text-red-500 text-sm top-full " />
+                                <ErrorMessage name="graduation_year" component="div" className="absolute text-red-500 text-sm top-full " />
 
                             </div>
 
-                            {/* Senha */}
+                            {/* Password */}
                             <div className = "relative">
                                 <div className="relative">
                                     <Field
@@ -188,7 +186,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                 <ErrorMessage name="password" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* Confirmar Senha */}
+                            {/* Confirm Password */}
                             <div className = "relative">
                                 <div className="relative">
                                     <Field
@@ -215,11 +213,11 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                 <ErrorMessage name="confirmPassword" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* LinkedIn */}
+                            {/* linkedin */}
                             <Field
-                                name="linkedIn"
+                                name="linkedin"
                                 type="text"
-                                placeholder="LinkedIn (Opcional)"
+                                placeholder="Linkedin (Opcional)"
                                 className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                 style={{
                                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
@@ -227,14 +225,14 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                 }}
                             />
                             
-                             {/* Mensagem de aviso */}
+                             {/* Warning message */}
                                 {emailWarning && (
                                     <div style={{ color: 'orange', marginTop: '10px' }}>
                                         {emailWarning}
                                     </div>
                                 )}
                             
-                            {/* Botão de Cadastro */}
+                            {/*Sign Up Button */}
                             <Button type="submit" disabled={isSubmitting} className="mb-4">
                                 {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                             </Button>
@@ -245,7 +243,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 {/* Login */}
                 <div className="mt-6 text-center">
                     <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Já possui conta? </p>
-                    <Link href="/login" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                    <Link href="/" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
                         Faça Login
                     </Link>
                 </div>
@@ -270,13 +268,12 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 <Formik
                     initialValues={{
                         username: '',
-                        fullName: '',
+                        name: '',
                         email: '',
                         password: '',
-                        confirmPassword: '',
-                        graduationYear: '',
+                        graduation_year: '',
                         course: '',
-                        linkedIn: '',
+                        linkedin: '',
                         is_domain_valid: false 
                     }}
                     validationSchema={validationSchemaSignUp}
@@ -286,7 +283,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 >
                     {({  setFieldTouched, isSubmitting, touched, errors }) => (
                         <Form className="w-full space-y-6">
-                            {/* Nome do Usuário */}
+                            {/* Username */}
                             <div className="relative flex items-center">
                                 <Field
                                     name="username"
@@ -304,10 +301,10 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                             </div>
 
 
-                            {/* Nome Completo */}
+                            {/* Full Name */}
                             <div className="relative flex items-center">
                                 <Field
-                                    name="fullName"
+                                    name="name"
                                     type="text"
                                     placeholder="Nome Completo"
                                     className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
@@ -316,7 +313,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                         border: 'none',
                                     }}
                                 />
-                                {touched.fullName && errors.fullName && (
+                                {touched.name && errors.name && (
                                         <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">*</span>
                                     )}
                             </div>
@@ -350,7 +347,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                 <ErrorMessage name="email" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* Curso */}
+                            {/* Course */}
                             <div className="relative flex items-center">
                                 <Field
                                     name="course"
@@ -367,11 +364,11 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                     )}
                             </div>
 
-                            {/* Ano de Graduação */}
+                            {/* Graduation Year */}
                             <div className = "relative">
                                 <div className="relative flex items-center">
                                     <Field
-                                        name="graduationYear"
+                                        name="graduation_year"
                                         type="number"
                                         placeholder="Ano de Graduação"
                                         className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
@@ -380,15 +377,15 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                             border: 'none',
                                         }}
                                     />
-                                    {touched.graduationYear && errors.graduationYear && (
+                                    {touched.graduation_year && errors.graduation_year && (
                                             <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">*</span>
                                         )}
                                 </div>
-                                <ErrorMessage name="graduationYear" component="div" className="absolute text-red-500 text-sm top-full " />
+                                <ErrorMessage name="graduation_year" component="div" className="absolute text-red-500 text-sm top-full " />
 
                             </div>
 
-                            {/* Senha */}
+                            {/* Password */}
                             <div className = "relative">
                                 <div className="relative">
                                     <Field
@@ -415,7 +412,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                 <ErrorMessage name="password" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* Confirmar Senha */}
+                            {/* Confirm Password */}
                             <div className = "relative">
                                 <div className="relative">
                                     <Field
@@ -442,11 +439,11 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                 <ErrorMessage name="confirmPassword" component="div" className="absolute text-red-500 text-sm top-full " />
                             </div>
 
-                            {/* LinkedIn */}
+                            {/* linkedin */}
                             <Field
-                                name="linkedIn"
+                                name="linkedin"
                                 type="text"
-                                placeholder="LinkedIn (Opcional)"
+                                placeholder="Linkedin (Opcional)"
                                 className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                 style={{
                                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
@@ -454,14 +451,14 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                 }}
                             />
                             
-                             {/* Mensagem de aviso */}
+                             {/* Warning message */}
                                 {emailWarning && (
                                     <div style={{ color: 'orange', marginTop: '10px' }}>
                                         {emailWarning}
                                     </div>
                                 )}
                             
-                            {/* Botão de Cadastro */}
+                            {/* Sign up Button */}
                             <Button type="submit" disabled={isSubmitting} className="mb-4">
                                 {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                             </Button>
@@ -472,7 +469,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 {/* Login */}
                 <div className="mt-6 text-center">
                     <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Já possui conta? </p>
-                    <Link href="/login" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                    <Link href="/" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
                         Faça Login
                     </Link>
                 </div>
@@ -505,11 +502,11 @@ export default function SignUp() {
         
         const debugMessage = `
             Nome de usuário: ${values.username}
-            Nome completo: ${values.fullName}
+            Nome completo: ${values.name}
             E-mail: ${values.email}
-            Ano de graduação: ${values.graduationYear}
+            Ano de graduação: ${values.graduation_year}
             Curso: ${values.course}
-            LinkedIn: ${values.linkedIn ? values.linkedIn : 'Não fornecido'}
+            linkedin: ${values.linkedin ? values.linkedin : 'Não fornecido'}
             Validação de domínio: ${values.is_domain_valid}
         `;
        console.log(debugMessage);
@@ -525,13 +522,12 @@ export default function SignUp() {
             });
 
             if (response.ok) {
-                router.push('/login');
+                router.push('/');
             } else {
                 console.log(values);
                 alert('Erro ao cadastrar. Tente novamente.');
             }
         } catch (error) {
-            console.log(values);
             console.error('Erro ao tentar cadastrar:', error);
             alert('Ocorreu um erro. Tente novamente mais tarde.');
         }
