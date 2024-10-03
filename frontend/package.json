@@ -9,10 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.2.14",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "@heroicons/react": "^2.1.5",
+    "classnames": "^2.5.1",
+    "formik": "^2.4.6",
+    "heroicons": "^2.1.5",
+    "next": "14.2.8",
+    "react": "^18",
+    "react-dom": "^18",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
