@@ -1,173 +1,256 @@
-import Navbar from "@/components/Navbar";
-import { Button } from "@/components/Button";
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <Navbar />
+import Button from '../components/GradientButton';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; 
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
+import { validationSchemaLogin } from '../hooks/validationSchema';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 
-      {/* Primeira Seção com Imagem de Fundo */}
-      <section className="relative w-full h-[600px]">
-        <Image
-          src="/images/background-image.jpeg"
-          alt="Background Image"
-          layout="fill"
-          objectFit="cover"
-          className="absolute inset-0 w-full h-full z-[-1]"
-        />
-        {/* Adicionando o overlay de escurecimento */}
-        <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
+const apiUrl = process.env.REACT_APP_API_URL;
 
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-          <h1 className="text-5xl font-black max-w-[70%] md:max-w-[50%]">
-            Centro de Carreiras Patronos
-          </h1>
-          <p className="mt-4 text-lg max-w-[70%] md:max-w-[50%]">
-            Alavanque sua carreira com mentorias de ex-alunos da Universidade
-            Estadual de Campinas
-          </p>
-          <div className="mt-8 space-x-4">
-            <Button href="/mentoria" className="bg-red-600 hover:bg-red-700">
-              Visualizar mentores
-            </Button>
-            <Button
-              href="/saber-mais"
-              className="bg-gray-600 hover:bg-gray-700"
-            >
-              Saber mais
-            </Button>
-          </div>
-        </div>
-      </section>
+interface LoginFormValues {
+    email: string;
+    password: string;
+}
 
-      {/* Segunda Seção - Sobre o Centro de Carreiras */}
-      <section className="flex flex-col md:flex-row justify-between items-center px-32 py-16 bg-white">
-        <div className="flex flex-col justify-center text-center md:text-left">
-          <h2 className="flex items-center text-lg text-black font-light text-left mb-8 sm:text-xl -mx-10">
-            <span className="inline-block w-12 h-0.5 bg-black mr-2 "></span>
-            Sobre o centro de carreiras
-          </h2>
-          <h2 className="text-3xl text-black font-semibold mb-4">
-            Um espaço para se conectar e participar de mentorias com ex-alunos
-            da Universidade Estadual de Campinas
-          </h2>
-          <p className="text-gray-600 mb-4 max-w-[90%] md:max-w-[80%]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
-            cursus, mi quis viverra ornare, eros dolor interdum nulla.
-            <br /> <br />
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus
-            quod beatae, odit dignissimos repellendus officiis animi modi minima
-            dolores quo cupiditate rem voluptatem maxime a hic laudantium
-            nostrum? Deserunt, velit.
-          </p>
-          <div className="mt-4 space-x-4">
-            <Button href="/mentores" className="bg-red-600 hover:bg-red-700">
-              Visualizar mentores
-            </Button>
-          </div>
-        </div>
-        <Image
-          src="/images/mentoria.jpeg"
-          alt="Mentoria"
-          width={500}
-          height={300}
-          className="rounded-lg"
-        />
-      </section>
+interface LayoutProps {
+    handleSubmit: (values: LoginFormValues, formikHelpers: FormikHelpers<LoginFormValues>) => Promise<void>; 
+    showPassword: boolean; 
+    setShowPassword: (show: boolean) => void; 
+    loginError: string | null;
+}
 
-      {/* Terceira Seção - Missão */}
-      <section className="px-32 py-16 bg-white">
-        {/* Header */}
-        <div className="mb-8">
-          <h2 className="flex items-center text-lg text-black font-light text-left sm:text-xl">
-            <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
-            Nossa missão
-          </h2>
-        </div>
+const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
+        <div className="min-h-screen flex items-center justify-center bg-white ">
+            <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
+                <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
+                <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
 
-        {/* Card Container */}
-        <div className="flex flex-col md:flex-row justify-center gap-8">
-          {/* Card 1 */}
-          <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
-            <Image
-              src="/images/impulsionar.jpg"
-              alt="Impulsionar sua carreira"
-              width={400}
-              height={200}
-              className="rounded-lg"
-            />
-            <h3 className="text-xl font-semibold mt-4">
-              Impulsionar sua carreira
-            </h3>
-            <p className="text-gray-600 mt-2">
-              Entre em contato com mentores selecionados de diversas empresas.
-            </p>
-            <Button
-              href="/mentores"
-              className="bg-red-600 hover:bg-red-700 mt-4"
-            >
-              Mentores
-            </Button>
-          </div>
+                <Formik
+                    initialValues={{ email: '', password: '' }}
+                    validationSchema={validationSchemaLogin}
+                    onSubmit={handleSubmit}
+                    >
+                    {({ isSubmitting }) => (
+                        <Form className="w-full">
+                        {/* E-MAIL */}
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block text-md text-black">Email</label>
+                            <Field
+                            name="email"
+                            type="email"
+                            className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                            style={{
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                border: 'none',
+                            }}
+                            />
+                            <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
+                        </div>
 
-          {/* Card 2 */}
-          <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
-            <Image
-              src="/images/vagas.jpg"
-              alt="Te conectar ao mercado"
-              width={400}
-              height={200}
-              className="rounded-lg"
-            />
-            <h3 className="text-xl font-semibold mt-4">
-              Te conectar ao mercado
-            </h3>
-            <p className="text-gray-600 mt-2">
-              Tenha acesso a vagas selecionadas pelos mentores presentes no
-              centro de carreiras.
-            </p>
-            <Button href="/vagas" className="bg-red-600 hover:bg-red-700 mt-4">
-              Vagas selecionadas
-            </Button>
-          </div>
-        </div>
-      </section>
+                        {/* SENHA */}
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block text-black">Senha</label>
+                            <div className="relative">
+                            <Field
+                                name="password"
+                                type={showPassword ? 'text' : 'password'}
+                                className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                                style={{
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                border: 'none',
+                                }}
+                            />
+                            <span
+                                className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? (
+                                <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                                ) : (
+                                <EyeIcon className="h-5 w-5 text-gray-700" />
+                                )}
+                            </span>
+                            </div>
+                            <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                        </div>
 
-      {/* Quarta Seção - Testemunho */}
-      <section className="relative w-full h-[400px] bg-gray-900">
-        <Image
-          src="/images/testimonial-background.jpeg"
-          alt="Background Image"
-          layout="fill"
-          objectFit="cover"
-          className="absolute inset-0 w-full h-full z-[-1]"
-        />
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-          <blockquote className="text-2xl font-semibold max-w-2xl">
-            &quot;Este aplicativo mudou minha vida! Agora eu consigo agendar
-            mentorias facilmente e aprender com os melhores.&quot;
-          </blockquote>
-          <cite className="mt-4">— Usuário do Centro de Carreiras</cite>
-        </div>
-      </section>
+                        {/* ESQUECI MINHA SENHA */}
+                        <div className="mb-4 flex justify-between items-center">
+                            <div className="flex items-center">
+                            <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
+                            <label htmlFor="rememberMe" className="text-black">Lembrar de mim</label>
+                            </div>
+                            <Link href="/reset-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
+                            Esqueci minha senha
+                            </Link>
+                        </div>
 
-      {/* Seção do Footer */}
-      <footer className="bg-black text-white py-12 text-center">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-semibold mb-4">
-            Centro de Carreiras Patronos
-          </h2>
-          <p className="text-lg mb-8">Entre em contato conosco</p>
-          <Button
-            href="https://www.patronos.org"
-            className="text-black bg-white hover:bg-gray-200 rounded-md"
-          >
-            Visitar site Patronos
-          </Button>
-        </div>
-      </footer>
+                        {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
+
+                        {/* BOTÃO DE LOGIN */}
+                        <Button type="submit" disabled={isSubmitting} className="mb-4">
+                            {isSubmitting ? 'Enviando...' : 'Login'}
+                        </Button>
+                        </Form>
+                    )}
+                    </Formik>
+
+
+                {/* CADASTRE-SE */}
+                <div className="mt-6 text-center">
+                    <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Novo na plataforma? </p>
+                    <Link href="/signup" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                        Criar um conta
+                    </Link>
+                </div>
+            </div>
     </div>
-  );
+);
+
+const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError }) => (
+    <div className="min-h-screen flex">
+        {/* HERO*/}
+        <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
+            <div className="w-full h-full  bg-black rounded-lg">
+            </div>
+        </div>
+
+        
+        {/* LOGIN FORM */}
+        <div className="w-1/2 lg:w-[500px] xl:w-[500px] 2xl:w-[600px] flex flex-col items-center justify-center bg-white px-[3vw]  lg:px-[50px] 2xl:px-[80px]">
+            <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
+            <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
+
+            <Formik
+                initialValues={{ email: '', password: '' }}
+                validationSchema={validationSchemaLogin}
+                onSubmit={handleSubmit}
+            >
+                {({ isSubmitting }) => (
+                    <Form className="w-full">
+                        {/* E-MAIL */}
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block text-md text-black">Email</label>
+                            <Field
+                                name="email"
+                                type="email"
+                                className="w-full p-2 lg:p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                                style={{
+                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                    border: 'none',
+                                }}
+                            />
+                            <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
+                        </div>
+
+                        {/* SENHA */}
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block text-black">Senha</label>
+                            <div className="relative">
+                                <Field
+                                    name="password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    className="w-full p-2 lg:p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                                    style={{
+                                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                        border: 'none',
+                                    }}
+                                />
+                                <span
+                                    className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                                    ) : (
+                                        <EyeIcon className="h-5 w-5 text-gray-700" />
+                                    )}
+                                </span>
+                            </div>
+                            <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                        </div>
+
+                        {/* ESQUECI MINHA SENHA */}
+                        <div className="mb-4 flex justify-between items-center">
+                            <div className="flex items-center">
+                                <Field type="checkbox" name="rememberMe" id="rememberMe" className="mr-2" />
+                                <label htmlFor="rememberMe" className="text-black">Lembrar de mim</label>
+                            </div>
+                            <Link href="/reset-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
+                                Esqueci minha senha
+                            </Link>
+                        </div>
+
+                        {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
+
+                        {/* BOTÃO DE LOGIN */}
+                        <Button type="submit" disabled={isSubmitting} className="mb-4">
+                            {isSubmitting ? 'Enviando...' : 'Login'}
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
+
+            {/* CADASTRE-SE */}
+            <div className="mt-6 text-center">
+                <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Novo na plataforma? </p>
+                <Link href="/signup" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                    Criar um conta
+                </Link>
+            </div>
+        </div>
+    </div>
+);
+
+
+export default function Login() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [loginError, setLoginError] = useState('');
+    const [isMobile, setIsMobile] = useState(false);
+    const router = useRouter(); 
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < (2/3)*window.innerHeight); 
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize(); 
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const handleSubmit = async (values: LoginFormValues, { setSubmitting }: FormikHelpers<LoginFormValues>) => {
+        try {
+            const response = await fetch('${apiUrl}/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+
+            if (response.ok) {
+                router.push('/homepage');
+            } else {
+                setLoginError('Usuário ou senha inválido');
+            }
+        } catch (error) {
+            console.error('Erro ao tentar logar:', error);
+            setLoginError('Ocorreu um erro. Tente novamente mais tarde.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+            isMobile ? (
+                <MobileLayout handleSubmit={handleSubmit} showPassword={showPassword} setShowPassword={setShowPassword} loginError={loginError} />
+            ) : (
+                <DesktopLayout handleSubmit={handleSubmit} showPassword={showPassword} setShowPassword={setShowPassword} loginError={loginError} />
+            )
+        
+    );
 }
