@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.routes import student as student_routes
+from app.routes import mentoring
 
 
 app = FastAPI()
 
-app.include_router(student_routes.router)
+app.include_router(mentoring.router)
