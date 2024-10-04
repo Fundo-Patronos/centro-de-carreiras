@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 import jwt
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
@@ -10,7 +11,7 @@ from app.schemas.user import (
     UserLoginResponse,
     UserVerifyRequest,
 )
-from app.schemas.error import ErrorResponse
+from app.schemas.error import ErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
 
@@ -22,7 +23,7 @@ router = APIRouter()
     response_model=UserResponse,
     responses={
         409: {
-            "model": ErrorResponse,
+            "model": SignUpConflictErrorResponse,
             "description": "Conflict - Email or username already in use",
         },
         500: {
@@ -44,10 +45,10 @@ async def signup(
     auth = Auth()
     # Check if user already exists
     try:
-        existing_user = users_table.get_user_by_email(user.email)
-        raise HTTPException(
+        users_table.get_user_by_email(user.email)
+        return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Email already in use by {existing_user.username}",
+            content=SignUpConflictErrorResponse(email_in_use=True).model_dump(),
         )
     except DataNotFound:
         pass
@@ -58,10 +59,10 @@ async def signup(
         )
 
     try:
-        existing_user = users_table.get_user(user.username)
-        raise HTTPException(
+        users_table.get_user(user.username)
+        return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Username already in use",
+            content=SignUpConflictErrorResponse(username_in_use=True).model_dump(),
         )
     except DataNotFound:
         pass
