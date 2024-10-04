@@ -1,7 +1,5 @@
-from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
-from pydantic import BaseModel
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
 from app.schemas.user import (
@@ -110,6 +108,7 @@ async def signup(
         "username": user.username,
         "email_sent": True,
     }
+
 
 @router.post(
     "/verify/",
@@ -222,9 +221,76 @@ async def signin(
         )
 
     token = auth.create_jwt_token_from_email(user.email)
+    refresh_token = auth.create_refresh_token_from_email(user.email)
 
     return {
         "email": existing_user.email,
         "username": existing_user.username,
         "token": token,
+        "refresh_token": refresh_token,
+    }
+
+
+@router.get(
+    "/refresh-token/{refresh_token}",
+    status_code=status.HTTP_200_OK,
+    response_model=UserLoginResponse,
+    responses={
+        401: {
+            "model": ErrorResponse,
+            "description": "Unauthorized - Invalid or expired refresh token",
+        },
+        500: {
+            "model": ErrorResponse,
+            "description": "Internal Server Error - Failed to refresh token",
+        },
+    },
+    summary="Refresh JWT Token",
+    description=(
+        "This endpoint allows the user to refresh their JWT access token using a valid refresh token. "
+        "If the refresh token is valid, a new access token is generated and returned."
+    ),
+)
+async def refresh_token(
+    refresh_token: str, users_table: UsersTable = Depends(get_users_table)
+):
+    auth = Auth()
+
+    try:
+        email = auth.decode_jwt_refresh_token_to_email(refresh_token)
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has expired",
+        )
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    try:
+        user = users_table.get_user_by_email(email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    new_access_token = auth.create_jwt_token_from_email(user.email)
+    return {
+        "email": user.email,
+        "username": user.username,
+        "token": new_access_token,
+        "refresh_token": refresh_token,
     }

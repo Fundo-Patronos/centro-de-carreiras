@@ -22,6 +22,7 @@ class Auth:
         return cls._instance
 
     JWT_TOKEN_EXPIRE_TIME_IN_MINUTES = 30
+    REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS = 1
 
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
@@ -51,11 +52,35 @@ class Auth:
         }
         return self.create_jwt_token(payload)
 
+    def create_refresh_token_from_email(self, email: EmailStr) -> str:
+        payload = {
+            "data": {
+                "email": email,
+                "type": "refresh",
+            },
+            "exp": datetime.datetime.now(datetime.timezone.utc)
+            + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),
+        }
+        return self.create_jwt_token(payload)
+
     def decode_jwt_token_to_email(self, token: str) -> EmailStr:
         payload = self.decode_jwt_token(token)
         data = payload.get("data")
         if data is None:
             raise jwt.InvalidTokenError("Token does not contain data")
+
+        return data.get("email")
+
+    def decode_jwt_refresh_token_to_email(
+        self, refresh_token: str
+    ) -> EmailStr:
+        payload = self.decode_jwt_token(refresh_token)
+        data = payload.get("data")
+        if data is None:
+            raise jwt.InvalidTokenError("Token does not contain data")
+
+        if data.get("type") != "refresh":
+            raise jwt.InvalidTokenError("Token is not a refresh token")
 
         return data.get("email")
 
