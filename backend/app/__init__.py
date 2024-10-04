@@ -1,7 +1,25 @@
+import os
 from fastapi import FastAPI
-from app.routes import student as student_routes
+from dotenv import load_dotenv
+from app.routes.auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
+load_dotenv()
+
+front_end_url = os.getenv("FRONT_END_BASE_URL", None)
+
+if front_end_url is None:
+    raise ValueError("FRONT_END_BASE_URL is not set")
 
 app = FastAPI()
 
-app.include_router(student_routes.router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[front_end_url],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+app.include_router(auth_router)
