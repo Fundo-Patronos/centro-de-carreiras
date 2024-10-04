@@ -11,7 +11,7 @@ from app.schemas.user import (
     UserLoginResponse,
     UserVerifyRequest,
 )
-from app.schemas.error import ErrorResponse, SignUpConflictErrorResponse
+from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
 
@@ -27,7 +27,7 @@ router = APIRouter()
             "description": "Conflict - Email or username already in use",
         },
         500: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to register user",
         },
     },
@@ -120,15 +120,15 @@ async def signup(
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         408: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Request Timeout - Token has expired",
         },
         406: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Not Acceptable - Invalid token",
         },
         500: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to verify user",
         },
     },
@@ -185,11 +185,11 @@ async def verify(
     response_model=UserLoginResponse,
     responses={
         401: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Unauthorized - Invalid email or password",
         },
         500: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to login user",
         },
     },
@@ -242,11 +242,11 @@ async def signin(
     response_model=UserLoginResponse,
     responses={
         401: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Unauthorized - Invalid or expired refresh token",
         },
         500: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to refresh token",
         },
     },
