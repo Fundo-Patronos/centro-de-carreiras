@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import TimeIntervalsTable from '../../components/DataTable.js';
+import TimeIntervalsTable from '../../../components/DataTable.js';
 import { Typography, Button, Snackbar, Alert } from '@mui/material';
 
 interface Row {
