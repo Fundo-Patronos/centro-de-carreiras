@@ -2,25 +2,31 @@ import os
 
 from app.database.database import Database
 from app.models.user import User
+from app.schemas.user import DefaultValuesUserCreate, UserCreate
 
 
-class UsersTable(Database):
+class UsersTable:
     """Static class to handle all database operations for users"""
 
-    table_id: str = os.getenv("USERS_TABLE_ID")
+    def __init__(self, db: Database):
+        optional_table_id = os.getenv("USERS_TABLE_ID")
+        if optional_table_id is None:
+            raise ValueError("USERS_TABLE_ID environment variable is not set.")
+        self.table_id = optional_table_id
+        self.db = db
 
-    def get_all_users() -> list[User]:
+    def get_all_users(self) -> list[User]:
         """Gets all users from the database.
 
         Returns:
             list[User]: A list of all users in the database.
         """
 
-        users = UsersTable._get_table(table_id=UsersTable.table_id)
-        users = [User(**user) for user in users]
-        return users
+        return [
+            User(**user) for user in self.db.read_all(table_id=self.table_id)
+        ]
 
-    def get_user(username: str) -> User:
+    def get_user(self, username: str) -> User:
         """Gets a user from the database.
 
         Args:
@@ -30,30 +36,41 @@ class UsersTable(Database):
             User: The user retrieved from the database.
         """
 
-        params = {"where": f"(username,eq,{username})"}
-        user = UsersTable._get_table(
-            table_id=UsersTable.table_id, params=params
-        )[0]
+        params = {"username": username}
+        user = self.db.read_one(table_id=self.table_id, params=params)
         return User(**user)
 
-    def create_user(user: User) -> None:
+    def get_user_by_email(self, email: str) -> User:
+        """
+        Gets a user from the database by email.
+
+        Args:
+            email (str): The email of the user to be retrieved.
+
+        Returns:
+            User: The user retrieved from the database.
+        """
+        params = {"email": email}
+        user = self.db.read_one(table_id=self.table_id, params=params)
+        return User(**user)
+
+    def create_user(self, user: UserCreate) -> None:
         """Creates a new user in the database.
 
         Args:
             user (User): The user to be created.
         """
 
-        UsersTable._set_record(
-            table_id=UsersTable.table_id, data=user.model_dump()
+        self.db.create(
+            table_id=self.table_id,
+            items=[DefaultValuesUserCreate(**user.model_dump())],
         )
 
-    def update_user(user: User) -> None:
+    def update_user(self, user: User) -> None:
         """Updates a user in the database.
 
         Args:
             user (User): The user to be updated.
         """
 
-        UsersTable._update_record(
-            table_id=UsersTable.table_id, data=user.model_dump()
-        )
+        self.db.update(table_id=self.table_id, item=user)
