@@ -1,13 +1,10 @@
-import Navbar from "@/components/Navbar";
+import Layout from "@/components/Layout";
 import { Button } from "@/components/Button";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <Navbar />
-
+    <Layout currentPage="home"> {/* Pass currentPage="home" */}
       {/* Primeira Seção com Imagem de Fundo */}
       <section className="relative w-full h-[600px]">
         <Image
@@ -152,22 +149,6 @@ export default function Home() {
           <cite className="mt-4">— Usuário do Centro de Carreiras</cite>
         </div>
       </section>
-
-      {/* Seção do Footer */}
-      <footer className="bg-black text-white py-12 text-center">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-semibold mb-4">
-            Centro de Carreiras Patronos
-          </h2>
-          <p className="text-lg mb-8">Entre em contato conosco</p>
-          <Button
-            href="https://www.patronos.org"
-            className="text-black bg-white hover:bg-gray-200 rounded-md"
-          >
-            Visitar site Patronos
-          </Button>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 }
