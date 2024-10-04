@@ -29,7 +29,11 @@ const VerifyEmail = () => {
                 setMessage(`Falha na verificação: ${result.message}`);
             }
         } catch (error) {
-            setMessage("Ocorreu um erro: " + error.message);
+            if (error instanceof Error) {
+                setMessage("Ocorreu um erro: " + error.message);
+            } else {
+                setMessage("Ocorreu um erro desconhecido.");
+            }
         } finally {
             setLoading(false);
         }
