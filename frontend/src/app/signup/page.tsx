@@ -520,8 +520,11 @@ export default function SignUp() {
                 },
                 body: JSON.stringify(values),
             });
+            console.log(response);
 
             if (response.ok) {
+                console.log('Cadastro realizado com sucesso!');
+                alert('Cadastro realizado com sucesso!\n Verifique seu e-mail para confirmar a conta.');
                 router.push('/');
             } else {
                 console.log(values);

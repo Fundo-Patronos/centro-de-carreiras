@@ -1,20 +1,26 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/Button";
 import Image from "next/image";
+import Navbar from "../../components/Navbar";
 
 export default function Home() {
   return (
     <Layout currentPage="home"> {/* Pass currentPage="home" */}
       {/* Primeira Seção com Imagem de Fundo */}
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <Navbar />
+
+      {/* First Section with Background Image*/}
       <section className="relative w-full h-[600px]">
         <Image
-          src="/images/background-image.jpeg"
+          src="/images/campus.jpg"
           alt="Background Image"
           layout="fill"
           objectFit="cover"
           className="absolute inset-0 w-full h-full z-[-1]"
         />
-        {/* Adicionando o overlay de escurecimento */}
+        {/* Adding the darkening overlay*/}
         <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
@@ -26,7 +32,7 @@ export default function Home() {
             Estadual de Campinas
           </p>
           <div className="mt-8 space-x-4">
-            <Button href="/mentoria" className="bg-red-600 hover:bg-red-700">
+            <Button href="/mentores" className="bg-red-600 hover:bg-red-700">
               Visualizar mentores
             </Button>
             <Button
@@ -89,13 +95,13 @@ export default function Home() {
           {/* Card 1 */}
           <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
             <Image
-              src="/images/impulsionar.jpg"
+              src="/images/impulsionando_sua_carreira.jpg"
               alt="Impulsionar sua carreira"
               width={400}
               height={200}
               className="rounded-lg"
             />
-            <h3 className="text-xl font-semibold mt-4">
+            <h3 className="text-xl font-semibold mt-4 text-black">
               Impulsionar sua carreira
             </h3>
             <p className="text-gray-600 mt-2">
@@ -112,13 +118,13 @@ export default function Home() {
           {/* Card 2 */}
           <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
             <Image
-              src="/images/vagas.jpg"
+              src="/images/te_conectar_ao_mercado.jpg"
               alt="Te conectar ao mercado"
               width={400}
               height={200}
               className="rounded-lg"
             />
-            <h3 className="text-xl font-semibold mt-4">
+            <h3 className="text-xl font-semibold mt-4 text-black">
               Te conectar ao mercado
             </h3>
             <p className="text-gray-600 mt-2">
@@ -149,6 +155,7 @@ export default function Home() {
           <cite className="mt-4">— Usuário do Centro de Carreiras</cite>
         </div>
       </section>
+    </div>
     </Layout>
   );
 }
