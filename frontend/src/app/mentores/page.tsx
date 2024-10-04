@@ -35,7 +35,7 @@ export default function Mentoria() {
 
 
         {/* Layer with opacity for text readability */}
-        <div className="absolute inset-0 bg-white opacity-40"></div>
+        <div className="absolute inset-0 bg-white opacity-70"></div>
 
         {/* Content */}
         <div className="relative z-10">
