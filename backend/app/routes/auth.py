@@ -48,7 +48,9 @@ async def signup(
         users_table.get_user_by_email(user.email)
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            content=SignUpConflictErrorResponse(email_in_use=True).model_dump(),
+            content=SignUpConflictErrorResponse(
+                email_in_use=True
+            ).model_dump(),
         )
     except DataNotFound:
         pass
@@ -62,7 +64,9 @@ async def signup(
         users_table.get_user(user.username)
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
-            content=SignUpConflictErrorResponse(username_in_use=True).model_dump(),
+            content=SignUpConflictErrorResponse(
+                username_in_use=True
+            ).model_dump(),
         )
     except DataNotFound:
         pass
