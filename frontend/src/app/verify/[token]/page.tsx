@@ -13,7 +13,7 @@ const VerifyEmail = () => {
     const [message, setMessage] = useState('Verificando seu e-mail...');
     const [loading, setLoading] = useState(true);
 
-    const verifyEmail = async (token) => {
+    const verifyEmail = async (token: string) => {
         try {
             const response = await fetch(`${apiUrl}/verify`, {
                 method: "POST",
@@ -22,10 +22,10 @@ const VerifyEmail = () => {
                 },
                 body: JSON.stringify({ token }),
             });
-            const result = await response.json();
             if (response.ok) {
                 setMessage("E-mail confirmado!");
             } else {
+                const result = await response.json();
                 setMessage(`Falha na verificação: ${result.message}`);
             }
         } catch (error) {
