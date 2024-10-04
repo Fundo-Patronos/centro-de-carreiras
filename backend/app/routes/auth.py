@@ -1,5 +1,7 @@
+from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
+from pydantic import BaseModel
 from app.crud.users_table import UsersTable
 from app.dependencies import get_users_table
 from app.schemas.user import (
@@ -8,6 +10,7 @@ from app.schemas.user import (
     UserResponse,
     UserLogin,
     UserLoginResponse,
+    UserVerifyRequest,
 )
 from app.schemas.error import ErrorResponse
 from app.utils.auth import Auth
@@ -108,9 +111,8 @@ async def signup(
         "email_sent": True,
     }
 
-
-@router.get(
-    "/verify/{token}",
+@router.post(
+    "/verify/",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         408: {
@@ -134,8 +136,10 @@ async def signup(
     ),
 )
 async def verify(
-    token: str, users_table: UsersTable = Depends(get_users_table)
+    token_request: UserVerifyRequest,
+    users_table: UsersTable = Depends(get_users_table),
 ):
+    token = token_request.token
     print("token received:", token)
     auth = Auth()
     try:
@@ -224,4 +228,3 @@ async def signin(
         "username": existing_user.username,
         "token": token,
     }
-
