@@ -65,6 +65,7 @@ class Database:
             item (BaseModel): The item to be updated.
 
         Returns:
+            None
 
         """
 
@@ -74,8 +75,9 @@ class Database:
 
         Args:
             table_id (str): The table id to delete from.
-            params (dict): The parameters to be passed in the request.
+            item (BaseModel): The item to be deleted.
 
         Returns:
+            None
 
         """
