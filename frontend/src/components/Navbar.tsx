@@ -14,7 +14,7 @@ export default function Navbar({ currentPage }) {
       {/* Links */}
       <div className="flex space-x-6">
         <Link
-          href="/"
+          href="/home"
           className={`${currentPage === "home" ? "text-red-600 font-bold" : "text-gray-800"
             } hover:text-red-600`}
         >
