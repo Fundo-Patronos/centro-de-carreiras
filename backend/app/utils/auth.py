@@ -3,11 +3,11 @@ from typing import Optional
 import jwt
 import os
 import datetime
+import requests
 from dotenv import load_dotenv
 
 import bcrypt
 
-from fastapi_mail import ConnectionConfig, MessageSchema, FastMail, MessageType
 from pydantic import EmailStr
 
 
@@ -91,47 +91,32 @@ class Auth:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
     @staticmethod
-    async def send_verification_email(email: EmailStr, token: str) -> None:
+    def send_verification_email(
+        email: EmailStr, full_name: str, token: str
+    ) -> None:
         load_dotenv()
-        mail_username = os.getenv("MAIL_USERNAME", None)
-        mail_password = os.getenv("MAIL_PASSWORD", None)
-        mail_from = os.getenv("MAIL_FROM", None)
-        mail_server = os.getenv("MAIL_SERVER", None)
-
-        if (
-            mail_username is None
-            or mail_password is None
-            or mail_from is None
-            or mail_server is None
-        ):
-            raise ValueError(
-                "MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, or MAIL_SERVER environment variable is not set."
-            )
-        email_configuration = ConnectionConfig(
-            MAIL_USERNAME=mail_username,
-            MAIL_PASSWORD=mail_password,
-            MAIL_FROM=mail_from,
-            MAIL_PORT=587,
-            MAIL_SERVER=mail_server,
-            MAIL_STARTTLS=True,
-            MAIL_SSL_TLS=False,
-            USE_CREDENTIALS=True,
-        )
-
-        base_url = os.getenv(
-            "FRONT_END_BASE_URL", None
-        )  # Default to localhost if not set
+        base_url = os.getenv("FRONT_END_BASE_URL", None)
         if base_url is None:
             raise ValueError(
                 "FRONT_END_BASE_URL environment variable is not set."
             )
 
-        verification_url = f"{base_url}/verify/{token}"
-        message = MessageSchema(
-            subject="Verificação de Email",
-            recipients=[email],
-            body=f"Verifique o seu email clicando no link: <a href='{verification_url}'>Verificar Email</a>",
-            subtype=MessageType.html,
-        )
-        fm = FastMail(email_configuration)
-        await fm.send_message(message)
+        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
+
+        if webhook_url is None:
+            raise ValueError(
+                "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
+            )
+
+        user_name = full_name.split()[0]
+
+        automation_payload = {
+            "email": email,
+            "name": user_name,
+            "verify_url": f"{base_url}/verify/{token}",
+        }
+
+        response = requests.post(webhook_url, json=automation_payload)
+
+        if response.status_code != 200:
+            raise RuntimeError("Failed to send verification email")

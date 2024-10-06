@@ -101,7 +101,7 @@ async def signup(
 
     # Send email verification
     try:
-        await Auth.send_verification_email(user.email, token)
+        Auth.send_verification_email(user.email, user.name, token)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
