@@ -26,6 +26,8 @@ class Auth:
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
         base_url = os.getenv("FRONT_END_BASE_URL", None)
+        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
+
         if optional_jwt_key is None:
             raise ValueError("JWT_KEY environment variable is not set.")
 
@@ -33,9 +35,7 @@ class Auth:
             raise ValueError(
                 "FRONT_END_BASE_URL environment variable is not set."
             )
-
-        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
-
+        
         if webhook_url is None:
             raise ValueError(
                 "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
