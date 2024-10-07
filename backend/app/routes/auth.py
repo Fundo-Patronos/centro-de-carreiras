@@ -55,6 +55,7 @@ async def signup(
     except DataNotFound:
         pass
     except RuntimeError as e:
+        print("Runtime error:", str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
@@ -71,12 +72,15 @@ async def signup(
     except DataNotFound:
         pass
     except RuntimeError as e:
+        print("Runtime error:", str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
-    # Hash the password
+    # Generate a token for email verification
+    token = auth.create_jwt_token_from_email(user.email)
+
     user.password = auth.get_password_hash(user.password)
 
     users_table.create_user(
@@ -89,9 +93,6 @@ async def signup(
         )
     )
 
-    # Generate a token for email verification
-    token = auth.create_jwt_token_from_email(user.email)
-
     if not user.is_domain_valid:
         return {
             "email": user.email,
@@ -103,6 +104,7 @@ async def signup(
     try:
         await Auth.send_verification_email(user.email, token)
     except Exception as e:
+        print("Failed to send email. Message:", str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to send email. Message: " + str(e),

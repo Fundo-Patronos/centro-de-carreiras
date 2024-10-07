@@ -98,6 +98,8 @@ class Auth:
         mail_from = os.getenv("MAIL_FROM", None)
         mail_server = os.getenv("MAIL_SERVER", None)
 
+        print(mail_username, mail_password, mail_from, mail_server)
+
         if (
             mail_username is None
             or mail_password is None

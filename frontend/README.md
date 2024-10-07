@@ -1,8 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Runbook
+
+The front-end is a [Next.js](https://nextjs.org) project that builds the interface for Patronos' Careers Center
 
 ## Getting Started
 
-First, run the development server:
+### Step 1: Install Node.js and npm
+
+Before starting, you need to have Node.js and npm installed. If you don't have them installed, follow these steps:
+
+1. **Download Node.js** from the [official Node.js website](https://nodejs.org/). When you install Node.js, npm is automatically installed.
+2. **Check the installation**:
+   ```bash
+   node -v
+   npm -v
+   ```
+   This will display the version numbers of Node.js and npm.
+
+### Step 2: Install Dependencies
+
+After cloning the repository, navigate to the project folder and run the following command to install the necessary dependencies:
+
+```bash
+npm install
+```
+
+### Step 3: Run the Development Server
+
+Once the dependencies are installed, you can run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +38,20 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Step 4: Set up environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Make sure your environment has the following variables set:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `NEXT_PUBLIC_API_URL` : backend application URL 
+
+### Step 5: Access the Application
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application running.
+
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about Next.js and React.js, explore the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs) 
+- [React.js Documentation](https://react.dev/)
