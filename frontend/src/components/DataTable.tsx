@@ -1,9 +1,27 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { DataGrid } from '@mui/x-data-grid'; 
-import { Paper } from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
 
-export default function TimeIntervalsTable({ mentor, onSelectionChange }) {
-  const [rows, setRows] = useState([]);
+interface TimeIntervalsTableProps {
+  mentor: string;
+  onSelectionChange: (selectedRows: any[]) => void;
+}
+
+interface Schedule {
+  day_of_the_week: string;
+  start_time: string;
+  end_time: string;
+}
+
+interface RowData {
+  id: number;
+  day: string;
+  startTime: string;
+  endTime: string;
+}
+
+export default function TimeIntervalsTable({ mentor, onSelectionChange }: TimeIntervalsTableProps) {
+  const [rows, setRows] = useState<RowData[]>([]);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -12,10 +30,10 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange }) {
         if (!response.ok) {
           throw new Error('Failed to fetch schedules');
         }
-        const data = await response.json();
+        const data: Schedule[] = await response.json();
         if (Array.isArray(data)) {
           const formattedRows = data.map((schedule, index) => ({
-            id: index,  // Usar o índice como ID
+            id: index,  // Use index as ID
             day: schedule.day_of_the_week,
             startTime: schedule.start_time,
             endTime: schedule.end_time,
@@ -34,9 +52,9 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange }) {
     }
   }, [mentor]);
 
-  const handleSelectionChange = useCallback((newSelectionModel) => {
-    // Pegue as linhas completas dos dados selecionados
-    const selectedRows = newSelectionModel.map((id) => rows.find((row) => row.id === id));
+  const handleSelectionChange = useCallback((newSelectionModel: any) => {
+    // Get complete rows for the selected data
+    const selectedRows = newSelectionModel.map((id: number) => rows.find((row) => row.id === id));
     onSelectionChange(selectedRows);
   }, [onSelectionChange, rows]);
 

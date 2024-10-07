@@ -5,8 +5,7 @@ import Navbar from "../../components/Navbar";
 
 export default function Home() {
   return (
-    <Layout currentPage="home"> {/* Pass currentPage="home" */}
-      {/* Primeira Seção com Imagem de Fundo */}
+    <Layout currentPage="home"> 
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
       <Navbar />
@@ -45,7 +44,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Segunda Seção - Sobre o Centro de Carreiras */}
+      {/* Second Section - About */}
       <section className="flex flex-col md:flex-row justify-between items-center px-32 py-16 bg-white">
         <div className="flex flex-col justify-center text-center md:text-left">
           <h2 className="flex items-center text-lg text-black font-light text-left mb-8 sm:text-xl -mx-10">
@@ -80,7 +79,7 @@ export default function Home() {
         />
       </section>
 
-      {/* Terceira Seção - Missão */}
+      {/* Third section - Mission */}
       <section className="px-32 py-16 bg-white">
         {/* Header */}
         <div className="mb-8">
@@ -138,7 +137,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quarta Seção - Testemunho */}
+      {/* 4th section - testimony */}
       <section className="relative w-full h-[400px] bg-gray-900">
         <Image
           src="/images/testimonial-background.jpeg"
