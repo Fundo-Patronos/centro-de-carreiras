@@ -4,7 +4,6 @@ import jwt
 import os
 import datetime
 import requests
-from dotenv import load_dotenv
 
 import bcrypt
 
@@ -26,9 +25,25 @@ class Auth:
 
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
+        base_url = os.getenv("FRONT_END_BASE_URL", None)
         if optional_jwt_key is None:
             raise ValueError("JWT_KEY environment variable is not set.")
+
+        if base_url is None:
+            raise ValueError(
+                "FRONT_END_BASE_URL environment variable is not set."
+            )
+
+        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
+
+        if webhook_url is None:
+            raise ValueError(
+                "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
+            )
+
         self.jwt_key = optional_jwt_key
+        self.base_url = base_url
+        self.webhook_url = webhook_url
 
     def get_password_hash(self, password: str) -> str:
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -90,33 +105,18 @@ class Auth:
     def decode_jwt_token(self, token: str) -> dict:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
-    @staticmethod
     def send_verification_email(
-        email: EmailStr, full_name: str, token: str
+        self, email: EmailStr, full_name: str, token: str
     ) -> None:
-        load_dotenv()
-        base_url = os.getenv("FRONT_END_BASE_URL", None)
-        if base_url is None:
-            raise ValueError(
-                "FRONT_END_BASE_URL environment variable is not set."
-            )
-
-        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
-
-        if webhook_url is None:
-            raise ValueError(
-                "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
-            )
-
         user_name = full_name.split()[0]
 
         automation_payload = {
             "email": email,
             "name": user_name,
-            "verify_url": f"{base_url}/verify/{token}",
+            "verify_url": f"{self.base_url}/verify/{token}",
         }
 
-        response = requests.post(webhook_url, json=automation_payload)
+        response = requests.post(self.webhook_url, json=automation_payload)
 
         if response.status_code != 200:
             raise RuntimeError("Failed to send verification email")
