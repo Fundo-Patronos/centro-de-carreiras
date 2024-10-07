@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
-from app.schemas.error import ErrorResponse
+from app.schemas.error import DefaultErrorResponse
 from app.crud.schedules_table import SchedulesTable
 from app.models.schedule import Schedule
 
@@ -11,7 +11,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     responses={
         409: {
-            "model": ErrorResponse,
+            "model": DefaultErrorResponse,
             "description": "Email or username in use",
         }
     },
