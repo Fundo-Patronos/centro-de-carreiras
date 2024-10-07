@@ -102,7 +102,7 @@ async def signup(
 
     # Send email verification
     try:
-        await Auth.send_verification_email(user.email, token)
+        auth.send_verification_email(user.email, user.name, token)
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         raise HTTPException(

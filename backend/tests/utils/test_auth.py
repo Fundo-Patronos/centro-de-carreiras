@@ -1,7 +1,9 @@
 import datetime
 import jwt
 import pytest
+import requests
 from app.utils.auth import Auth
+from unittest.mock import Mock
 
 
 def test_auth_is_singleton():
@@ -25,9 +27,19 @@ def test_jwt_token():
     assert email == auth.decode_jwt_token_to_email(token)
 
 
-def test_raise_value_error_when_jwt_key_is_not_set(monkeypatch):
-    monkeypatch.delenv("JWT_KEY", raising=False)
-    with pytest.raises(ValueError):
+@pytest.mark.parametrize(
+    "env_var_name",
+    [
+        "FRONT_END_BASE_URL",
+        "VERIFICATION_EMAIL_WEBHOOK_URL",
+        "JWT_KEY",
+    ],
+)
+def test_raise_value_error_WHEN_env_var_is_not_set(env_var_name, monkeypatch):
+    monkeypatch.delenv(env_var_name, raising=False)
+    with pytest.raises(
+        ValueError, match=f"{env_var_name} environment variable is not set."
+    ):
         Auth()
 
 
@@ -87,3 +99,43 @@ def test_jwt_refresh_token_type():
         jwt.InvalidTokenError, match="Token is not a refresh token"
     ):
         auth.decode_jwt_refresh_token_to_email(token)
+
+
+@pytest.mark.parametrize(
+    "response_code",
+    [
+        200,
+        201,
+    ],
+)
+def test_send_verification_email(response_code, monkeypatch):
+    # Arrange
+    mock_post = Mock()
+
+    mock_post.return_value.status_code = response_code
+
+    monkeypatch.setattr(requests, "post", mock_post)
+
+    auth = Auth()
+    email = "email@email.com"
+    full_name = "Test User"
+    token = auth.create_refresh_token_from_email(email)
+
+    # Act
+    if response_code == 200:
+        auth.send_verification_email(email, full_name, token)
+    else:
+        with pytest.raises(
+            RuntimeError, match="Failed to send verification email"
+        ):
+            auth.send_verification_email(email, full_name, token)
+
+    # Assert
+    mock_post.assert_called_once_with(
+        auth.webhook_url,
+        json={
+            "email": email,
+            "name": "Test",
+            "verify_url": f"{auth.base_url}/verify/{token}",
+        },
+    )
