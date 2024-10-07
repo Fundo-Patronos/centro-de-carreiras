@@ -5,6 +5,7 @@ from app.models.schedule import Schedule
 
 router = APIRouter()
 
+
 @router.get(
     "/mentoring/schedules/",
     response_model=list[Schedule],
@@ -16,10 +17,7 @@ router = APIRouter()
         }
     },
 )
-async def get_endpoint(
-    mentor_name: str 
-):
-    
+async def get_endpoint(mentor_name: str):
     """Get all schedules for a mentor"""
 
     schedules = SchedulesTable.get_schedules(mentor_name)

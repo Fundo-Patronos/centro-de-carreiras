@@ -95,7 +95,7 @@ async def signup(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to send email. Message: " + str(e),
         )
-    
+
     user.password = auth.get_password_hash(user.password)
 
     users_table.create_user(
