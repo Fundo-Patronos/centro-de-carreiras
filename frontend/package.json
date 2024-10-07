@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@heroicons/react": "^2.1.5",
+    "@mui/material": "^6.1.2",
+    "@mui/x-data-grid": "^7.18.0",
+    "classnames": "^2.5.1",
+    "formik": "^2.4.6",
+    "heroicons": "^2.1.5",
     "next": "14.2.8",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
