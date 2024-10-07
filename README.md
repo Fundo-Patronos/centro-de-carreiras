@@ -1,5 +1,3 @@
-Here's the updated README with the "About Patronos" section:
-
 # Patronos' Careers Center
 
 ## Overview
