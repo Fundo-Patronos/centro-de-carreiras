@@ -35,7 +35,7 @@ class Auth:
             raise ValueError(
                 "FRONT_END_BASE_URL environment variable is not set."
             )
-        
+
         if webhook_url is None:
             raise ValueError(
                 "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
