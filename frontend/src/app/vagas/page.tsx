@@ -60,7 +60,7 @@ export default function Mentoria() {
 
         {/* Iframe with onLoad event to stop the loading spinner */}
         <iframe
-          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
+          src="https://airtable.com/embed/appCNXz4iZl0J1gfG/shrgA1iPRv3nUcw1v?viewControls=on"
           frameBorder="0"
           width="100%"
           height="533"
