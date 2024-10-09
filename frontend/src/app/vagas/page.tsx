@@ -22,7 +22,7 @@ export default function Mentoria() {
         <div
           className="absolute bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://framerusercontent.com/images/ogL1s0BXXsZDBTqCkSs3fKo4.png')`,
+            backgroundImage: `url('/images/background-mentors-opportunities.png')`,
             transform: 'rotate(-5deg)', // Rotate the background image only
             backgroundSize: "cover",
             width: '170%',  // Increase the width slightly
@@ -60,8 +60,7 @@ export default function Mentoria() {
 
         {/* Iframe with onLoad event to stop the loading spinner */}
         <iframe
-          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
-          frameBorder="0"
+          src="https://airtable.com/embed/appCNXz4iZl0J1gfG/shrgA1iPRv3nUcw1v?viewControls=on"
           width="100%"
           height="533"
           onLoad={handleIframeLoad} // Trigger when iframe finishes loading
