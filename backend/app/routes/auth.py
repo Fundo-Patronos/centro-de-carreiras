@@ -43,15 +43,14 @@ async def signup(
     user: UserCreateRequest, users_table: UsersTable = Depends(get_users_table)
 ):
     auth = Auth()
+
+    email_in_use = False
+    username_in_use = False
+
     # Check if user already exists
     try:
         users_table.get_user_by_email(user.email)
-        return JSONResponse(
-            status_code=status.HTTP_409_CONFLICT,
-            content=SignUpConflictErrorResponse(
-                email_in_use=True
-            ).model_dump(),
-        )
+        email_in_use = True
     except DataNotFound:
         pass
     except RuntimeError as e:
@@ -63,12 +62,7 @@ async def signup(
 
     try:
         users_table.get_user(user.username)
-        return JSONResponse(
-            status_code=status.HTTP_409_CONFLICT,
-            content=SignUpConflictErrorResponse(
-                username_in_use=True
-            ).model_dump(),
-        )
+        username_in_use = True
     except DataNotFound:
         pass
     except RuntimeError as e:
@@ -76,6 +70,15 @@ async def signup(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
+        )
+
+    if username_in_use or email_in_use:
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
+            content=SignUpConflictErrorResponse(
+                email_in_use=email_in_use,
+                username_in_use=username_in_use
+            ).model_dump(),
         )
 
     # Generate a token for email verification
