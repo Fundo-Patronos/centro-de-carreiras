@@ -22,7 +22,7 @@ export default function Mentoria() {
         <div
           className="absolute bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://framerusercontent.com/images/ogL1s0BXXsZDBTqCkSs3fKo4.png')`,
+            backgroundImage: `url('/images/background-mentors-opportunities.png')`,
             transform: 'rotate(-5deg)', // Rotate the background image only
             backgroundSize: "cover",
             width: '170%',  // Increase the width slightly
