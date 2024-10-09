@@ -7,8 +7,10 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
 import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import AuthPopup from '../../components/AuthPopup';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const TOKEN_EXPIRATION_TIMER = 30;
 
 interface SignUpFormValues {
     username: string;
@@ -509,9 +511,12 @@ export default function SignUp() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [emailWarning, setEmailWarning] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
-    const router = useRouter();
     const [foundDataWarning, setFoundDataWarning] = useState<string | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isEmailSent, setIsEmailSent] = useState(false);
     
+    
+    const router = useRouter();
 
     useEffect(() => {
         const handleResize = () => {
@@ -552,7 +557,12 @@ export default function SignUp() {
             const result = await response.json();
 
             if (response.ok) {
-                router.push("/");
+                if (result.email_sent) {
+                    setIsEmailSent(true);
+                } else {
+                    setIsEmailSent(false); 
+                }
+                setIsPopupOpen(true); 
             } else if (response.status === 409) {
                 console.log(result);
                 if (result.email_in_use && result.username_in_use) {
@@ -576,11 +586,19 @@ export default function SignUp() {
         }
     };
     return (
-            isMobile ? (
+        <>
+            {isMobile ? (
                 <MobileLayout handleSubmit={handleSubmit}  showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} foundDataWarning={foundDataWarning} setFoundDataWarning={setFoundDataWarning} />
+                
             ) : (
                 <DesktopLayout handleSubmit={handleSubmit}  showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} foundDataWarning={foundDataWarning} setFoundDataWarning={setFoundDataWarning}/>
-            )
-        
+            )}
+            <AuthPopup 
+                isOpen={isPopupOpen} 
+                onClose={() => setIsPopupOpen(false)} 
+                emailSent = {isEmailSent}
+                router ={router}
+            />
+        </>
     );
 }
