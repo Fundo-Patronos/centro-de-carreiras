@@ -81,3 +81,11 @@ class Database:
             None
 
         """
+    
+    @abstractmethod
+    def delete_user(self, user_id: int) -> None:
+        """Deletes a user from the database by user ID.
+
+        Args:
+            user_id (int): The ID of the user to be deleted.
+        """

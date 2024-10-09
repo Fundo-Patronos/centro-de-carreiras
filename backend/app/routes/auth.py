@@ -30,6 +30,10 @@ router = APIRouter()
             "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to register user",
         },
+        502: {
+            "model": DefaultErrorResponse,
+            "description": "Bad Gateway - Failed to send verification email",
+        },
     },
     summary="User Signup",
     description=(
@@ -108,9 +112,18 @@ async def signup(
         auth.send_verification_email(user.email, user.name, token)
     except Exception as e:
         print("Failed to send email. Message:", str(e))
+        try:
+            self.db.delete_user(user_id=user.id)
+        except Exception as delete_error:
+            print("Failed to delete user after email error. Message:", str(delete_error))
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send verification email and encountered an error while attempting to delete the user. ",
+            )
+
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to send email. Message: " + str(e),
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Failed to send verification email. User has been removed."
         )
 
     return {
