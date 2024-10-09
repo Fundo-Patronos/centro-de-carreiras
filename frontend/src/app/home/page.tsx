@@ -7,8 +7,6 @@ export default function Home() {
   return (
     <Layout currentPage="home"> 
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <Navbar />
 
       {/* First Section with Background Image*/}
       <section className="relative w-full h-[600px]">
