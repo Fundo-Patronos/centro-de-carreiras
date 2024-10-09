@@ -27,7 +27,12 @@ const VerifyEmail = () => {
                 setEmailValidated(true);
             } else {
                 const result = await response.json();
-                setMessage(`Falha na verificação: ${result.message}`);
+            
+                if (response.status === 500) {
+                    setMessage(`Erro no servidor: ${response.status}`);
+                } else {
+                    setMessage(`Falha na verificação: ${result.detail}`);
+                }
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -92,9 +97,9 @@ const VerifyEmail = () => {
                         {!emailValidated && (
                             <div>
                                 <p className='text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify'>Pedimos desculpa, infelizemnte ocorreu algum erro e seu cadastro não foi validado.</p>
-                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify'>Tente se cadastrar novamente, por favor !</p>
+                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify'>Clique no botão para tentarmos enviar outro e-mail de verificação.</p>
                                 <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
-                                    Cadastrar novamente
+                                    Enviar e-mail
                                 </Button>
                             </div>
                          )}
