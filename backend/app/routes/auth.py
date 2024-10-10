@@ -80,8 +80,7 @@ async def signup(
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content=SignUpConflictErrorResponse(
-                email_in_use=email_in_use,
-                username_in_use=username_in_use
+                email_in_use=email_in_use, username_in_use=username_in_use
             ).model_dump(),
         )
 
@@ -115,7 +114,10 @@ async def signup(
         try:
             self.db.delete_user(user_id=user.id)
         except Exception as delete_error:
-            print("Failed to delete user after email error. Message:", str(delete_error))
+            print(
+                "Failed to delete user after email error. Message:",
+                str(delete_error),
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to send verification email and encountered an error while attempting to delete the user. ",
@@ -123,7 +125,7 @@ async def signup(
 
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Failed to send verification email. User has been removed."
+            detail="Failed to send verification email. User has been removed.",
         )
 
     return {
