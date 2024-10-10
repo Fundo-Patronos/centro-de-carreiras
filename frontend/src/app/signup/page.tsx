@@ -7,8 +7,10 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
 import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import AuthPopup from '../../components/AuthPopup';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const TOKEN_EXPIRATION_TIMER = 30;
 
 interface SignUpFormValues {
     username: string;
@@ -22,16 +24,18 @@ interface SignUpFormValues {
 }
 
 interface LayoutProps {
-    handleSubmit: (values: SignUpFormValues, formikHelpers: FormikHelpers<SignUpFormValues>) => Promise<void>; 
+    handleSubmit: (values: SignUpFormValues, formikHelpers: FormikHelpers<SignUpFormValues>) => Promise<void>;
     showPassword: boolean; 
     setShowPassword: (show: boolean) => void; 
     showConfirmPassword: boolean; 
     setShowConfirmPassword: (show: boolean) => void; 
     emailWarning: string | null;
     setEmailWarning: (warning: string | null) => void;
+    foundDataWarning: string | null;
+    setFoundDataWarning: (warning: string | null) => void;
 }
 
-const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning }) => (
+const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning}) => (
     <div className="min-h-screen flex items-center justify-center bg-white ">
         <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
@@ -67,6 +71,10 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                     style={{
                                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
                                         border: 'none',
+                                    }}
+                                    onBlur={(e: React.FocusEvent<HTMLInputElement>) => {   
+                                        setFieldTouched('username', true);                                            
+                                        setFoundDataWarning('');
                                     }}
                                 />
                                 {touched.username && errors.username && (
@@ -112,6 +120,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                                             } else {
                                                 setEmailWarning('');
                                             }
+                                            setFoundDataWarning('');
                                         }}
                                     />
                                     {touched.email && errors.email && (
@@ -236,6 +245,12 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                             <Button type="submit" disabled={isSubmitting} className="mb-4">
                                 {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                             </Button>
+
+                            <div className="flex justify-center items-center mt-2">
+                                {/* Data Found Warning*/}
+                                {foundDataWarning && (<div className="text-red-600 mt-2">{foundDataWarning}</div>)}
+                            </div>
+
                         </Form>
                     )}
                 </Formik>
@@ -251,7 +266,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
         </div>
 );
 
-const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning  }) => (
+const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning }) => (
     <div className="min-h-screen flex">
             {/* HERO */}
             <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
@@ -293,6 +308,10 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                     style={{
                                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
                                         border: 'none',
+                                    }}
+                                    onBlur={(e: React.FocusEvent<HTMLInputElement>) => {   
+                                        setFieldTouched('username', true);                                            
+                                        setFoundDataWarning('');
                                     }}
                                 />
                                 {touched.username && errors.username && (
@@ -338,7 +357,9 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                                             } else {
                                                 setEmailWarning('');
                                             }
+                                            setFoundDataWarning('');
                                         }}
+                                        
                                     />
                                     {touched.email && errors.email && (
                                         <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">*</span>
@@ -462,6 +483,13 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                             <Button type="submit" disabled={isSubmitting} className="mb-4">
                                 {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                             </Button>
+
+                            <div className="flex justify-center items-center mt-2">
+                                {/* Data Found Warning*/}
+                                {foundDataWarning && (<div className="text-red-600 mt-2">{foundDataWarning}</div>)}
+                            </div>
+
+
                         </Form>
                     )}
                 </Formik>
@@ -483,6 +511,11 @@ export default function SignUp() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [emailWarning, setEmailWarning] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [foundDataWarning, setFoundDataWarning] = useState<string | null>(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    
+    
     const router = useRouter();
 
     useEffect(() => {
@@ -520,27 +553,52 @@ export default function SignUp() {
                 },
                 body: JSON.stringify(values),
             });
-            console.log(response);
+
+            const result = await response.json();
 
             if (response.ok) {
-                console.log('Cadastro realizado com sucesso!');
-                alert('Cadastro realizado com sucesso!\n Verifique seu e-mail para confirmar a conta.');
-                router.push('/');
+                if (result.email_sent) {
+                    setIsEmailSent(true);
+                } else {
+                    setIsEmailSent(false); 
+                }
+                setIsPopupOpen(true); 
+            } else if (response.status === 409) {
+                console.log(result);
+                if (result.email_in_use && result.username_in_use) {
+                    setFoundDataWarning("Este e-mail e nome de usuário já estam em uso.");
+                    values.email = "";
+                    values.username = "";
+                }
+                else if (result.email_in_use) {
+                    setFoundDataWarning("Este e-mail já foi cadastrado.");
+                    values.email = "";
+                }
+                else if (result.username_in_use) {
+                    setFoundDataWarning("Este nome de usuário já está em uso.");
+                    values.username = "";
+                }
             } else {
-                console.log(values);
-                alert('Erro ao cadastrar. Tente novamente.');
+                alert("Erro ao cadastrar. Tente novamente.");
             }
         } catch (error) {
-            console.error('Erro ao tentar cadastrar:', error);
-            alert('Ocorreu um erro. Tente novamente mais tarde.');
+            alert("Ocorreu um erro. Tente novamente mais tarde.");
         }
     };
     return (
-            isMobile ? (
-                <MobileLayout handleSubmit={handleSubmit} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} />
+        <>
+            {isMobile ? (
+                <MobileLayout handleSubmit={handleSubmit}  showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} foundDataWarning={foundDataWarning} setFoundDataWarning={setFoundDataWarning} />
+                
             ) : (
-                <DesktopLayout handleSubmit={handleSubmit} showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} />
-            )
-        
+                <DesktopLayout handleSubmit={handleSubmit}  showPassword={showPassword} setShowPassword={setShowPassword} showConfirmPassword={showConfirmPassword} setShowConfirmPassword={setShowConfirmPassword} emailWarning={emailWarning} setEmailWarning={setEmailWarning} foundDataWarning={foundDataWarning} setFoundDataWarning={setFoundDataWarning}/>
+            )}
+            <AuthPopup 
+                isOpen={isPopupOpen} 
+                onClose={() => setIsPopupOpen(false)} 
+                emailSent = {isEmailSent}
+                router ={router}
+            />
+        </>
     );
 }

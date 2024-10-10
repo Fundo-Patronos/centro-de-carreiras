@@ -11,6 +11,7 @@ const VerifyEmail = () => {
     const router = useRouter();
     const [message, setMessage] = useState('Verificando seu e-mail...');
     const [loading, setLoading] = useState(true);
+    const [emailValidated, setEmailValidated] = useState(false);
 
     const verifyEmail = async (token: string) => {
         try {
@@ -22,10 +23,16 @@ const VerifyEmail = () => {
                 body: JSON.stringify({ token }),
             });
             if (response.ok) {
-                setMessage("E-mail confirmado!");
+                setMessage("Seu e-mail foi confirmado!");
+                setEmailValidated(true);
             } else {
                 const result = await response.json();
-                setMessage(`Falha na verificação: ${result.message}`);
+            
+                if (response.status === 500) {
+                    setMessage(`Erro no servidor: ${response.status}`);
+                } else {
+                    setMessage(`Falha na verificação: ${result.detail}`);
+                }
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -52,29 +59,57 @@ const VerifyEmail = () => {
     const handleLoginRedirect = () => {
         router.push("/"); 
     };
+    const handleSignUpRedirect = () => {
+        router.push("/signup"); 
+    }; 
 
     return (
-        <div
-            className="flex flex-col items-center justify-center h-screen bg-[rgb(255,255,255,0.9)] text-center px-4"
-            // style={{ backgroundImage: 'url("/images/verify-background.png")' }} 
-        >
-            <div className="bg-white p-6 rounded-lg shadow-2xl w-full max-w-md"> 
-                <h1 className="text-2xl font-bold text-gray-700 mb-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-[linear-gradient(to_right,#FF6666,#C964E2)] ">
+             {/* Background Image */}
+            {/* <div
+            className="absolute bg-cover bg-center w-full"
+            style={{
+                backgroundImage: `url('images/squiggles/squiggle_01.png')`,
+                backgroundSize: "cover",
+                width: '50%',  
+                height: '50%', 
+                zIndex: -1,     
+            }}
+            ></div> */}
+            <div className="bg-white rounded-lg shadow-lg py-8 px-8 sm:py-6 sm:px-8 max-w-[90%] md:max-w-[600px] w-full shadow-black">
+                <h1 className="text-[28px] font-semibold text-[#2F2B3D]/[90%] mb-6 text-center mt-4">
                     {loading ? "Verificando seu e-mail. Aguarde, por favor..." : message}
                 </h1>
                 {!loading && (
-                    <Button
-                        onClick={handleLoginRedirect}
-                        className="mt-5 w-full sm:w-auto px-6 py-2"
-                    >
-                        Login
-                    </Button>
+                   
+
+                    <div className="mt-4">
+                         {emailValidated && (
+                            <div>
+                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-1 text-center'>Seu cadastro foi validado com sucesso!</p>
+                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-8 text-center'>Faça login e acesse nossa plataforma.</p>
+                                <Button onClick={handleLoginRedirect} className="mb-4 p-2">
+                                    Login
+                                </Button>
+                            </div>
+                         )}
+
+                        {!emailValidated && (
+                            <div>
+                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify'>Pedimos desculpa, infelizemnte ocorreu algum erro e seu cadastro não foi validado.</p>
+                                <p className='text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify'>Clique no botão para tentarmos enviar outro e-mail de verificação.</p>
+                                <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
+                                    Enviar e-mail
+                                </Button>
+                            </div>
+                         )}
+                        
+                    </div>
                 )}
+                
             </div>
         </div>
     );
-    
-    
     
 };
 
