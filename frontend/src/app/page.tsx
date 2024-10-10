@@ -317,6 +317,7 @@ export default function Login() {
         }
     };
 
+    {/*SOLUÇÃO TEMPORÁRIA*/}
     if (loading) { return <div className=" h-screen bg-white"></div>}
 
     return (
