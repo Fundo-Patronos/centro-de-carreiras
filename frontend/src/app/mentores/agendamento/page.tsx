@@ -6,6 +6,7 @@ import TimeIntervalsTable from '../../../components/DataTable';
 import { Typography, Button, Snackbar, Alert } from '@mui/material';
 import styles from '../../Agendamento.module.css';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import Layout from "@/components/Layout";
 
 interface Row {
   day: string;
@@ -70,14 +71,45 @@ const Agendamento = () => {
   }
 
   return (
-    <div className={styles.mainContainer}>
-      <Typography variant="h3" gutterBottom align="center" style={{ color: '#2a2a72', fontWeight: 600 }}>
-        Agendamento
-      </Typography>
-      <Typography variant="h4" gutterBottom align="center" style={{ color: '#2a2a72', fontWeight: 400 }}>
-        Mostrando horários para {mentor}
-      </Typography>
+    <Layout currentPage="mentores"> {/* Pass the currentPage prop */}
+      {/* First Section with Background Image, Opacity Layer, and Rotation */}
+      <section className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
+        style={{
+          height: '300px', // Adjusted height for a more compact section
+        }}>
 
+        {/* Background Image */}
+        <div
+          className="absolute bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/images/background-mentors-opportunities.png')`,
+            transform: 'rotate(-5deg)', // Rotate the background image only
+            backgroundSize: "cover",
+            width: '170%',  // Increase the width slightly
+            height: '170%', // Increase the height slightly
+            top: '-20px',   // Adjust the position upwards a bit
+            left: '-500px',  // Move the image more to the left
+            zIndex: -1,     // Ensure it's behind the content
+          }}
+        ></div>
+
+
+        {/* Layer with opacity for text readability */}
+        <div className="absolute inset-0 bg-white opacity-70"></div>
+
+        {/* Content */}
+        <div className="relative z-10">
+          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500">
+            Agendamento
+          </h1>
+          <p className="mt-4 text-2xl text-gray-700">
+            Agende uma reunião com {mentor}
+          </p>
+        </div>
+      </section>
+
+
+    <div className={styles.mainContainer}>
       <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} />
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
@@ -88,7 +120,7 @@ const Agendamento = () => {
           size="large"
           style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px'}}
         >
-          Selecionar Horarios
+          Selecionar Horários
         </Button>
       </div>
 
@@ -111,6 +143,7 @@ const Agendamento = () => {
         </Alert>
       </Snackbar>
     </div>
+    </Layout>
   );
 };
 
