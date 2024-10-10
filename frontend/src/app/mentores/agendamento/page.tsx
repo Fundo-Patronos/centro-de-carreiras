@@ -4,6 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import TimeIntervalsTable from '../../../components/DataTable';
 import { Typography, Button, Snackbar, Alert } from '@mui/material';
+import styles from '../../Agendamento.module.css';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
 
 interface Row {
   day: string;
@@ -19,6 +21,7 @@ const Agendamento = () => {
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
   const [message, setMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   const handleSelectionChange = (newSelection: Row[]) => {
     setSelectedRows(newSelection);
@@ -26,9 +29,26 @@ const Agendamento = () => {
 
   const handleButtonClick = () => {
     const timeIntervals = selectedRows.map((row: Row) => `${row.day} ${row.startTime} - ${row.endTime}`);
-    const generatedMessage = `Prezado ${mentor},\nEstou mandando esta mensagem a partir do site do centro de carreiras e quero marcar uma reunião nos horários: ${timeIntervals.join(', ')}.\n\nAtenciosamente,\n`;
+    const generatedMessage = `Olá ${mentor}!\n\nEstou entrando em contato através do Centro de Carreiras do Fundo Patronos e gostaria da sua ajuda para discutir os próximos passos da minha carreira.\n\nEstou disponível nos seguintes horários: ${timeIntervals.join(', ')}.\n\nObrigado!\n\n(Este email foi gerado automaticamente pelo Centro de Carreiras do Fundo Patronos)\n`;
     setMessage(generatedMessage);
+    setConfirmationOpen(true);
   };
+
+  const handleConfirm = () => {
+    //depois adicionar logica de enviar email automatico
+    setConfirmationOpen(false);
+    navigator.clipboard.writeText(message)
+      .then(() => {
+        setSnackbarOpen(true);
+      })
+      .catch(err => {
+        console.error('Failed to copy message: ', err);
+      });
+  }
+
+  const handleClose = () => {
+    setConfirmationOpen(false);
+  }
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(message)
@@ -44,16 +64,17 @@ const Agendamento = () => {
     setSnackbarOpen(false);
   };
 
+
   if (!mentor) {
     return <p>Mentor não especificado.</p>;
   }
 
   return (
-    <div>
-      <Typography variant="h3" gutterBottom align="center">
+    <div className={styles.mainContainer}>
+      <Typography variant="h3" gutterBottom align="center" style={{ color: '#2a2a72', fontWeight: 600 }}>
         Agendamento
       </Typography>
-      <Typography variant="h4" gutterBottom align="center">
+      <Typography variant="h4" gutterBottom align="center" style={{ color: '#2a2a72', fontWeight: 400 }}>
         Mostrando horários para {mentor}
       </Typography>
 
@@ -65,41 +86,19 @@ const Agendamento = () => {
           color="primary" 
           onClick={handleButtonClick} 
           size="large"
+          style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px'}}
         >
           Gerar Mensagem
         </Button>
       </div>
 
-      {message && (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <Typography variant="h5" gutterBottom>
-            Email para {email}
-          </Typography>
-
-          <div style={{ 
-            padding: '20px',
-            border: '1px solid #ccc', 
-            borderRadius: '8px',
-            backgroundColor: '#fff',
-            width: '600px',
-            margin: '0 auto',
-            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
-          }}>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>
-              {message}
-            </Typography>
-            
-            <Button 
-              variant="outlined" 
-              color="secondary" 
-              onClick={handleCopyToClipboard} 
-              style={{ marginTop: '20px' }}
-            >
-              Copiar para Área de Transferência
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        open={confirmationOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        message={message}
+        />
 
       <Snackbar
         open={snackbarOpen}
@@ -107,7 +106,7 @@ const Agendamento = () => {
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Mensagem copiada com sucesso!
+          Requisição de email enviada!
         </Alert>
       </Snackbar>
     </div>
