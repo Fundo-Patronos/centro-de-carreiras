@@ -88,12 +88,13 @@ const Agendamento = () => {
           size="large"
           style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px'}}
         >
-          Gerar Mensagem
+          Selecionar Horarios
         </Button>
       </div>
 
       {/* Confirmation Dialog */}
       <ConfirmationDialog
+        email={email}
         open={confirmationOpen}
         onClose={handleClose}
         onConfirm={handleConfirm}
@@ -102,7 +103,7 @@ const Agendamento = () => {
 
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        autoHideDuration={4000}
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>

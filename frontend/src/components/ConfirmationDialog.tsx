@@ -8,13 +8,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 
 interface ConfirmationDialogProps {
+  email: string;
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   message: string;
 }
 
-export default function ConfirmationDialog({ open, onClose, onConfirm, message }: ConfirmationDialogProps) {
+export default function ConfirmationDialog({ email, open, onClose, onConfirm, message }: ConfirmationDialogProps) {
   return (
     <Dialog
       open={open}
@@ -25,7 +26,7 @@ export default function ConfirmationDialog({ open, onClose, onConfirm, message }
       maxWidth="md" // This makes the dialog larger, you can adjust the size
     >
       <DialogTitle id="confirmation-dialog-title">
-      Confirmar email a ser enviado:
+      Confirmar email a ser enviado para {email}:
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="confirmation-dialog-description">
@@ -34,10 +35,10 @@ export default function ConfirmationDialog({ open, onClose, onConfirm, message }
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="secondary">
-          Cancel
+          Cancelar
         </Button>
         <Button onClick={onConfirm} color="primary" variant="contained">
-          Confirm
+          Confirmar
         </Button>
       </DialogActions>
     </Dialog>
