@@ -5,13 +5,8 @@ export function middleware(request: NextRequest) {
   // Parse the "auth-storage" cookie to check for the access token
   const tokenCookie = request.cookies.get("auth-storage");
 
-    console.log("middleware.ts: tokenCookie", tokenCookie);
-
-
   // Check if the token exists and parse it if it's not null
   const token = tokenCookie ? JSON.parse(decodeURIComponent(tokenCookie.value)).accessToken : null;
-
-  console.log("middleware.ts: token", token);
 
   const isAuthPage =
     request.nextUrl.pathname === "/" || request.nextUrl.pathname.startsWith("/signup");
