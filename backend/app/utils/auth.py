@@ -1,0 +1,122 @@
+from __future__ import annotations
+from typing import Optional
+import jwt
+import os
+import datetime
+import requests
+
+import bcrypt
+
+from pydantic import EmailStr
+
+
+class Auth:
+    # Assert that the class is a singleton
+    _instance: Optional[Auth] = None
+
+    def __new__(cls: type[Auth]) -> Auth:
+        if cls._instance is None:
+            cls._instance = super(Auth, cls).__new__(cls)
+
+        return cls._instance
+
+    JWT_TOKEN_EXPIRE_TIME_IN_MINUTES = 30
+    REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS = 1
+
+    def __init__(self):
+        optional_jwt_key = os.getenv("JWT_KEY", None)
+        base_url = os.getenv("FRONT_END_BASE_URL", None)
+        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
+
+        if optional_jwt_key is None:
+            raise ValueError("JWT_KEY environment variable is not set.")
+
+        if base_url is None:
+            raise ValueError(
+                "FRONT_END_BASE_URL environment variable is not set."
+            )
+
+        if webhook_url is None:
+            raise ValueError(
+                "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
+            )
+
+        self.jwt_key = optional_jwt_key
+        self.base_url = base_url
+        self.webhook_url = webhook_url
+
+    def get_password_hash(self, password: str) -> str:
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    def does_password_match(
+        self, plain_password: str, hashed_password: str
+    ) -> bool:
+        return bcrypt.checkpw(
+            plain_password.encode(), hashed_password.encode()
+        )
+
+    def create_jwt_token_from_email(self, email: EmailStr) -> str:
+        payload = {
+            "data": {
+                "email": email,
+            },
+            "exp": datetime.datetime.now(datetime.timezone.utc)
+            + datetime.timedelta(
+                minutes=Auth.JWT_TOKEN_EXPIRE_TIME_IN_MINUTES
+            ),
+        }
+        return self.create_jwt_token(payload)
+
+    def create_refresh_token_from_email(self, email: EmailStr) -> str:
+        payload = {
+            "data": {
+                "email": email,
+                "type": "refresh",
+            },
+            "exp": datetime.datetime.now(datetime.timezone.utc)
+            + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),
+        }
+        return self.create_jwt_token(payload)
+
+    def decode_jwt_token_to_email(self, token: str) -> EmailStr:
+        payload = self.decode_jwt_token(token)
+        data = payload.get("data")
+        if data is None:
+            raise jwt.InvalidTokenError("Token does not contain data")
+
+        return data.get("email")
+
+    def decode_jwt_refresh_token_to_email(
+        self, refresh_token: str
+    ) -> EmailStr:
+        payload = self.decode_jwt_token(refresh_token)
+        data = payload.get("data")
+        if data is None:
+            raise jwt.InvalidTokenError("Token does not contain data")
+
+        if data.get("type") != "refresh":
+            raise jwt.InvalidTokenError("Token is not a refresh token")
+
+        return data.get("email")
+
+    def create_jwt_token(self, data: dict) -> str:
+        return jwt.encode(data, self.jwt_key, algorithm="HS256")
+
+    def decode_jwt_token(self, token: str) -> dict:
+        return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
+
+    def send_verification_email(
+        self, email: EmailStr, full_name: str, token: str
+    ) -> None:
+        user_name = full_name.split()[0]
+
+        automation_payload = {
+            "email": email,
+            "name": user_name,
+            "verify_url": f"{self.base_url}/verify/{token}",
+        }
+
+        response = requests.post(self.webhook_url, json=automation_payload)
+
+        if response.status_code != 200:
+            raise RuntimeError("Failed to send verification email")

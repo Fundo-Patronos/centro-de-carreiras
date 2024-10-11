@@ -1,0 +1,37 @@
+name: Format Backend Code With Black
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install Black
+        run: pip install black
+
+      - name: Run Black
+        run: black --line-length 79 backend/
+
+      - name: Commit and push changes if formatting is needed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "refactor: format backend code with black"
+          file_pattern: "backend/"
