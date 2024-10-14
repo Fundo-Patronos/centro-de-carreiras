@@ -222,7 +222,9 @@ async def verify(
     ),
 )
 async def signin(
-    user: UserLogin, users_table: UsersTable = Depends(get_users_table), response: Response = Response()
+    user: UserLogin,
+    users_table: UsersTable = Depends(get_users_table),
+    response: Response = Response(),
 ):
     auth = Auth()
 
@@ -255,13 +257,13 @@ async def signin(
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24
+        max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24,
     )
 
     return {
         "email": existing_user.email,
         "username": existing_user.username,
-        "token": token
+        "token": token,
     }
 
 
@@ -325,5 +327,5 @@ async def refresh_token(
     return {
         "email": user.email,
         "username": user.username,
-        "token": new_access_token
+        "token": new_access_token,
     }
