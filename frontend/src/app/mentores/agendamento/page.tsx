@@ -1,6 +1,5 @@
-"use client";
-
-import { useSearchParams } from 'next/navigation';
+"use client"
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import TimeIntervalsTable from '../../../components/DataTable';
 import { Typography, Button, Snackbar, Alert } from '@mui/material';
@@ -16,10 +15,12 @@ interface Row {
 
 const Agendamento = () => {
   const searchParams = useSearchParams();
-  const mentor = searchParams.get('mentor'); // Get the 'mentor' value
-  const email = searchParams.get('email'); // Get the 'email' value
+  const router = useRouter();
+  const mentor = searchParams.get('mentor');
+  const email = searchParams.get('email');
 
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
+  const [rowsAvailable, setRowsAvailable] = useState<boolean>(true);
   const [message, setMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
@@ -36,13 +37,12 @@ const Agendamento = () => {
   };
 
   const handleConfirm = () => {
-    //depois adicionar logica de enviar email automatico
     setConfirmationOpen(false);
-  }
+  };
 
   const handleClose = () => {
     setConfirmationOpen(false);
-  }
+  };
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(message)
@@ -58,66 +58,86 @@ const Agendamento = () => {
     setSnackbarOpen(false);
   };
 
-
-  if (!mentor) {
-    return <p>Mentor não especificado.</p>;
-  }
+  const handleRedirectToMentors = () => {
+    router.push('/mentores');
+  };
 
   return (
-    <Layout currentPage="mentores"> {/* Pass the currentPage prop */}
-      {/* First Section with Background Image, Opacity Layer, and Rotation */}
+    <Layout currentPage="mentores">
       <section className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
-        style={{
-          height: '300px', // Adjusted height for a more compact section
-        }}>
-
-        {/* Background Image */}
+        style={{ height: '300px' }}>
         <div
           className="absolute bg-cover bg-center"
           style={{
             backgroundImage: `url('/images/background-mentors-opportunities.png')`,
-            transform: 'rotate(-5deg)', // Rotate the background image only
+            transform: 'rotate(-5deg)',
             backgroundSize: "cover",
-            width: '170%',  // Increase the width slightly
-            height: '170%', // Increase the height slightly
-            top: '-20px',   // Adjust the position upwards a bit
-            left: '-500px',  // Move the image more to the left
-            zIndex: -1,     // Ensure it's behind the content
+            width: '170%',
+            height: '170%',
+            top: '-20px',
+            left: '-500px',
+            zIndex: -1,
           }}
         ></div>
-
-
-        {/* Layer with opacity for text readability */}
         <div className="absolute inset-0 bg-white opacity-70"></div>
-
-        {/* Content */}
         <div className="relative z-10">
           <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500">
             Agendamento
           </h1>
-          <p className="mt-4 text-2xl text-gray-700">
-            Agende uma reunião com {mentor}
-          </p>
+          <p className="mt-4 text-2xl text-gray-700">Agende uma reunião com {mentor}</p>
         </div>
       </section>
 
-
       <div className={styles.mainContainer}>
-        <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} />
+        {/* Wrapper around the table to handle blur */}
+        <div style={{ position: 'relative' }}>
+          <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} setRowsAvailable={setRowsAvailable} />
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleButtonClick}
-            size="large"
-            style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}
-          >
-            Selecionar Horários
-          </Button>
+          {/* Overlay with blur effect if no rows are available */}
+          {!rowsAvailable && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backdropFilter: 'blur(5px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.7)', // Adjust the transparency
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1,
+              flexDirection: 'column',
+            }}>
+              <Typography variant="h6" color="textSecondary" style={{ marginBottom: '16px' }}>
+                Não há horários disponíveis para {mentor} no momento.
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleRedirectToMentors}
+              >
+                Ver Outros Mentores
+              </Button>
+            </div>
+          )}
         </div>
 
-        {/* Confirmation Dialog */}
+        {rowsAvailable && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+            <Button
+              variant="contained"
+              color={selectedRows.length === 0 ? "inherit" : "primary"}
+              onClick={handleButtonClick}
+              size="large"
+              disabled={selectedRows.length === 0}
+              style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}
+            >
+              Selecionar Horários
+            </Button>
+          </div>
+        )}
+
         <ConfirmationDialog
           email={email}
           open={confirmationOpen}

@@ -4,6 +4,7 @@ import Paper from '@mui/material/Paper';
 
 interface TimeIntervalsTableProps {
   mentor: string;
+  setRowsAvailable: (value: boolean) => void;
   onSelectionChange: (selectedRows: any[]) => void;
 }
 
@@ -20,7 +21,7 @@ interface RowData {
   endTime: string;
 }
 
-export default function TimeIntervalsTable({ mentor, onSelectionChange }: TimeIntervalsTableProps) {
+export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsAvailable }: TimeIntervalsTableProps) {
   const [rows, setRows] = useState<RowData[]>([]);
 
   useEffect(() => {
@@ -38,19 +39,20 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange }: TimeIn
             startTime: schedule.start_time,
             endTime: schedule.end_time,
           }));
+
           setRows(formattedRows);
-        } else {
-          console.error('Failed to fetch schedules:', data);
+          setRowsAvailable(!!data.length); // Rows are available
         }
       } catch (error) {
         console.error('Error fetching schedules:', error);
+        setRowsAvailable(false);
       }
     };
 
     if (mentor) {
       fetchSchedules();
     }
-  }, [mentor]);
+  }, [mentor, setRowsAvailable]);
 
   const handleSelectionChange = useCallback((newSelectionModel: any) => {
     // Get complete rows for the selected data
