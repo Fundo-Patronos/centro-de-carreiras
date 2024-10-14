@@ -35,7 +35,6 @@ class UserLoginResponse(BaseModel):
     username: str
     email: EmailStr
     token: str
-    refresh_token: str
 
 
 class UserVerifyRequest(BaseModel):

@@ -14,6 +14,7 @@ from app.schemas.user import (
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
+from fastapi import Response
 
 router = APIRouter()
 
@@ -221,7 +222,7 @@ async def verify(
     ),
 )
 async def signin(
-    user: UserLogin, users_table: UsersTable = Depends(get_users_table)
+    user: UserLogin, users_table: UsersTable = Depends(get_users_table), response: Response = Response()
 ):
     auth = Auth()
 
@@ -248,11 +249,19 @@ async def signin(
     token = auth.create_jwt_token_from_email(user.email)
     refresh_token = auth.create_refresh_token_from_email(user.email)
 
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24
+    )
+
     return {
         "email": existing_user.email,
         "username": existing_user.username,
-        "token": token,
-        "refresh_token": refresh_token,
+        "token": token
     }
 
 
@@ -316,6 +325,5 @@ async def refresh_token(
     return {
         "email": user.email,
         "username": user.username,
-        "token": new_access_token,
-        "refresh_token": refresh_token,
+        "token": new_access_token
     }
