@@ -38,13 +38,6 @@ const Agendamento = () => {
   const handleConfirm = () => {
     //depois adicionar logica de enviar email automatico
     setConfirmationOpen(false);
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        setSnackbarOpen(true);
-      })
-      .catch(err => {
-        console.error('Failed to copy message: ', err);
-      });
   }
 
   const handleClose = () => {
@@ -109,40 +102,40 @@ const Agendamento = () => {
       </section>
 
 
-    <div className={styles.mainContainer}>
-      <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} />
+      <div className={styles.mainContainer}>
+        <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} />
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleButtonClick} 
-          size="large"
-          style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px'}}
-        >
-          Selecionar Horários
-        </Button>
-      </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleButtonClick}
+            size="large"
+            style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}
+          >
+            Selecionar Horários
+          </Button>
+        </div>
 
-      {/* Confirmation Dialog */}
-      <ConfirmationDialog
-        email={email}
-        open={confirmationOpen}
-        onClose={handleClose}
-        onConfirm={handleConfirm}
-        message={message}
+        {/* Confirmation Dialog */}
+        <ConfirmationDialog
+          email={email}
+          open={confirmationOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+          message={message}
         />
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Requisição de email enviada!
-        </Alert>
-      </Snackbar>
-    </div>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+            Requisição de email enviada!
+          </Alert>
+        </Snackbar>
+      </div>
     </Layout>
   );
 };
