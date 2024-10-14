@@ -36,22 +36,18 @@ const Agendamento = () => {
     setConfirmationOpen(true);
   };
 
+  const handleRequestAvailability = () => {
+    const availabilityRequestMessage = `Olá ${mentor}!\n\nGostaria de saber se você tem outros horários disponíveis para mentoria, além dos que estão atualmente visíveis. Agradeço pela sua atenção.\n\nObrigado!\n\n(Este email foi gerado automaticamente pelo Centro de Carreiras do Fundo Patronos)\n`;
+    setMessage(availabilityRequestMessage);
+    setConfirmationOpen(true);
+  };
+
   const handleConfirm = () => {
     setConfirmationOpen(false);
   };
 
   const handleClose = () => {
     setConfirmationOpen(false);
-  };
-
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        setSnackbarOpen(true);
-      })
-      .catch(err => {
-        console.error('Failed to copy message: ', err);
-      });
   };
 
   const handleSnackbarClose = () => {
@@ -89,11 +85,9 @@ const Agendamento = () => {
       </section>
 
       <div className={styles.mainContainer}>
-        {/* Wrapper around the table to handle blur */}
         <div style={{ position: 'relative' }}>
           <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} setRowsAvailable={setRowsAvailable} />
 
-          {/* Overlay with blur effect if no rows are available */}
           {!rowsAvailable && (
             <div style={{
               position: 'absolute',
@@ -102,7 +96,7 @@ const Agendamento = () => {
               width: '100%',
               height: '100%',
               backdropFilter: 'blur(5px)',
-              backgroundColor: 'rgba(255, 255, 255, 0.7)', // Adjust the transparency
+              backgroundColor: 'rgba(255, 255, 255, 0.7)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -112,13 +106,22 @@ const Agendamento = () => {
               <Typography variant="h6" color="textSecondary" style={{ marginBottom: '16px' }}>
                 Não há horários disponíveis para {mentor} no momento.
               </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleRedirectToMentors}
-              >
-                Ver Outros Mentores
-              </Button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleRedirectToMentors}
+                >
+                  Ver Outros Mentores
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleRequestAvailability}
+                >
+                  Pedir Disponibilidade
+                </Button>
+              </div>
             </div>
           )}
         </div>
