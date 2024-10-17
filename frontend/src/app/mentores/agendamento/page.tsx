@@ -66,12 +66,12 @@ const Agendamento = () => {
           className="absolute bg-cover bg-center"
           style={{
             backgroundImage: `url('/images/background-mentors-opportunities.png')`,
-            transform: 'rotate(-5deg)',
+            transform: 'rotate(-8deg)',
             backgroundSize: "cover",
-            width: '170%',
+            width: '125%',
             height: '170%',
             top: '-20px',
-            left: '-500px',
+            left: '-398px',
             zIndex: -1,
           }}
         ></div>
@@ -95,6 +95,7 @@ const Agendamento = () => {
               left: 0,
               width: '100%',
               height: '100%',
+              borderRadius: '8px',
               backdropFilter: 'blur(5px)',
               backgroundColor: 'rgba(255, 255, 255, 0.7)',
               display: 'flex',
