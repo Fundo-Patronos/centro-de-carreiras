@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar'; // Import your existing Navbar component
+import Navbar from "../components/Navbar"; // Import your existing Navbar component
 
 const Header = ({ currentPage }) => {
   return (

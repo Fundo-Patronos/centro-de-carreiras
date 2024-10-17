@@ -63,7 +63,7 @@ export default function Navbar() {
         </div>
 
         {/* Menu Links */}
-        <div className={`lg:flex lg:space-x-6 hidden lg:block`}>
+        <div className={"lg:flex lg:space-x-6 hidden lg:block"}>
           <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 lg:items-center lg:justify-center">
             <Link
               href="/home"
