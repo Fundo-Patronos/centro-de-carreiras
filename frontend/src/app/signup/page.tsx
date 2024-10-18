@@ -10,7 +10,6 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import AuthPopup from '../../components/AuthPopup';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const TOKEN_EXPIRATION_TIMER = 30;
 
 interface SignUpFormValues {
     username: string;
@@ -268,10 +267,46 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
 
 const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning }) => (
     <div className="min-h-screen flex">
-            {/* HERO */}
-            <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
-                <div className="w-full h-full bg-black rounded-lg"></div>
+        {/* HERO*/}
+        <div className="flex-grow bg-white flex items-center justify-center p-[20px]">
+            <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
+                {/* Background */}
+                <div
+                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat w-[375px] 2xl:w-3/10 transform scale-x-[-1]"
+                    style={{
+                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                    }}
+                ></div>
+
+                {/* Content*/}
+                <div className="w-full h-full flex flex-col justify-between items-start">
+                    {/* Logo */}
+                    <div className="p-5">
+                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
+                    </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-start justify-center text-left max-w-[65%] ">
+                    <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black mt-4 text-2xl max-w-[70%]">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+
+                    {/* Texts left corner */}
+                    <div className="p-5">
+                        <div className="text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
             {/* SIGNUP FORM */}
             <div className="w-1/2 lg:w-[500px] xl:w-[500px] 2xl:w-[600px] flex flex-col items-center justify-center bg-white px-[3vw]  lg:px-[50px] 2xl:px-[80px]">

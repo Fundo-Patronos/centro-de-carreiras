@@ -30,10 +30,38 @@ interface LayoutProps {
 }
 
 const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail, password, setPassword, initialValues}) => (
-    <div className="min-h-screen flex items-center justify-center bg-white ">
-        <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
-            <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
-            <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
+    <div className="min-h-screen flex items-center justify-center ">
+            <div className="relative w-full h-screen flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[18vw] md:px-[24vw] ">
+
+                {/* Background */}
+                <div
+                    className="absolute  h-full bg-cover bg-no-repeat w-[100%] 2xl:w-3/10 transform scale-x-[-1] z-0"
+                    style={{
+                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                        opacity: 0.3,
+                        transform: 'rotate(5deg)',
+                    }}
+                ></div>
+
+                {/* Content*/}
+                <div className="relative z-10 flex flex-col items-center justify-center">
+                    {/* Logo */}
+                    <div className="p-5 items-center justify-center">
+                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
+                    </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-center justify-center  ">
+                    <h1 className="text-4xl text-center font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black text-center mt-4 text-[20px] mb-6">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+                
+                <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mb-2">Bem-vindo ao Centro de Carreiras</h2>
+                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
 
             <Formik
                 initialValues={initialValues} 
@@ -129,6 +157,17 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                     Criar uma conta
                 </Link>
             </div>
+
+            {/* Texts */}
+            <div className="p-5 mt-10">
+                        <div className="items-center justify-center text-center text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 );
@@ -136,8 +175,43 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
 const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail,password,setPassword, initialValues}) => (
     <div className="min-h-screen flex">
         {/* HERO*/}
-        <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
-            <div className="w-full h-full  bg-black rounded-lg">
+        <div className="flex-grow bg-white flex items-center justify-center p-[20px]">
+            <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
+                {/* Background */}
+                <div
+                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat w-[375px] 2xl:w-3/10 transform scale-x-[-1]"
+                    style={{
+                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                    }}
+                ></div>
+
+                {/* Content*/}
+                <div className="w-full h-full flex flex-col justify-between items-start">
+                    {/* Logo */}
+                    <div className="p-5">
+                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
+                    </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-start justify-center text-left max-w-[65%] ">
+                    <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black mt-4 text-2xl max-w-[70%]">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+
+                    {/* Texts left corner */}
+                    <div className="p-5">
+                        <div className="text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
