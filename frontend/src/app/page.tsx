@@ -279,8 +279,6 @@ export default function Login() {
         const savedEmail = localStorage.getItem('email');
         const savedPassword = localStorage.getItem('password');
 
-        console.log(savedEmail + " " + savedPassword);
-
         if (savedEmail && savedPassword) {
             setInitialValues({ 
                 email: savedEmail, 
@@ -317,6 +315,14 @@ const handleSubmit = async (
         }
       );
 
+      if (rememberMe) {
+            localStorage.setItem('email', values.email);
+            localStorage.setItem('password', values.password); 
+        } else {
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+        }
+
       router.push("/home");
     } else {
       setLoginError("Usuário ou senha inválido");
@@ -328,6 +334,9 @@ const handleSubmit = async (
     setSubmitting(false);
   }
 };
+
+    {/*SOLUÇÃO TEMPORÁRIA*/}
+    if (loading) { return <div className=" h-screen bg-white"></div>}
 
     return (
         <>
