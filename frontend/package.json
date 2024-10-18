@@ -7,8 +7,7 @@
     "build": "next build",
     "format": "prettier --write .",
     "start": "next start",
-    "lint": "next lint && eslint . --ext .js,.jsx,.ts,.tsx",
-    "prepare": "pnpm husky-init && pnpm install"
+    "lint": "next lint && eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -40,7 +39,7 @@
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.8",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.10",

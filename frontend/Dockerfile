@@ -1,5 +1,5 @@
 # Use a lightweight Node.js image for building the application
-FROM node:18-alpine as build
+FROM node:18-alpine AS build
 
 # Set the working directory
 WORKDIR /app
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 
 # Copy only the necessary files for production
 COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/build /app/build
+COPY --from=build /app/.next /app/.next
 COPY package.json ./
 
 # Expose the port the app runs on

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "./GradientButton";
-import { NextRouter } from "next/router";
+import { useRouter } from "next/navigation"; // Correct useRouter import for the App Router
+
 
 const TOKEN_EXPIRATION_TIMER = 30;
 
@@ -8,7 +9,7 @@ interface AuthPopupProps {
   isOpen: boolean;
   onClose: () => void;
   emailSent: boolean;
-  router: NextRouter;
+  router: ReturnType<typeof useRouter>; // Using the correct type for the App Router instance
 }
 
 const AuthPopup: React.FC<AuthPopupProps> = ({

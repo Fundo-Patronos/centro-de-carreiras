@@ -670,7 +670,11 @@ export default function SignUp() {
         alert("Erro ao cadastrar. Tente novamente.");
       }
     } catch (error) {
-      alert("Ocorreu um erro. Tente novamente mais tarde.");
+      if (error instanceof Error) {
+        alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
+      } else {
+        alert("Ocorreu um erro desconhecido. Tente novamente mais tarde.");
+      }
     }
   };
   return (

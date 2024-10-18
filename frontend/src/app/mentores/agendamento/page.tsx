@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import TimeIntervalsTable from "../../../components/DataTable";
 import { Typography, Button, Snackbar, Alert } from "@mui/material";
 
@@ -12,6 +12,15 @@ interface Row {
 }
 
 const Agendamento = () => {
+  // Wrap useSearchParams usage inside a Suspense boundary
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <AgendamentoContent />
+    </Suspense>
+  );
+};
+
+const AgendamentoContent = () => {
   const searchParams = useSearchParams();
   const mentor = searchParams.get("mentor"); // Get the 'mentor' value
   const email = searchParams.get("email"); // Get the 'email' value

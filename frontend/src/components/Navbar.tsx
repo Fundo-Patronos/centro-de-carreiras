@@ -3,9 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
+import type { JSX } from "react";
 
-export default function Navbar() {
+interface NavbarProps {
+
+  _currentPage: string;
+
+}
+
+export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -24,6 +31,7 @@ export default function Navbar() {
             alt="Associação Fundo Patrimonial Patronos"
             width={50}
             height={40}
+            style={{ width: "auto", height: "auto" }} 
           />
           {/* Separation Bar */}
           <div className="h-12 border-l-2 border-gray-400"></div>
@@ -63,7 +71,7 @@ export default function Navbar() {
         </div>
 
         {/* Menu Links */}
-        <div className={"lg:flex lg:space-x-6 hidden lg:block"}>
+        <div className={`lg:flex lg:space-x-6 hidden lg:block`}>
           <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 lg:items-center lg:justify-center">
             <Link
               href="/home"
