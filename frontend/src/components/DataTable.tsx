@@ -111,7 +111,16 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
           boxShadow: 4,
           border: 2,
           borderColor: 'secondary.light',
+          
           backgroundColor: '#ffffff', // Adiciona o fundo sólido para a tabela
+          '& .MuiDataGrid-cell': {
+            fontSize: '1.1rem', // Aumenta o tamanho do texto das células
+          },
+          '& .MuiDataGrid-columnHeaders': {
+            fontSize: '1.2rem', // Aumenta o tamanho do texto do cabeçalho
+            fontWeight: 'bold', // Opcional, para deixar o cabeçalho em negrito
+          },
+          
           
         }}
       
