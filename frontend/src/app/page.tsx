@@ -1,18 +1,22 @@
 "use client";
 
-import Button from '../components/GradientButton';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
-import { validationSchemaLogin } from '../hooks/validationSchema';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import Button from "../components/GradientButton";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
+import { validationSchemaLogin } from "../hooks/validationSchema";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import { useAuthStore } from "@/store/authStore";
+import axios from "axios";
+import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
+
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface LoginFormValues {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 interface LayoutProps {
@@ -140,7 +144,9 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                             </Link>
                         </div>
 
-                        {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
+            {loginError && (
+              <p className="text-red-500 text-sm mb-4">{loginError}</p>
+            )}
 
                         {/* Login Button */}
                         <Button type="submit" disabled={isSubmitting} className="mb-4">
@@ -302,15 +308,17 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
                             </Link>
                         </div>
 
-                        {loginError && <p className="text-red-500 text-sm mb-4">{loginError}</p>}
+            {loginError && (
+              <p className="text-red-500 text-sm mb-4">{loginError}</p>
+            )}
 
-                        {/* Login Button */}
-                        <Button type="submit" disabled={isSubmitting} className="mb-4">
-                            {isSubmitting ? 'Enviando...' : 'Login'}
-                        </Button>
-                    </Form>
-                )}
-            </Formik>
+            {/* Login Button */}
+            <Button type="submit" disabled={isSubmitting} className="mb-4">
+              {isSubmitting ? "Enviando..." : "Login"}
+            </Button>
+          </Form>
+        )}
+      </Formik>
 
             {/* Sign Up */}
             <div className="mt-6 text-center">
@@ -323,17 +331,17 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
     </div>
 );
 
-
 export default function Login() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [loginError, setLoginError] = useState('');
-    const [isMobile, setIsMobile] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const login = useAuthStore((state) => state.login);
     const [rememberMe, setRememberMe] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [initialValues, setInitialValues] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(true);
-    const router = useRouter(); 
+  const router = useRouter();
 
     useEffect(() => {
         const handleResize = () => {
@@ -344,8 +352,6 @@ export default function Login() {
 
         const savedEmail = localStorage.getItem('email');
         const savedPassword = localStorage.getItem('password');
-
-        console.log(savedEmail + " " + savedPassword);
 
         if (savedEmail && savedPassword) {
             setInitialValues({ 
@@ -361,35 +367,47 @@ export default function Login() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const handleSubmit = async (values: LoginFormValues, { setSubmitting }: FormikHelpers<LoginFormValues>) => {
-        try {
-            const response = await fetch(`${apiUrl}/signin`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
+const handleSubmit = async (
+  values: LoginFormValues,
+  { setSubmitting }: FormikHelpers<LoginFormValues>
+) => {
+  try {
+    const response = await axios.post(`${apiUrl}/signin`, values);
 
-            if (response.ok) {
-                if (rememberMe) {
-                    localStorage.setItem('email', values.email);
-                    localStorage.setItem('password', values.password); 
-                } else {
-                    localStorage.removeItem('email');
-                    localStorage.removeItem('password');
-                }
-                router.push('/home');
-            } else {
-                setLoginError('Usuário ou senha inválido');
-            }
-        } catch (error) {
-            console.error('Erro ao tentar logar:', error);
-            setLoginError('Ocorreu um erro. Tente novamente mais tarde.');
-        } finally {
-            setSubmitting(false);
+    if (response.status === 200) {
+      const { email, username, token, refresh_token } = response.data;
+      login({ email, username }, token, refresh_token); // Store the user data in Zustand
+
+      // Save token to cookies instead of localStorage
+      Cookies.set(
+        "auth-storage",
+        JSON.stringify({ accessToken: token, refreshToken: refresh_token }),
+        {
+          expires: 1, // Expires in 1 day (you can customize this)
+          secure: true,
+          sameSite: "strict",
         }
-    };
+      );
+
+      if (rememberMe) {
+            localStorage.setItem('email', values.email);
+            localStorage.setItem('password', values.password); 
+        } else {
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+        }
+
+      router.push("/home");
+    } else {
+      setLoginError("Usuário ou senha inválido");
+    }
+  } catch (error) {
+    console.error("Erro ao tentar logar:", error);
+    setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
     {/*SOLUÇÃO TEMPORÁRIA*/}
     if (loading) { return <div className=" h-screen bg-white"></div>}
