@@ -8,13 +8,12 @@ export default function Home() {
       <div className="min-h-screen flex flex-col">
         {/* First Section with Background Image*/}
         <section className="relative w-full h-[600px]">
-          <Image
+        <Image
             src="/images/campus.jpg"
             alt="Background Image"
-            layout="fill"
-            objectFit="cover"
+            fill
             className="absolute inset-0 w-full h-full z-[-1]"
-          />
+        />
           {/* Adding the darkening overlay*/}
           <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
 
@@ -138,13 +137,12 @@ export default function Home() {
 
         {/* 4th section - testimony */}
         <section className="relative w-full h-[400px] bg-gray-900">
-          <Image
+          {/* <Image
             src="/images/testimonial-background.jpeg"
             alt="Background Image"
-            layout="fill"
-            objectFit="cover"
+            fill
             className="absolute inset-0 w-full h-full z-[-1]"
-          />
+          /> */}
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
             <blockquote className="text-2xl font-semibold max-w-2xl">
               &quot;Este aplicativo mudou minha vida! Agora eu consigo agendar
