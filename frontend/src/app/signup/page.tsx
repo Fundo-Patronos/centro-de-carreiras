@@ -634,6 +634,7 @@ export default function SignUp() {
             Validação de domínio: ${values.is_domain_valid}
         `;
     console.log(debugMessage);
+    console.log("url:");
     console.log(apiUrl);
 
     try {

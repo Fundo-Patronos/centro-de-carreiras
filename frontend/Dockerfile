@@ -10,6 +10,7 @@ RUN npm ci
 
 # Copy all files and build the app
 COPY . .
+RUN echo "API URL durante o build: $NEXT_PUBLIC_API_URL"
 RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
 
 # Start a new stage for production
