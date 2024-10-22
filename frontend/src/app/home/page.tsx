@@ -6,15 +6,17 @@ export default function Home() {
   return (
     <Layout currentPage="home">
       <div className="min-h-screen flex flex-col">
-        {/* First Section with Background Image*/}
+        {/* First Section with Background Image */}
         <section className="relative w-full h-[600px]">
-        <Image
+          <Image
             src="/images/campus.jpg"
             alt="Background Image"
             fill
-            className="absolute inset-0 w-full h-full z-[-1]"
-        />
-          {/* Adding the darkening overlay*/}
+            style={{ objectFit: "cover" }}
+            priority={true}
+            className="absolute inset-0 z-[-1]"
+          />
+          {/* Darkening overlay */}
           <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
 
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
@@ -43,7 +45,7 @@ export default function Home() {
         <section className="flex flex-col md:flex-row justify-between items-center px-32 py-16 bg-white">
           <div className="flex flex-col justify-center text-center md:text-left">
             <h2 className="flex items-center text-lg text-black font-light text-left mb-8 sm:text-xl -mx-10">
-              <span className="inline-block w-12 h-0.5 bg-black mr-2 "></span>
+              <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
               Sobre o centro de carreiras
             </h2>
             <h2 className="text-3xl text-black font-semibold mb-4">
@@ -70,13 +72,13 @@ export default function Home() {
             alt="Mentoria"
             width={500}
             height={300}
+            style={{ width: "auto", height: "auto" }} // Ensuring proper aspect ratio handling
             className="rounded-lg"
           />
         </section>
 
-        {/* Third section - Mission */}
+        {/* Third Section - Mission */}
         <section className="px-32 py-16 bg-white">
-          {/* Header */}
           <div className="mb-8">
             <h2 className="flex items-center text-lg text-black font-light text-left sm:text-xl">
               <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
@@ -94,6 +96,7 @@ export default function Home() {
                 width={400}
                 height={200}
                 className="rounded-lg"
+                style={{ width: "auto", height: "auto" }} // Fix for width/height mismatch warning
               />
               <h3 className="text-xl font-semibold mt-4 text-black">
                 Impulsionar sua carreira
@@ -117,6 +120,7 @@ export default function Home() {
                 width={400}
                 height={200}
                 className="rounded-lg"
+                style={{ width: "auto", height: "auto" }} // Fix for width/height mismatch warning
               />
               <h3 className="text-xl font-semibold mt-4 text-black">
                 Te conectar ao mercado
@@ -137,12 +141,6 @@ export default function Home() {
 
         {/* 4th section - testimony */}
         <section className="relative w-full h-[400px] bg-gray-900">
-          {/* <Image
-            src="/images/testimonial-background.jpeg"
-            alt="Background Image"
-            fill
-            className="absolute inset-0 w-full h-full z-[-1]"
-          /> */}
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
             <blockquote className="text-2xl font-semibold max-w-2xl">
               &quot;Este aplicativo mudou minha vida! Agora eu consigo agendar
