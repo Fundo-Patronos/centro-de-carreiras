@@ -35,10 +35,42 @@ interface LayoutProps {
 }
 
 const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning}) => (
-    <div className="min-h-screen flex items-center justify-center bg-white ">
-        <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
-                <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">Bem-vindo ao Centro de Carreiras</h2>
-                <p className="text-md text-[#2F2B3D]/[70%] mb-6">Por favor, crie sua conta para conhecer nossa plataforma</p>
+    <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
+        <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        
+        {/* Background */}
+        <div
+            className="absolute  h-full bg-cover bg-no-repeat w-[100%] 2xl:w-3/10 transform scale-x-[-1] z-0"
+            style={{
+                backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                opacity: 0.25,
+                transform: 'rotate(0deg)',
+            }}
+        ></div>
+
+        {/* Content*/}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+            {/* Logo */}
+            <div className="flex items-center justify-center p-5 mb-5 mt-5">
+            <img 
+                src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                alt="Logo" 
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+            />
+            </div>
+
+            {/* Main messagens*/}
+            <div className="flex-grow flex flex-col items-center justify-center  ">
+                    <h1 className="text-4xl text-center font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black text-center mt-4 text-[20px] mb-6">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+            </div>
+
+                <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mt-2 mb-2">Bem-vindo ao Centro de Carreiras</h2>
+                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, crie sua conta para conhecer nossa plataforma</p>
 
                 <h1 className="text-4xl font-semibold text-[#2F2B3D]/[90%] mb-4">Cadastre-se</h1>
 
@@ -261,8 +293,19 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                         Faça Login
                     </Link>
                 </div>
+
+                {/* Texts */}
+                <div className="p-5 mt-10">
+                            <div className="items-center justify-center text-center text-black text-left text-[18px]">
+                            <p>Mentorias.</p>
+                            <p>Oportunidades.</p>
+                            <p>Networking.</p>
+                            <p>De ex-aluno para aluno.</p>
+                            </div>
+                </div>
             </div>
         </div>
+    </div>
 );
 
 const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning }) => (
@@ -272,17 +315,23 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
             <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
                 {/* Background */}
                 <div
-                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat w-[375px] 2xl:w-3/10 transform scale-x-[-1]"
+                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
+                                min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4 "
                     style={{
                         backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
                     }}
                 ></div>
 
+
                 {/* Content*/}
                 <div className="w-full h-full flex flex-col justify-between items-start">
                     {/* Logo */}
-                    <div className="p-5">
-                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
+                    <div className="flex items-center justify-start p-5">
+                    <img 
+                        src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                        alt="Logo" 
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                    />
                     </div>
 
                     {/* Main messagens*/}
@@ -537,7 +586,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                     </Link>
                 </div>
             </div>
-        </div>
+    </div>
 );
 
     

@@ -10,6 +10,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "@/store/authStore";
 import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
+import { AxiosError } from "axios";
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -34,25 +35,29 @@ interface LayoutProps {
 }
 
 const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail, password, setPassword, initialValues}) => (
-    <div className="min-h-screen flex items-center justify-center ">
-            <div className="relative w-full h-screen flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[18vw] md:px-[24vw] ">
+    <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
+        <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        
+        {/* Background */}
+        <div
+            className="absolute  h-full bg-cover bg-no-repeat w-[90%] 2xl:w-3/10 transform scale-x-[-1] z-0"
+            style={{
+                backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                opacity: 0.25,
+                transform: 'rotate(0deg)',
+            }}
+        ></div>
 
-                {/* Background */}
-                <div
-                    className="absolute  h-full bg-cover bg-no-repeat w-[100%] 2xl:w-3/10 transform scale-x-[-1] z-0"
-                    style={{
-                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
-                        opacity: 0.3,
-                        transform: 'rotate(5deg)',
-                    }}
-                ></div>
-
-                {/* Content*/}
-                <div className="relative z-10 flex flex-col items-center justify-center">
-                    {/* Logo */}
-                    <div className="p-5 items-center justify-center">
-                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
-                    </div>
+        {/* Content*/}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+            {/* Logo */}
+            <div className="flex items-center justify-center p-5 mb-5 mt-5">
+            <img 
+                src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                alt="Logo" 
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+            />
+            </div>
 
                     {/* Main messagens*/}
                     <div className="flex-grow flex flex-col items-center justify-center  ">
@@ -63,7 +68,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                         Nós te conectamos com talentos que já passaram pela Unicamp.
                         </p>
                     </div>
-                
+
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mb-2">Bem-vindo ao Centro de Carreiras</h2>
                 <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
 
@@ -73,7 +78,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                 onSubmit={handleSubmit}
             >
                 {({ isSubmitting, setFieldValue }) => (
-                    <Form className="w-full">
+                    <Form className="w-full  mx-auto">
                         {/* E-MAIL */}
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-md text-black">Email</label>
@@ -172,8 +177,8 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                         <p>Networking.</p>
                         <p>De ex-aluno para aluno.</p>
                         </div>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
 );
@@ -185,17 +190,22 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
             <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
                 {/* Background */}
                 <div
-                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat w-[375px] 2xl:w-3/10 transform scale-x-[-1]"
-                    style={{
-                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
-                    }}
+                className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
+                           min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4"
+                style={{
+                    backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                }}
                 ></div>
 
                 {/* Content*/}
-                <div className="w-full h-full flex flex-col justify-between items-start">
+                <div className="w-full h-full flex flex-col justify-between items-start text-left">
                     {/* Logo */}
-                    <div className="p-5">
-                        <img src="/images/logos/logo-01.png" alt="Logo" className="w-32 h-auto" />
+                    <div className="flex items-center justify-start p-5">
+                    <img 
+                        src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                        alt="Logo" 
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                    />
                     </div>
 
                     {/* Main messagens*/}
@@ -398,12 +408,22 @@ const handleSubmit = async (
         }
 
       router.push("/home");
-    } else {
-      setLoginError("Usuário ou senha inválido");
-    }
+    } 
   } catch (error) {
-    console.error("Erro ao tentar logar:", error);
-    setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+    const err = error as AxiosError;
+    if (err.response) {
+        if (err.response.status === 401) {
+          setLoginError("Usuário ou senha inválido");
+        } else {
+          setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+        }
+      } else if (err.request) {
+        console.error("Erro de rede ou servidor indisponível");
+        setLoginError("Servidor indisponível. Tente novamente mais tarde.");
+      } else {
+        console.error("Erro na requisição:", err.message);
+        setLoginError("Erro inesperado. Tente novamente.");
+      }
   } finally {
     setSubmitting(false);
   }
