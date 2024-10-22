@@ -17,7 +17,7 @@
     "react/prop-types": "off",
     // "quotes": ["error", "single"],
     "no-unused-vars": [
-      "error",
+      "warn",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-unused-vars": [
