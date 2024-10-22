@@ -24,6 +24,7 @@ export default function Navbar() {
             alt="Associação Fundo Patrimonial Patronos"
             width={50}
             height={40}
+            style={{ width: "auto", height: "auto" }} 
           />
           {/* Separation Bar */}
           <div className="h-12 border-l-2 border-gray-400"></div>
