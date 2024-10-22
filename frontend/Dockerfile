@@ -10,7 +10,7 @@ RUN npm ci
 
 # Copy all files and build the app
 COPY . .
-RUN npm run build
+RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
 
 # Start a new stage for production
 FROM node:18-alpine
