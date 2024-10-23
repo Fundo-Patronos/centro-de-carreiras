@@ -84,7 +84,7 @@ const Agendamento = () => {
         </div>
       </section>
 
-      <div className={styles.mainContainer}>
+      <div style={{ backgroundColor: '#ffffff', padding: '30px' }}>
         <div style={{ position: 'relative' }}>
           <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} setRowsAvailable={setRowsAvailable} />
 
