@@ -78,7 +78,7 @@ class Auth:
             + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),
         }
         return self.create_jwt_token(payload)
-    
+
     def create_password_reset_token_from_email(self, email: EmailStr):
         payload = {
             "data": {
@@ -86,7 +86,9 @@ class Auth:
                 "type": "password_reset",
             },
             "exp": datetime.datetime.now(datetime.timezone.utc)
-            + datetime.timedelta(minutes=Auth.PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES)
+            + datetime.timedelta(
+                minutes=Auth.PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES
+            ),
         }
         return self.create_jwt_token(payload)
 
@@ -110,11 +112,11 @@ class Auth:
             raise jwt.InvalidTokenError("Token is not a refresh token")
 
         return data.get("email")
-    
+
     def decode_jwt_password_reset_token_to_email(
         self, refresh_token: str
     ) -> EmailStr:
-        
+
         payload = self.decode_jwt_token(refresh_token)
         data = payload.get("data")
         if data is None:
@@ -124,7 +126,6 @@ class Auth:
             raise jwt.InvalidTokenError("Token is not a password reset token")
 
         return data.get("email")
-
 
     def create_jwt_token(self, data: dict) -> str:
         return jwt.encode(data, self.jwt_key, algorithm="HS256")
@@ -155,14 +156,17 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
 
         self.send_email(email, subject, body)
 
-
     def send_password_reset_email(
         self, email: EmailStr, user_name: str
     ) -> None:
-        
-        password_reset_token = self.create_password_reset_token_from_email(email)
 
-        reset_password_url = f"{self.base_url}/reset-password/{password_reset_token}"
+        password_reset_token = self.create_password_reset_token_from_email(
+            email
+        )
+
+        reset_password_url = (
+            f"{self.base_url}/reset-password/{password_reset_token}"
+        )
 
         subject = "Esqueci minha senha"
 

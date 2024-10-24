@@ -11,7 +11,7 @@ from app.schemas.user import (
     UserLoginResponse,
     UserVerifyRequest,
     UserChangePasswordRequest,
-    UserForgotPasswordRequest
+    UserForgotPasswordRequest,
 )
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
@@ -341,7 +341,7 @@ async def refresh_token(
 )
 async def forgot_password(
     request_data: UserForgotPasswordRequest,
-    users_table: UsersTable = Depends(get_users_table)
+    users_table: UsersTable = Depends(get_users_table),
 ):
     auth = Auth()
 
@@ -357,7 +357,7 @@ async def forgot_password(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    
+
     try:
         auth.send_password_reset_email(email=user.email, user_name=user.name)
     except Exception as e:
@@ -366,9 +366,8 @@ async def forgot_password(
             detail="Failed to send reset email. Message: " + str(e),
         )
 
-    return {
-        "message": "Password reset token sent successfully to your email."
-    }
+    return {"message": "Password reset token sent successfully to your email."}
+
 
 @router.post(
     "/reset-password",
@@ -392,7 +391,7 @@ async def forgot_password(
 async def reset_password(
     request_data: UserChangePasswordRequest,
     authorization: str = Header(None),
-    users_table: UsersTable = Depends(get_users_table)
+    users_table: UsersTable = Depends(get_users_table),
 ):
     auth = Auth()
     token = authorization.split(" ")[1]
@@ -435,6 +434,4 @@ async def reset_password(
             detail="Failed to reset password",
         )
 
-    return {
-        "message": "Your password was changed successfuly."
-    }
+    return {"message": "Your password was changed successfuly."}

@@ -117,7 +117,8 @@ def test_jwt_password_reset_token_expiration(monkeypatch):
     email = "test@test.com"
     token = auth.create_password_reset_token_from_email(email)
     with pytest.raises(jwt.ExpiredSignatureError):
-        auth.decode_jwt_password_reset_token_to_email(token) 
+        auth.decode_jwt_password_reset_token_to_email(token)
+
 
 def test_jwt_password_reset_token_type():
     auth = Auth()
@@ -129,7 +130,7 @@ def test_jwt_password_reset_token_type():
         jwt.InvalidTokenError, match="Token is not a password reset token"
     ):
         auth.decode_jwt_password_reset_token_to_email(token)
-    
+
 
 @pytest.mark.parametrize(
     "response_code",
@@ -155,9 +156,7 @@ def test_send_verification_email(response_code, monkeypatch):
     if response_code == 200:
         auth.send_verification_email(email, full_name, token)
     else:
-        with pytest.raises(
-            RuntimeError, match="Failed to send email"
-        ):
+        with pytest.raises(RuntimeError, match="Failed to send email"):
             auth.send_verification_email(email, full_name, token)
 
     # Assert
