@@ -22,6 +22,7 @@ class Auth:
 
     JWT_TOKEN_EXPIRE_TIME_IN_MINUTES = 30
     REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS = 1
+    PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES = 5
 
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
@@ -77,6 +78,17 @@ class Auth:
             + datetime.timedelta(days=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS),
         }
         return self.create_jwt_token(payload)
+    
+    def create_password_reset_token(self, email: EmailStr):
+        payload = {
+            "data": {
+                "email": email,
+                "type": "password_reset",
+            },
+            "exp": datetime.datetime.now(datetime.timezone.utc)
+            + datetime.timedelta(minutes=Auth.PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES)
+        }
+        return self.create_jwt_token(payload)
 
     def decode_jwt_token_to_email(self, token: str) -> EmailStr:
         payload = self.decode_jwt_token(token)
@@ -98,6 +110,21 @@ class Auth:
             raise jwt.InvalidTokenError("Token is not a refresh token")
 
         return data.get("email")
+    
+    def decode_jwt_password_reset_token_to_email(
+        self, refresh_token: str
+    ) -> EmailStr:
+        
+        payload = self.decode_jwt_token(refresh_token)
+        data = payload.get("data")
+        if data is None:
+            raise jwt.InvalidTokenError("Token does not contain data")
+
+        if data.get("type") != "password_reset":
+            raise jwt.InvalidTokenError("Token is not a password reset token")
+
+        return data.get("email")
+
 
     def create_jwt_token(self, data: dict) -> str:
         return jwt.encode(data, self.jwt_key, algorithm="HS256")
@@ -125,5 +152,21 @@ class Auth:
         body = f"""Olá, {user_name}!
 
 Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
+
+        self.send_email(email, subject, body)
+
+
+    def send_reset_password_email(
+        self, email: EmailStr, user_name: str, password_reset_token: str
+    ) -> None:
+        
+        reset_password_url = f"{self.base_url}/reset-password/{password_reset_token}"
+
+        subject = "Esqueci minha senha"
+
+        body = f"""Olá, {user_name}!
+        
+Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação,
+clique neste link para criar uma nova senha: <a href="{reset_password_url}">Criar nova senha</a>."""
 
         self.send_email(email, subject, body)

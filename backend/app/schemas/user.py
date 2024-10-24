@@ -40,3 +40,7 @@ class UserLoginResponse(BaseModel):
 
 class UserVerifyRequest(BaseModel):
     token: str
+
+
+class UserChangePasswordRequest(BaseModel):
+    new_password: str
