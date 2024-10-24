@@ -126,16 +126,19 @@ def test_send_verification_email(response_code, monkeypatch):
         auth.send_verification_email(email, full_name, token)
     else:
         with pytest.raises(
-            RuntimeError, match="Failed to send verification email"
+            RuntimeError, match="Failed to send email"
         ):
             auth.send_verification_email(email, full_name, token)
 
     # Assert
+    body = f"""Olá, Test!
+
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{auth.base_url}/verify/{token}">Verificar Email</a>."""
     mock_post.assert_called_once_with(
         auth.webhook_url,
         json={
             "email": email,
-            "name": "Test",
-            "verify_url": f"{auth.base_url}/verify/{token}",
+            "subject": "Verificação de Email",
+            "body": body,
         },
     )

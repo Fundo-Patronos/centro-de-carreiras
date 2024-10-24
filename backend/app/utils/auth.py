@@ -111,7 +111,7 @@ class Auth:
         response = requests.post(self.webhook_url, json=automation_payload)
 
         if response.status_code != 200:
-            raise RuntimeError("Failed to send verification email")
+            raise RuntimeError("Failed to send email")
 
     def send_verification_email(
         self, email: EmailStr, full_name: str, token: str
@@ -124,7 +124,6 @@ class Auth:
 
         body = f"""Olá, {user_name}!
 
-Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>.
-        """
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
 
         self.send_email(email, subject, body)
