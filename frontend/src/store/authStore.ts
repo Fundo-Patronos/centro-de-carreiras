@@ -7,9 +7,9 @@ interface AuthState {
   user: { email: string; username: string } | null;
   accessToken: string | null;
   refreshToken: string | null;
-  login: (user: { email: string; username: string }, accessToken: string, refreshToken: string) => void;
+  login: (_user: { email: string; username: string }, _accessToken: string, _refreshToken: string) => void;
   logout: () => void;
-  setAccessToken: (accessToken: string) => void;
+  setAccessToken: (_accessToken: string) => void;
   refreshAccessToken: () => Promise<void>;
 }
 
