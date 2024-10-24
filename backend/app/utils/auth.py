@@ -22,6 +22,7 @@ class Auth:
 
     JWT_TOKEN_EXPIRE_TIME_IN_MINUTES = 30
     REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS = 1
+    PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES = 5
 
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
@@ -78,6 +79,19 @@ class Auth:
         }
         return self.create_jwt_token(payload)
 
+    def create_password_reset_token_from_email(self, email: EmailStr):
+        payload = {
+            "data": {
+                "email": email,
+                "type": "password_reset",
+            },
+            "exp": datetime.datetime.now(datetime.timezone.utc)
+            + datetime.timedelta(
+                minutes=Auth.PASSWORD_RESET_TOKEN_EXPIRE_TIME_IN_MINUTES
+            ),
+        }
+        return self.create_jwt_token(payload)
+
     def decode_jwt_token_to_email(self, token: str) -> EmailStr:
         payload = self.decode_jwt_token(token)
         data = payload.get("data")
@@ -99,24 +113,65 @@ class Auth:
 
         return data.get("email")
 
+    def decode_jwt_password_reset_token_to_email(
+        self, refresh_token: str
+    ) -> EmailStr:
+
+        payload = self.decode_jwt_token(refresh_token)
+        data = payload.get("data")
+        if data is None:
+            raise jwt.InvalidTokenError("Token does not contain data")
+
+        if data.get("type") != "password_reset":
+            raise jwt.InvalidTokenError("Token is not a password reset token")
+
+        return data.get("email")
+
     def create_jwt_token(self, data: dict) -> str:
         return jwt.encode(data, self.jwt_key, algorithm="HS256")
 
     def decode_jwt_token(self, token: str) -> dict:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
+    def send_email(self, email: EmailStr, subject: str, body: str) -> None:
+        automation_payload = {"email": email, "subject": subject, "body": body}
+
+        response = requests.post(self.webhook_url, json=automation_payload)
+
+        if response.status_code != 200:
+            raise RuntimeError("Failed to send email")
+
     def send_verification_email(
         self, email: EmailStr, full_name: str, token: str
     ) -> None:
         user_name = full_name.split()[0]
 
-        automation_payload = {
-            "email": email,
-            "name": user_name,
-            "verify_url": f"{self.base_url}/verify/{token}",
-        }
+        verify_url = f"{self.base_url}/verify/{token}"
 
-        response = requests.post(self.webhook_url, json=automation_payload)
+        subject = "Verificação de Email"
 
-        if response.status_code != 200:
-            raise RuntimeError("Failed to send verification email")
+        body = f"""Olá, {user_name}!
+
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
+
+        self.send_email(email, subject, body)
+
+    def send_password_reset_email(
+        self, email: EmailStr, user_name: str
+    ) -> None:
+
+        password_reset_token = self.create_password_reset_token_from_email(
+            email
+        )
+
+        reset_password_url = (
+            f"{self.base_url}/reset-password/{password_reset_token}"
+        )
+
+        subject = "Esqueci minha senha"
+
+        body = f"""Olá, {user_name}!
+        
+Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
+
+        self.send_email(email, subject, body)
