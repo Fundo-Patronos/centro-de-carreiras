@@ -313,7 +313,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
                                 />
                                 <label htmlFor="rememberMe" className="text-black">Lembrar de mim</label>
                             </div>
-                            <Link href="/reset-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
+                            <Link href="/forgot-password" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold">
                                 Esqueci minha senha
                             </Link>
                         </div>
