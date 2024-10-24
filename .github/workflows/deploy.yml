@@ -1,0 +1,40 @@
+name: Build and Deploy Frontend and Backend
+
+on:
+  push:
+    branches:
+      - teste-deploy-front 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Build frontend
+      run: |
+        docker build -t gcr.io/$GCP_PROJECT/frontend-app \
+          --build-arg NEXT_PUBLIC_API_KEY=${{ secrets.NEXT_PUBLIC_API_KEY }} \
+          ./frontend
+
+    - name: Build backend
+      run: |
+        docker build -t gcr.io/$GCP_PROJECT/backend-app \
+          ./backend
+
+    - name: Push frontend to Container Registry
+      run: |
+        docker push gcr.io/$GCP_PROJECT/frontend-app
+
+    - name: Push backend to Container Registry
+      run: |
+        docker push gcr.io/$GCP_PROJECT/backend-app

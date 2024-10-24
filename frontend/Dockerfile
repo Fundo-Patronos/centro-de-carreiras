@@ -10,8 +10,11 @@ RUN npm ci
 
 # Copy all files and build the app
 COPY . .
+
+ARG NEXT_PUBLIC_API_KEY
+ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
 RUN echo "API URL durante o build: $NEXT_PUBLIC_API_URL"
-RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
+RUN npm run build
 
 # Start a new stage for production
 FROM node:18-alpine
