@@ -44,17 +44,28 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
           setRowsAvailable(!!data.length); // Rows are available
         }
       } catch (error) {
-        console.error('Error fetching schedules:', error);
+        // console.error('Error fetching schedules:', error);
+        // let example_rows = []
+        // for (var i = 0; i < 15; i++) {
+        //   const example_row = {
+        //     id: i,  // Use index as ID
+        //     day: 'Segunda',
+        //     startTime: '12:00',
+        //     endTime: '13:00',
+        //   };
+        //   example_rows.push(example_row)
+        // }
         // const example_row = {
         //   id: 1,  // Use index as ID
-        //   day: 'segunda',
+        //   day: 'Segunda',
         //   startTime: '12:00',
         //   endTime: '13:00',
         // };
         
-        // setRows([example_row])
+        // setRows(example_rows)
         // setRowsAvailable(true);
         // console.error('horarios', example_row);
+
         setRowsAvailable(false);
       }
     };
@@ -72,8 +83,8 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
 
   const columns = [
     { field: 'day', headerName: 'Dia', width: 150 },
-    { field: 'startTime', headerName: 'Data Início', width: 150 },
-    { field: 'endTime', headerName: 'Data Fim', width: 150 },
+    { field: 'startTime', headerName: 'Horário Início', width: 150 },
+    { field: 'endTime', headerName: 'Horário Fim', width: 150 },
   ];
 
   const paginationModel = { pageSize: 5, page: 0 };

@@ -2,10 +2,13 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import TimeIntervalsTable from '../../../components/DataTable';
-import { Typography, Button, Snackbar, Alert } from '@mui/material';
+import { Typography, Snackbar, Alert } from '@mui/material';
 import styles from '../../Agendamento.module.css';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import Layout from "@/components/Layout";
+import { Button, Checkbox } from "@mui/material";
+import { Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react';
+
 
 interface Row {
   day: string;
@@ -59,97 +62,95 @@ const Agendamento = () => {
   };
 
   return (
-    <Layout currentPage="mentores">
-      <section className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
-        style={{ height: '300px' }}>
-        <div
-          className="absolute bg-cover bg-center"
-          style={{
-            backgroundImage: `url('/images/background-mentors-opportunities.png')`,
-            transform: 'rotate(-8deg)',
-            backgroundSize: "cover",
-            width: '125%',
-            height: '170%',
-            top: '-20px',
-            left: '-398px',
-            zIndex: -1,
-          }}
-        ></div>
-        <div className="absolute inset-0 bg-white opacity-70"></div>
-        <div className="relative z-10">
-          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500">
-            Agendamento
-          </h1>
-          <p className="mt-4 text-2xl text-gray-700">Agende uma reunião com {mentor}</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+      {/* Hero Section with Enhanced Visual Appeal */}
+      <section className="relative h-80 overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+          <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')]" />
+        </div>
+        
+        {/* Content Overlay */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
+          <div className="flex items-center gap-3 mb-4">
+            <User className="w-8 h-8 text-purple-500" />
+            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+              Agende uma reunião
+            </h1>
+          </div>
+          <p className="text-xl text-gray-600 flex items-center gap-2">
+            com <span className="font-semibold text-purple-600">{mentor}</span>
+          </p>
         </div>
       </section>
 
-      <div style={{ backgroundColor: '#ffffff', padding: '30px' }}>
-        <div style={{ position: 'relative' }}>
-          <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} setRowsAvailable={setRowsAvailable} />
+      {/* Schedule Selection Section */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-xl border border-purple-100 overflow-hidden">
+          {/* Schedule Header */}
+          <div className="p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-6 h-6 text-purple-500" />
+              <h2 className="text-xl font-semibold text-gray-800">Horários Disponíveis</h2>
+            </div>
+          </div>
 
-          {!rowsAvailable && (
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              borderRadius: '8px',
-              backdropFilter: 'blur(5px)',
-              backgroundColor: 'rgba(255, 255, 255, 0.7)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1,
-              flexDirection: 'column',
-            }}>
-              <Typography variant="h6" color="textSecondary" style={{ marginBottom: '16px' }}>
-                Não há horários disponíveis para {mentor} no momento.
-              </Typography>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleRedirectToMentors}
-                >
-                  Ver Outros Mentores
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleRequestAvailability}
-                >
-                  Pedir Disponibilidade
-                </Button>
+          {/* Schedule Grid */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Clock className="w-4 h-4" />
+                <span>Selecione os horários que melhor se adequam à sua agenda</span>
               </div>
             </div>
-          )}
-        </div>
 
-        {rowsAvailable && (
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <Button
-              variant="contained"
-              color={selectedRows.length === 0 ? "inherit" : "primary"}
-              onClick={handleButtonClick}
-              size="large"
-              disabled={selectedRows.length === 0}
-              style={{ boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}
-            >
-              Selecionar Horários
-            </Button>
+            {rowsAvailable ? (
+              <div style={{ backgroundColor: '#ffffff', padding: '30px' }}>
+              <div style={{ position: 'relative' }}>
+                <TimeIntervalsTable mentor={mentor} onSelectionChange={handleSelectionChange} setRowsAvailable={setRowsAvailable} />
+              </div>
+
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Clock className="w-12 h-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Não há horários disponíveis
+                </h3>
+                <p className="text-sm text-gray-500 mb-6">
+                  No momento não existem horários disponíveis para este mentor.
+                </p>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex justify-end gap-4">
+              <Button
+                variant="outline"
+                className="text-purple-600 hover:bg-purple-50"
+                onClick={handleRedirectToMentors}
+              >
+                Ver Outros Mentores
+              </Button>
+              <Button
+                variant="default"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg hover:shadow-xl transition-shadow"
+                disabled={rowsAvailable && !(selectedRows.length > 0)}
+                onClick={rowsAvailable? handleButtonClick : handleRequestAvailability}
+              >
+                {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
+              </Button>
+            </div>
           </div>
-        )}
-
-        <ConfirmationDialog
+        </div>
+      </div>
+      <ConfirmationDialog
           email={email}
           open={confirmationOpen}
           onClose={handleClose}
           onConfirm={handleConfirm}
           message={message}
         />
-
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={4000}
@@ -159,8 +160,7 @@ const Agendamento = () => {
             Requisição de email enviada!
           </Alert>
         </Snackbar>
-      </div>
-    </Layout>
+    </div>
   );
 };
 
