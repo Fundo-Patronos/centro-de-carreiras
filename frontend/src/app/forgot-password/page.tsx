@@ -74,11 +74,9 @@ const ForgotPassword = () => {
                 {({ isSubmitting }) => (
                     <Form className="w-full">
                     <div className="mb-4">
-                        <label htmlFor="user_email" className="block text-md text-black mb-1">
-                        Email
-                        </label>
                         <Field
                         name="user_email"
+                        placeholder="E-mail"
                         type="email"
                         className="w-full p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                         style={{
