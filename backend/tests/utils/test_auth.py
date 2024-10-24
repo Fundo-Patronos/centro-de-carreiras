@@ -115,20 +115,20 @@ def test_jwt_password_reset_token_expiration(monkeypatch):
 
     auth = Auth()
     email = "test@test.com"
-    token = auth.create_refresh_token_from_email(email)
+    token = auth.create_password_reset_token_from_email(email)
     with pytest.raises(jwt.ExpiredSignatureError):
-        auth.decode_jwt_refresh_token_to_email(token) 
+        auth.decode_jwt_password_reset_token_to_email(token) 
 
 def test_jwt_password_reset_token_type():
     auth = Auth()
     email = "test@test.com"
 
-    token = auth.create_jwt_token_from_email(email)
+    token = auth.create_refresh_token_from_email(email)
 
     with pytest.raises(
         jwt.InvalidTokenError, match="Token is not a password reset token"
     ):
-        auth.decode_jwt_refresh_token_to_email(token)
+        auth.decode_jwt_password_reset_token_to_email(token)
     
 
 @pytest.mark.parametrize(

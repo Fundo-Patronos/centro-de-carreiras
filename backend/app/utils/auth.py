@@ -79,7 +79,7 @@ class Auth:
         }
         return self.create_jwt_token(payload)
     
-    def create_password_reset_token(self, email: EmailStr):
+    def create_password_reset_token_from_email(self, email: EmailStr):
         payload = {
             "data": {
                 "email": email,
@@ -160,7 +160,7 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
         self, email: EmailStr, user_name: str
     ) -> None:
         
-        password_reset_token = self.create_password_reset_token(email)
+        password_reset_token = self.create_password_reset_token_from_email(email)
 
         reset_password_url = f"{self.base_url}/reset-password/{password_reset_token}"
 
