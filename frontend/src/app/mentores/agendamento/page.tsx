@@ -62,6 +62,7 @@ const Agendamento = () => {
   };
 
   return (
+    <Layout currentPage="mentores">
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
       {/* Hero Section with Enhanced Visual Appeal */}
       <section className="relative h-80 overflow-hidden">
@@ -161,6 +162,7 @@ const Agendamento = () => {
           </Alert>
         </Snackbar>
     </div>
+    </Layout>
   );
 };
 
