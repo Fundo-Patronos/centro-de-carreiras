@@ -156,17 +156,18 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
         self.send_email(email, subject, body)
 
 
-    def send_reset_password_email(
-        self, email: EmailStr, user_name: str, password_reset_token: str
+    def send_password_reset_email(
+        self, email: EmailStr, user_name: str
     ) -> None:
         
+        password_reset_token = self.create_password_reset_token(email)
+
         reset_password_url = f"{self.base_url}/reset-password/{password_reset_token}"
 
         subject = "Esqueci minha senha"
 
         body = f"""Olá, {user_name}!
         
-Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação,
-clique neste link para criar uma nova senha: <a href="{reset_password_url}">Criar nova senha</a>."""
+Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
 
         self.send_email(email, subject, body)

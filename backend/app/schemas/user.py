@@ -42,5 +42,9 @@ class UserVerifyRequest(BaseModel):
     token: str
 
 
+class UserForgotPasswordRequest(BaseModel):
+    user_email: EmailStr
+
+
 class UserChangePasswordRequest(BaseModel):
     new_password: str
