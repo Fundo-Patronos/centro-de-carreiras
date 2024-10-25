@@ -22,6 +22,7 @@ jobs:
 
     - name: Build frontend
       run: |
+        echo "GCP_PROJECT is $GCP_PROJECT"
         docker build -t gcr.io/$GCP_PROJECT/frontend-app \
           --build-arg NEXT_PUBLIC_API_KEY=${{ secrets.NEXT_PUBLIC_API_KEY }} \
           ./frontend
