@@ -4,6 +4,7 @@ import jwt
 import os
 import datetime
 import requests
+from urllib.parse import quote
 
 import bcrypt
 
@@ -164,8 +165,10 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
             email
         )
 
+        encoded_token = quote(password_reset_token)
+
         reset_password_url = (
-            f"{self.base_url}/reset-password/{password_reset_token}"
+            f"{self.base_url}/reset-password/{encoded_token}"
         )
 
         subject = "Esqueci minha senha"
