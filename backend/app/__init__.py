@@ -26,20 +26,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
- @app.options("/{full_path:path}")
- async def preflight_response(full_path: str, request: Request):
-    origin = request.headers.get("origin")
-    if origin in [
-        front_end_url,
-        "http://localhost:3000",
-    ]:
-        return JSONResponse(status_code=200, headers={
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
-            "Access-Control-Allow-Headers": "Content-Type",
-        })
-    else:
-        return JSONResponse(status_code=403, content={"detail": "Origin not allowed"})
-
 app.include_router(mentoring_router)
 app.include_router(auth_router)
