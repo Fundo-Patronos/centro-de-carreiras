@@ -1,69 +1,79 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import Button from '../../../components/GradientButton';
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Button from "../../../components/GradientButton";
 import "./style.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 const VerifyEmail = () => {
-    const { token } = useParams(); 
-    const router = useRouter();
-    const [message, setMessage] = useState('Verificando seu e-mail...');
-    const [loading, setLoading] = useState(true);
-    const [emailValidated, setEmailValidated] = useState(false);
+  const { token } = useParams();
+  const router = useRouter();
+  const [message, setMessage] = useState("Verificando seu e-mail...");
+  const [loading, setLoading] = useState(true);
+  const [emailValidated, setEmailValidated] = useState(false);
+  const [apiUrl, setApiUrl] = useState("");
 
-    const verifyEmail = async (token: string) => {
-        try {
-            const response = await fetch(`${apiUrl}/verify`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ token }),
-            });
-            if (response.ok) {
-                setMessage("Seu e-mail foi confirmado!");
-                setEmailValidated(true);
-            } else {
-                const result = await response.json();
-            
-                if (response.status === 500) {
-                    setMessage(`Erro no servidor: ${response.status}`);
-                } else {
-                    setMessage(`Falha na verificação: ${result.detail}`);
-                }
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                setMessage("Ocorreu um erro: " + error.message);
-            } else {
-                setMessage("Ocorreu um erro desconhecido.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
+  const verifyEmail = async (token: string) => {
+    try {
+      const response = await fetch(`${apiUrl}/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
+      if (response.ok) {
+        setMessage("Seu e-mail foi confirmado!");
+        setEmailValidated(true);
+      } else {
+        const result = await response.json();
 
-    useEffect(() => {
-        if (token && typeof token === 'string') {
-            console.log("Token encontrado:", token);
-            verifyEmail(token);
+        if (response.status === 500) {
+          setMessage(`Erro no servidor: ${response.status}`);
         } else {
-            console.log("Token não fornecido");
-            setMessage("Token não fornecido.");
-            setLoading(false);
+          setMessage(`Falha na verificação: ${result.detail}`);
         }
-    }, [token]); 
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setMessage("Ocorreu um erro: " + error.message);
+      } else {
+        setMessage("Ocorreu um erro desconhecido.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleLoginRedirect = () => {
-        router.push("/"); 
+  useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      setApiUrl(data.apiUrl);
     };
-    const handleSignUpRedirect = () => {
-        router.push("/signup"); 
-    }; 
+
+    fetchApiUrl();
+
+    if (token && typeof token === "string") {
+      console.log("Token encontrado:", token);
+      verifyEmail(token);
+    } else {
+      console.log("Token não fornecido");
+      setMessage("Token não fornecido.");
+      setLoading(false);
+    }
+  }, [token]);
+
+  const handleLoginRedirect = () => {
+    router.push("/");
+  };
+  const handleSignUpRedirect = () => {
+    router.push("/signup");
+  };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">

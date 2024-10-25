@@ -42,16 +42,15 @@ bun dev
 
 Make sure your environment has the following variables set:
 
-- `NEXT_PUBLIC_API_URL` : backend application URL 
+- `NEXT_PUBLIC_API_URL` : backend application URL
 
 ### Step 5: Access the Application
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the application running.
 
-
 ## Learn More
 
 To learn more about Next.js and React.js, explore the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) 
+- [Next.js Documentation](https://nextjs.org/docs)
 - [React.js Documentation](https://react.dev/)

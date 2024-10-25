@@ -3,9 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
+import type { JSX } from "react";
 
-export default function Navbar() {
+interface NavbarProps {
+
+  _currentPage: string;
+
+}
+
+export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
