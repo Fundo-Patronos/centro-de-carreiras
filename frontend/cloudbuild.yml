@@ -15,7 +15,3 @@ steps:
 
 images:
   - 'gcr.io/$PROJECT_ID/frontend-app'
-
-substitutions:
-  # Substituições de variáveis
-  _API_URL: '${_API_URL}'  # Isso será configurado via variáveis no trigger
