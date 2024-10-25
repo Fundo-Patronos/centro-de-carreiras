@@ -11,9 +11,9 @@ RUN npm ci
 # Copy all files and build the app
 COPY . .
 
-ARG NEXT_PUBLIC_API_KEY
-ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
-RUN echo "API URL durante o build: $NEXT_PUBLIC_API_URL"
+ARG API_URL  # Recebe o argumento de build passado no cloudbuild.yml
+ENV API_URL=$API_URL
+RUN echo "API URL durante o build: $API_URL"
 RUN npm run build
 
 # Start a new stage for production

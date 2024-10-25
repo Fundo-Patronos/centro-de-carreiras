@@ -1,0 +1,21 @@
+steps:
+  # Etapa 1: Fazer build da imagem Docker localizada na pasta frontend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'gcr.io/$PROJECT_ID/frontend-app', 
+      '-f', 'Dockerfile', 
+      '--build-arg', 'API_URL=${_API_URL}', 
+      'frontend'
+    ]
+
+  # Etapa 2: Fazer push da imagem para o Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/frontend-app']
+
+images:
+  - 'gcr.io/$PROJECT_ID/frontend-app'
+
+substitutions:
+  # Substituições de variáveis
+  _API_URL: '${_API_URL}'  # Isso será configurado via variáveis no trigger

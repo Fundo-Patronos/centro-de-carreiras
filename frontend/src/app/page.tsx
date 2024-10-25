@@ -12,8 +12,6 @@ import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
 
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 interface LoginFormValues {
   email: string;
   password: string;
@@ -342,6 +340,8 @@ export default function Login() {
     const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const [apiUrl, setApiUrl] = useState('');
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < (2 / 3) * window.innerHeight);
@@ -362,6 +362,15 @@ export default function Login() {
     }
 
     setLoading(false);
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      console.log("AAAAA: ", data.apiUrl);
+      setApiUrl(data.apiUrl);
+    };
+
+    fetchApiUrl();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
