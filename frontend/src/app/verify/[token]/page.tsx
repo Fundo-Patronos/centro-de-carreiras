@@ -5,9 +5,6 @@ import { useRouter, useParams } from "next/navigation";
 import Button from "../../../components/GradientButton";
 import "./style.css";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-
 const VerifyEmail = () => {
   const { token } = useParams();
   const router = useRouter();

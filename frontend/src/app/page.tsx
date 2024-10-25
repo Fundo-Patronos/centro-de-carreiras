@@ -12,9 +12,6 @@ import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
 import { AxiosError } from "axios";
 
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 interface LoginFormValues {
   email: string;
   password: string;
@@ -37,7 +34,7 @@ interface LayoutProps {
   initialValues: LoginFormValues;
 }
 
-const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail, password, setPassword, initialValues}) => (
+const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, setEmail, setPassword, initialValues}) => (
     <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
         <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
         
