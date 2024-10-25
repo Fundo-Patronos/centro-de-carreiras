@@ -156,7 +156,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
@@ -344,7 +344,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
