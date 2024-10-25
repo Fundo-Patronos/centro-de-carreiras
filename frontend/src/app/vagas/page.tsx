@@ -11,28 +11,31 @@ export default function Mentoria() {
   };
 
   return (
-    <Layout currentPage="vagas"> {/* Pass the currentPage prop */}
+    <Layout currentPage="vagas">
+      {" "}
+      {/* Pass the currentPage prop */}
       {/* First Section with Background Image, Opacity Layer, and Rotation */}
-      <section className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
+      <section
+        className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
         style={{
-          height: '300px', // Adjusted height for a more compact section
-        }}>
-
+          height: "300px", // Adjusted height for a more compact section
+        }}
+      >
         {/* Background Image */}
         <div
           className="absolute bg-cover bg-center"
           style={{
-            backgroundImage: `url('/images/background-mentors-opportunities.png')`,
-            transform: 'rotate(-5deg)', // Rotate the background image only
+            backgroundImage:
+              "url('/images/background-mentors-opportunities.png')",
+            transform: "rotate(-5deg)", // Rotate the background image only
             backgroundSize: "cover",
-            width: '170%',  // Increase the width slightly
-            height: '170%', // Increase the height slightly
-            top: '-20px',   // Adjust the position upwards a bit
-            left: '-500px',  // Move the image more to the left
-            zIndex: -1,     // Ensure it's behind the content
+            width: "170%", // Increase the width slightly
+            height: "170%", // Increase the height slightly
+            top: "-20px", // Adjust the position upwards a bit
+            left: "-500px", // Move the image more to the left
+            zIndex: -1, // Ensure it's behind the content
           }}
         ></div>
-
 
         {/* Layer with opacity for text readability */}
         <div className="absolute inset-0 bg-white opacity-70"></div>
@@ -47,10 +50,8 @@ export default function Mentoria() {
           </p>
         </div>
       </section>
-
       {/* Main Content */}
       <div className=" flex flex-col items-center justify-center bg-white">
-
         {/* Display loading spinner while iframe is loading */}
         {isLoading && (
           <div className="flex items-center justify-center mt-8">
@@ -67,6 +68,6 @@ export default function Mentoria() {
           className={isLoading ? "hidden" : ""} // Hide iframe until it's loaded
         ></iframe>
       </div>
-    </Layout >
+    </Layout>
   );
 }

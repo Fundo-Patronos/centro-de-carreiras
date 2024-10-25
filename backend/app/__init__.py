@@ -16,7 +16,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite seu front-end em localhost:3000
+    allow_origins=[
+        "https://centro-de-carreiras-patronos-722033123279.us-central1.run.app",
+        "http://localhost:3000",
+    ],  # Permite seu front-end em localhost:3000
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
     allow_headers=["*"],  # Permite todos os cabeçalhos
