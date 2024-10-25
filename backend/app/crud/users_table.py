@@ -74,3 +74,11 @@ class UsersTable:
         """
 
         self.db.update(table_id=self.table_id, item=user)
+
+    def delete_user(self, user_id: int) -> None:
+        """Deletes a user from the database by user ID.
+
+        Args:
+            user_id (int): The ID of the user to be deleted.
+        """
+        self.db.delete(table_id=self.table_id, item={"Id": user_id})
