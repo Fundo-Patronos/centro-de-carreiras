@@ -20,14 +20,14 @@ app.add_middleware(
     allow_origins=[
         front_end_url,
         "http://localhost:3000",
-    ],  
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"], 
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-#@app.options("/{full_path:path}")
-#async def preflight_response(full_path: str, request: Request):
+# @app.options("/{full_path:path}")
+# async def preflight_response(full_path: str, request: Request):
 #    origin = request.headers.get("origin")
 #    if origin in [
 #        front_end_url,
