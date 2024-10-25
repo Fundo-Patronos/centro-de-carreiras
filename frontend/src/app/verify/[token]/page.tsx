@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Button from "../../../components/GradientButton";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const VerifyEmail = () => {
   const { token } = useParams();
@@ -12,6 +11,7 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState("Verificando seu e-mail...");
   const [loading, setLoading] = useState(true);
   const [emailValidated, setEmailValidated] = useState(false);
+  const [apiUrl, setApiUrl] = useState("");
 
   const verifyEmail = async (token: string) => {
     try {
@@ -46,6 +46,15 @@ const VerifyEmail = () => {
   };
 
   useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      setApiUrl(data.apiUrl);
+    };
+
+    fetchApiUrl();
+
     if (token && typeof token === "string") {
       console.log("Token encontrado:", token);
       verifyEmail(token);

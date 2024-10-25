@@ -3,11 +3,6 @@ const nextConfig = {
   // Enable React Strict Mode to detect potential issues in your React code
   reactStrictMode: true,
 
-  // This is important for environment variables such as API URLs and sensitive data
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL, // Ensure this is set in your environment variables (.env.local or in your deployment)
-  },
-
   // Configures the API routes and middleware settings (if needed in the future)
   async headers() {
     return [

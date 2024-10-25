@@ -12,8 +12,6 @@ import {
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import AuthPopup from "../../components/AuthPopup";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 interface SignUpFormValues {
   username: string;
   name: string;
@@ -608,10 +606,20 @@ export default function SignUp() {
   const [foundDataWarning, setFoundDataWarning] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [apiUrl, setApiUrl] = useState("");
 
   const router = useRouter();
 
   useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      setApiUrl(data.apiUrl);
+    };
+
+    fetchApiUrl();
+
     const handleResize = () => {
       setIsMobile(window.innerWidth < (2 / 3) * window.innerHeight);
     };
