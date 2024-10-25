@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import Button from '../../../components/GradientButton';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import Button from "../../../components/GradientButton";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 interface ResetPasswordValues {
   new_password: string;
@@ -16,14 +14,14 @@ interface ResetPasswordValues {
 
 const validationSchema = Yup.object().shape({
   new_password: Yup.string()
-    .min(8, 'A senha deve ter pelo menos 8 caracteres')
-    .matches(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula')
-    .matches(/[0-9]/, 'A senha deve conter pelo menos um número')
-    .matches(/[^a-zA-Z0-9]/, 'A senha deve conter pelo menos um caractere especial')
-    .required('Senha é obrigatória'),
+    .min(8, "A senha deve ter pelo menos 8 caracteres")
+    .matches(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
+    .matches(/[0-9]/, "A senha deve conter pelo menos um número")
+    .matches(/[^a-zA-Z0-9]/, "A senha deve conter pelo menos um caractere especial")
+    .required("Senha é obrigatória"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('new_password'), undefined], 'As senhas devem corresponder')
-    .required('Confirmação de senha é obrigatória'),
+    .oneOf([Yup.ref("new_password"), undefined], "As senhas devem corresponder")
+    .required("Confirmação de senha é obrigatória"),
 });
 
 interface ResetPasswordProps {
@@ -32,40 +30,30 @@ interface ResetPasswordProps {
 
 const ResetPassword = ({ params }: ResetPasswordProps) => {
   const { token } = params;
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [apiUrl, setApiUrl] = useState("");
 
   useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      setApiUrl(data.apiUrl);
+    };
+
+    fetchApiUrl();
+
     if (token) {
-      console.log('Token encontrado:', token);
-      verifyEmail(token);
+      console.log("Token encontrado:", token);
     } else {
-      console.log('Token não fornecido');
-      setMessage('Token não fornecido.');
+      console.log("Token não fornecido");
+      setMessage("Token não fornecido.");
       setLoading(false);
     }
   }, [token]);
-
-  const verifyEmail = async (token: string) => {
-    try {
-      const response = await fetch(`${apiUrl}/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Token inválido ou expirado. Preencha novamente seu e-mail em "Esqueci minha senha" na tela de login ');
-      }
-      setMessage('Token verificado! Agora você pode redefinir sua senha.');
-    } catch (error) {
-      setMessage('Token inválido ou expirado. Preencha novamente seu e-mail em "Esqueci minha senha" na tela de login ');
-    }
-  };
 
   const handleSubmit = async (values: ResetPasswordValues) => {
     setLoading(true);
@@ -77,12 +65,12 @@ const ResetPassword = ({ params }: ResetPasswordProps) => {
       });
 
       if (response.status === 200) {
-        setMessage('Senha redefinida com sucesso! Faça login com sua nova senha.');
+        setMessage("Senha redefinida com sucesso! Faça login com sua nova senha.");
       }
     } catch (error: any) {
       const errorMsg = error.response?.status === 404
-        ? 'Token inválido ou expirado. Preencha novamente seu e-mail em "Esqueci minha senha" na tela de login'
-        : 'Ocorreu um erro. Tente novamente mais tarde.';
+        ? "Token inválido ou expirado. Preencha novamente seu e-mail em 'Esqueci minha senha' na tela de login"
+        : "Ocorreu um erro. Tente novamente mais tarde.";
       setMessage(errorMsg);
     } finally {
       setLoading(false);
@@ -112,7 +100,7 @@ const ResetPassword = ({ params }: ResetPasswordProps) => {
           </p>
 
           <Formik
-            initialValues={{ new_password: '' }}
+            initialValues={{ new_password: "" }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >

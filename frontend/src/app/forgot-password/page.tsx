@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import Button from '../../components/GradientButton';
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import Button from "../../components/GradientButton";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,13 +15,25 @@ interface ForgotPasswordValues {
 
 const validationSchema = Yup.object().shape({
   user_email: Yup.string()
-    .email('Formato de email inválido')
-    .required('Email é obrigatório'),
+    .email("Formato de email inválido")
+    .required("Email é obrigatório"),
 });
 
 const ForgotPassword = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [apiUrl, setApiUrl] = useState("");
+
+  useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await fetch('/api');
+      const data = await response.json();
+      setApiUrl(data.apiUrl);
+    };
+
+    fetchApiUrl();
+  });
 
   const handleSubmit = async (values: ForgotPasswordValues) => {
     setLoading(true);
@@ -30,13 +42,13 @@ const ForgotPassword = () => {
       const response = await axios.post(`${apiUrl}/forgot-password`, values);
 
       if (response.status === 200) {
-        setMessage('Verifique seu e-mail para redefinir sua senha.');
+        setMessage("Verifique seu e-mail para redefinir sua senha.");
       }
     } catch (error: any) {
       if (error.response?.status === 404) {
-        setMessage('Email não encontrado. Verifique e tente novamente.');
+        setMessage("Email não encontrado. Verifique e tente novamente.");
       } else {
-        setMessage('Ocorreu um erro. Tente novamente mais tarde.');
+        setMessage("Ocorreu um erro. Tente novamente mais tarde.");
       }
     } finally {
       setLoading(false);
@@ -67,7 +79,7 @@ const ForgotPassword = () => {
                 </p>
 
                 <Formik
-                initialValues={{ user_email: '' }}
+                initialValues={{ user_email: "" }}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
                 >
@@ -80,8 +92,8 @@ const ForgotPassword = () => {
                         type="email"
                         className="w-full p-3 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                         style={{
-                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                            border: 'none',
+                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+                            border: "none",
                         }}
                         />
                         <ErrorMessage
@@ -102,7 +114,7 @@ const ForgotPassword = () => {
                         className="w-full py-2 mt-3"
                         disabled={isSubmitting || loading}
                     >
-                        {loading ? 'Enviando...' : 'Enviar'}
+                        {loading ? "Enviando..." : "Enviar"}
                     </Button>
 
                     <div className="text-center mt-3 mb-2">
