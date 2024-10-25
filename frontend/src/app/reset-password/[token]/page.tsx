@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Novo import
 import Link from 'next/link';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -23,7 +22,7 @@ const validationSchema = Yup.object().shape({
     .matches(/[^a-zA-Z0-9]/, 'A senha deve conter pelo menos um caractere especial')
     .required('Senha é obrigatória'),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('new_password'), null], 'As senhas devem corresponder')
+    .oneOf([Yup.ref('new_password'), undefined], 'As senhas devem corresponder')
     .required('Confirmação de senha é obrigatória'),
 });
 
