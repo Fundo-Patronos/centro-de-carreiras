@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import Button from '../../components/GradientButton';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -8,8 +9,6 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
 import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import AuthPopup from '../../components/AuthPopup';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 interface SignUpFormValues {
   username: string;
