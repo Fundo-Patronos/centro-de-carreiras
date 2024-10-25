@@ -615,7 +615,6 @@ export default function SignUp() {
     const fetchApiUrl = async () => {
       const response = await fetch('/api');
       const data = await response.json();
-      console.log("AAAAA: ", data.apiUrl);
       setApiUrl(data.apiUrl);
     };
 
