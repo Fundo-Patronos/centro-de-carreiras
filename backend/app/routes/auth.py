@@ -202,19 +202,6 @@ async def verify(
             detail=str(e),
         )
 
-
-@router.options("/signin")
-async def options_signin():
-    return JSONResponse(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "*",  # Ou use a origem específica
-            "Access-Control-Allow-Methods": "OPTIONS, GET, POST",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-    )
-
-
 @router.post(
     "/signin",
     response_model=UserLoginResponse,
