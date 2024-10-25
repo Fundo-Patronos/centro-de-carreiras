@@ -10,11 +10,14 @@ from app.schemas.user import (
     UserLogin,
     UserLoginResponse,
     UserVerifyRequest,
+    UserChangePasswordRequest,
+    UserForgotPasswordRequest,
 )
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
 from fastapi import Response
+from fastapi import Header
 
 router = APIRouter()
 
@@ -329,3 +332,116 @@ async def refresh_token(
         "username": user.username,
         "token": new_access_token,
     }
+
+
+@router.post(
+    "/forgot-password",
+    responses={
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Email does not exist",
+        },
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to send reset token",
+        },
+    },
+    summary="Forgot Password",
+    description="Allows a user to request a password reset by sending a reset token to their email.",
+)
+async def forgot_password(
+    request_data: UserForgotPasswordRequest,
+    users_table: UsersTable = Depends(get_users_table),
+):
+    auth = Auth()
+
+    try:
+        user = users_table.get_user_by_email(request_data.user_email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    try:
+        auth.send_password_reset_email(email=user.email, user_name=user.name)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send reset email. Message: " + str(e),
+        )
+
+    return {"message": "Password reset token sent successfully to your email."}
+
+
+@router.post(
+    "/reset-password",
+    responses={
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Invalid or expired token",
+        },
+        400: {
+            "model": DefaultErrorResponse,
+            "description": "Bad Request - Invalid new password",
+        },
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to reset password",
+        },
+    },
+    summary="Reset Password",
+    description="Allows the user to reset their password using a valid reset token.",
+)
+async def reset_password(
+    request_data: UserChangePasswordRequest,
+    authorization: str = Header(None),
+    users_table: UsersTable = Depends(get_users_table),
+):
+    auth = Auth()
+    token = authorization.split(" ")[1]
+
+    try:
+        email = auth.decode_jwt_token_to_email(token)
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail="Reset token has expired",
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Invalid reset token",
+        )
+
+    try:
+        user = users_table.get_user_by_email(email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    # Hash the new password
+    user.password = auth.get_password_hash(request_data.new_password)
+
+    # Update the user's password
+    try:
+        users_table.update_user(user)
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to reset password",
+        )
+
+    return {"message": "Your password was changed successfuly."}

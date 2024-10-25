@@ -1,9 +1,14 @@
-import Navbar from '../components/Navbar'; // Import your existing Navbar component
+import React from 'react';
+import Navbar from "../components/Navbar"; // Import your existing Navbar component
 
-const Header = ({ currentPage }) => {
+interface HeaderProps {
+  currentPage: string; // Define the type of currentPage
+}
+
+const Header: React.FC<HeaderProps> = ({ currentPage }) => {
   return (
     <header>
-      <Navbar currentPage={currentPage} /> {/* Pass currentPage as prop */}
+      <Navbar _currentPage={currentPage} /> {/* Pass currentPage as prop */}
     </header>
   );
 };
