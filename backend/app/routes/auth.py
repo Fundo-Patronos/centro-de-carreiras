@@ -202,6 +202,7 @@ async def verify(
             detail=str(e),
         )
 
+
 @router.post(
     "/signin",
     response_model=UserLoginResponse,
