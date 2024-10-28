@@ -3,7 +3,8 @@ from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 from app.routes.auth import router as auth_router
 from app.routes.mentoring import router as mentoring_router
-from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware as CORSMiddleware 
 from fastapi.responses import JSONResponse
 
 load_dotenv()
