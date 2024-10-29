@@ -419,7 +419,7 @@ const handleSubmit = async (
 ) => {
   try {
     console.log("indo fazer o post");
-    const response = await axios.post(`https://backend-722033123279.us-central1.run.app/signin`, values);
+    const response = await axios.post(`https://backend-722033123279.us-central1.run.app/signin`, values, { withCredentials: true });
     console.log("AQUIIII: " + response.data);
 
     if (response.status === 200) {
@@ -433,7 +433,7 @@ const handleSubmit = async (
         {
           expires: 1, // Expires in 1 day (you can customize this)
           secure: true,
-          sameSite: "strict",
+          sameSite: "none",
         }
       );
 
