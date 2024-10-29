@@ -15,16 +15,16 @@ if front_end_url is None:
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        front_end_url,           
-        "http://localhost:3000", 
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],        
-    allow_headers=["*"],       
-)
+#app.add_middleware(
+#    CORSMiddleware,
+#    allow_origins=[
+#        front_end_url,
+#        "http://localhost:3000",
+#    ],
+#    allow_credentials=True,
+#    allow_methods=["*"],
+#    allow_headers=["*"],
+#)
 
 app.include_router(mentoring_router)
 app.include_router(auth_router)
