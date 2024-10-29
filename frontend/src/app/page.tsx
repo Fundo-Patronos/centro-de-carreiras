@@ -418,7 +418,8 @@ const handleSubmit = async (
   { setSubmitting }: FormikHelpers<LoginFormValues>
 ) => {
   try {
-    const response = await axios.post(`https://backend-app-722033123279.us-central1.run.app/signin`, values);
+    console.log("indo fazer o post");
+    const response = await axios.post(`https://backend-722033123279.us-central1.run.app/signin`, values);
     console.log("AQUIIII: " + response.data);
 
     if (response.status === 200) {
