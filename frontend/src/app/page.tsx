@@ -386,9 +386,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [initialValues, setInitialValues] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(true);
+  const [apiUrl, setApiUrl] = useState('');
   const router = useRouter();
   
   useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await axios.get('/api');
+      const url = response.data.apiUrl;
+      setApiUrl(url);
+    };
+
+    fetchApiUrl();
 
     const handleResize = () => {
       setIsMobile(window.innerWidth < (2 / 3) * window.innerHeight);
@@ -418,9 +427,7 @@ const handleSubmit = async (
   { setSubmitting }: FormikHelpers<LoginFormValues>
 ) => {
   try {
-    console.log("indo fazer o post");
-    const response = await axios.post(`https://backend-722033123279.us-central1.run.app/signin`, values, { withCredentials: true });
-    console.log("AQUIIII: " + response.data);
+    const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
       const { email, username, token, refresh_token } = response.data;

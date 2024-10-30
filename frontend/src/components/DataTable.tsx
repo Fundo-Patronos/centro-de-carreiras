@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DataGrid, GridRowSelectionModel, GridRowId } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
+import axios from "axios";
 
 interface TimeIntervalsTableProps {
   mentor: string;
@@ -27,18 +28,22 @@ export default function TimeIntervalsTable({
   const [rows, setRows] = useState<RowData[]>([]);
 
   useEffect(() => {
+    const fetchApiUrl = async () => {
+      const response = await axios.get('/api');
+      return response.data.apiUrl;
+    };
+
     const fetchSchedules = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/mentoring/schedules/?mentor_name=${encodeURIComponent(mentor)}`,
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch schedules");
-        }
-        const data: Schedule[] = await response.json();
+        const apiUrl = await fetchApiUrl(); 
+        const response = await axios.get<Schedule[]>(`${apiUrl}/mentoring/schedules/`, {
+          params: { mentor_name: mentor },
+        });
+        
+        const data = response.data;
         if (Array.isArray(data)) {
           const formattedRows = data.map((schedule, index) => ({
-            id: index, // Use index as ID
+            id: index, 
             day: schedule.day_of_the_week,
             startTime: schedule.start_time,
             endTime: schedule.end_time,
@@ -59,7 +64,6 @@ export default function TimeIntervalsTable({
 
   const handleSelectionChange = useCallback(
     (newSelectionModel: GridRowSelectionModel) => {
-      // Get complete rows for the selected data
       const selectedRows = newSelectionModel
         .map((id: GridRowId) => rows.find((row) => row.id === id))
         .filter((row): row is RowData => row !== undefined);

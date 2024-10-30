@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Button from "../../../components/GradientButton";
 import "./style.css";
+import axios from "axios";
 
 const VerifyEmail = () => {
   const { token } = useParams();
@@ -15,28 +16,29 @@ const VerifyEmail = () => {
 
   const verifyEmail = async (token: string) => {
     try {
-      const response = await fetch(`${apiUrl}/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-      if (response.ok) {
+      const response = await axios.post(
+        `${apiUrl}/verify`,
+        { token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      if (response.status === 200) {
         setMessage("Seu e-mail foi confirmado!");
         setEmailValidated(true);
       } else {
-        const result = await response.json();
-
-        if (response.status === 500) {
-          setMessage(`Erro no servidor: ${response.status}`);
-        } else {
-          setMessage(`Falha na verificação: ${result.detail}`);
-        }
+        setMessage(`Falha na verificação: ${response.data.detail}`);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        setMessage("Ocorreu um erro: " + error.message);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 500) {
+          setMessage(`Erro no servidor: ${error.response.status}`);
+        } else {
+          setMessage(`Falha na verificação: ${error.response?.data.detail}`);
+        }
       } else {
         setMessage("Ocorreu um erro desconhecido.");
       }
@@ -46,11 +48,9 @@ const VerifyEmail = () => {
   };
 
   useEffect(() => {
-
     const fetchApiUrl = async () => {
-      const response = await fetch('/api');
-      const data = await response.json();
-      setApiUrl(data.apiUrl);
+      const response = await axios.get('/api');
+      setApiUrl(response.data.apiUrl);
     };
 
     fetchApiUrl();
@@ -72,57 +72,57 @@ const VerifyEmail = () => {
     router.push("/signup");
   };
 
-    return (
-        <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">
-            <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
-                {/* Background with rotation animation */}
-                <div
-                    className={`absolute flex justify-center items-center 
-                        h-full w-[100vh] bg-cover bg-no-repeat z-[-10]
-                        ${loading ? "animate-spin-slow" : ""}`}
-                    style={{
-                        backgroundImage: "url('/images/identidade-visual/Ativo-1@5.png')",
-                        transform: 'rotate(0deg)',
-                    }}
-                ></div>
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">
+      <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        {/* Background with rotation animation */}
+        <div
+          className={`absolute flex justify-center items-center 
+              h-full w-[100vh] bg-cover bg-no-repeat z-[-10]
+              ${loading ? "animate-spin-slow" : ""}`}
+          style={{
+            backgroundImage: "url('/images/identidade-visual/Ativo-1@5.png')",
+            transform: "rotate(0deg)",
+          }}
+        ></div>
 
-                <div className="bg-white rounded-lg shadow-lg py-8 px-8 sm:py-6 sm:px-8 max-w-[90%] md:max-w-[600px] w-full shadow-black">
-                    <h1 className="text-[28px] font-semibold text-[#2F2B3D]/[90%] mb-6 text-center mt-4">
-                        {loading ? "Verificando seu e-mail. Aguarde, por favor..." : message}
-                    </h1>
-                    {!loading && (
-                        <div className="mt-4">
-                            {emailValidated ? (
-                                <div>
-                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-center">
-                                        Seu cadastro foi validado com sucesso!
-                                    </p>
-                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-center">
-                                        Faça login e acesse nossa plataforma.
-                                    </p>
-                                    <Button onClick={handleLoginRedirect} className="mb-4 p-2">
-                                        Login
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify">
-                                        Pedimos desculpa, infelizmente ocorreu algum erro e seu cadastro não foi validado.
-                                    </p>
-                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
-                                        Clique no botão para tentarmos enviar outro e-mail de verificação.
-                                    </p>
-                                    <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
-                                        Enviar e-mail
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+        <div className="bg-white rounded-lg shadow-lg py-8 px-8 sm:py-6 sm:px-8 max-w-[90%] md:max-w-[600px] w-full shadow-black">
+          <h1 className="text-[28px] font-semibold text-[#2F2B3D]/[90%] mb-6 text-center mt-4">
+            {loading ? "Verificando seu e-mail. Aguarde, por favor..." : message}
+          </h1>
+          {!loading && (
+            <div className="mt-4">
+              {emailValidated ? (
+                <div>
+                  <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-center">
+                    Seu cadastro foi validado com sucesso!
+                  </p>
+                  <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-center">
+                    Faça login e acesse nossa plataforma.
+                  </p>
+                  <Button onClick={handleLoginRedirect} className="mb-4 p-2">
+                    Login
+                  </Button>
                 </div>
+              ) : (
+                <div>
+                  <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify">
+                    Pedimos desculpa, infelizmente ocorreu algum erro e seu cadastro não foi validado.
+                  </p>
+                  <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
+                    Clique no botão para tentarmos enviar outro e-mail de verificação.
+                  </p>
+                  <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
+                    Enviar e-mail
+                  </Button>
+                </div>
+              )}
             </div>
+          )}
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default VerifyEmail;
