@@ -29,14 +29,14 @@ const VerifyEmail = () => {
         const result = await response.json();
 
         if (response.status === 500) {
-          setMessage(`Erro no servidor: ${response.status}`);
+          setMessage(`Erro no servidor`);
         } else {
-          setMessage(`Falha na verificação: ${result.detail}`);
+          setMessage(`Falha na verificação`);
         }
       }
     } catch (error) {
       if (error instanceof Error) {
-        setMessage("Ocorreu um erro: " + error.message);
+        setMessage("Ocorreu um erro");
       } else {
         setMessage("Ocorreu um erro desconhecido.");
       }
@@ -107,7 +107,7 @@ const VerifyEmail = () => {
                             ) : (
                                 <div>
                                     <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify">
-                                        Pedimos desculpa, infelizmente ocorreu algum erro e seu cadastro não foi validado.
+                                        Pedimos desculpa, infelizmente ocorreu um erro e seu cadastro não foi validado.
                                     </p>
                                     <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
                                         Clique no botão para tentarmos enviar outro e-mail de verificação.
