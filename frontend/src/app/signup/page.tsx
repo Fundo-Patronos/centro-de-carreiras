@@ -9,6 +9,7 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
 import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import AuthPopup from '../../components/AuthPopup';
+import axios from 'axios';
 
 interface SignUpFormValues {
   username: string;
@@ -658,11 +659,9 @@ export default function SignUp() {
   const router = useRouter();
 
   useEffect(() => {
-
     const fetchApiUrl = async () => {
-      const response = await fetch('/api');
-      const data = await response.json();
-      setApiUrl(data.apiUrl);
+      const response = await axios.get('/api');
+      setApiUrl(response.data.apiUrl);
     };
 
     fetchApiUrl();
@@ -691,47 +690,48 @@ export default function SignUp() {
     console.log(debugMessage);
 
     try {
-      const response = await fetch(`${apiUrl}/signup`, {
-        method: "POST",
+      const response = await axios.post(`${apiUrl}/signup`, values, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
       });
+      
+      const result = response.data;
 
-      const result = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         if (result.email_sent) {
           setIsEmailSent(true);
         } else {
           setIsEmailSent(false);
         }
         setIsPopupOpen(true);
-      } else if (response.status === 409) {
-        console.log(result);
-        if (result.email_in_use && result.username_in_use) {
-          setFoundDataWarning("Este e-mail e nome de usuário já estam em uso.");
-          values.email = "";
-          values.username = "";
-        } else if (result.email_in_use) {
-          setFoundDataWarning("Este e-mail já foi cadastrado.");
-          values.email = "";
-        } else if (result.username_in_use) {
-          setFoundDataWarning("Este nome de usuário já está em uso.");
-          values.username = "";
-        }
-      } else {
-        alert("Erro ao cadastrar. Tente novamente.");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
-      } else {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 409) {
+          const result = error.response.data;
+          if (result.email_in_use && result.username_in_use) {
+            setFoundDataWarning("Este e-mail e nome de usuário já estão em uso.");
+            values.email = "";
+            values.username = "";
+          } else if (result.email_in_use) {
+            setFoundDataWarning("Este e-mail já foi cadastrado.");
+            values.email = "";
+          } else if (result.username_in_use) {
+            setFoundDataWarning("Este nome de usuário já está em uso.");
+            values.username = "";
+          }
+        } else if (error instanceof Error) {
+          alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
+        } else {
+          alert("Ocorreu um erro desconhecido. Tente novamente mais tarde.");
+        }
+      } else { 
         alert("Ocorreu um erro desconhecido. Tente novamente mais tarde.");
       }
     }
   };
+
   return (
     <>
       {isMobile ? (
