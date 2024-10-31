@@ -43,10 +43,12 @@ const ForgotPassword = () => {
         setMessage("Verifique seu e-mail para redefinir sua senha.");
       }
     } catch (error) {
-      if (error.response?.status === 404) {
-        setMessage("Email não encontrado. Verifique e tente novamente.");
-      } else {
-        setMessage("Ocorreu um erro. Tente novamente mais tarde.");
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 404) {
+          setMessage("Email não encontrado. Verifique e tente novamente.");
+        } else {
+          setMessage("Ocorreu um erro. Tente novamente mais tarde.");
+        }
       }
     } finally {
       setLoading(false);
