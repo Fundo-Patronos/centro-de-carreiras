@@ -68,10 +68,12 @@ const ResetPassword = ({ params }: ResetPasswordProps) => {
         setMessage("Senha redefinida com sucesso! Faça login com sua nova senha.");
       }
     } catch (error) {
-      const errorMsg = error.response?.status === 404
-        ? "Token inválido ou expirado. Preencha novamente seu e-mail em 'Esqueci minha senha' na tela de login"
-        : "Ocorreu um erro. Tente novamente mais tarde.";
-      setMessage(errorMsg);
+      if (axios.isAxiosError(error)) {
+        const errorMsg = error.response?.status === 404
+          ? "Token inválido ou expirado. Preencha novamente seu e-mail em 'Esqueci minha senha' na tela de login"
+          : "Ocorreu um erro. Tente novamente mais tarde.";
+        setMessage(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
