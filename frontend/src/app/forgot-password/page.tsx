@@ -7,8 +7,6 @@ import * as Yup from "yup";
 import axios from "axios";
 import Button from "../../components/GradientButton";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 interface ForgotPasswordValues {
   user_email: string;
 }
