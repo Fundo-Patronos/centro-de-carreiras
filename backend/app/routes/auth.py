@@ -116,7 +116,8 @@ async def signup(
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         try:
-            self.db.delete_user(user_id=user.id)
+            new_user = users_table.get_user_by_email(user.email)
+            users_table.delete_user(new_user.Id)
         except Exception as delete_error:
             print(
                 "Failed to delete user after email error. Message:",
