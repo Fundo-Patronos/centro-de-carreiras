@@ -42,7 +42,7 @@ const ForgotPassword = () => {
       if (response.status === 200) {
         setMessage("Verifique seu e-mail para redefinir sua senha.");
       }
-    } catch (error: any) {
+    } catch (error) {
       if (error.response?.status === 404) {
         setMessage("Email não encontrado. Verifique e tente novamente.");
       } else {
