@@ -457,7 +457,7 @@ const handleSubmit = async (
   } catch (error) {
     const err = error as AxiosError;
     if (err.response) {
-        if (err.response.status === 401) {
+        if (err.response.status === 401 || err.response.status === 406) {
           setLoginError("Usuário ou senha inválido");
         } else {
           setLoginError("Ocorreu um erro. Tente novamente mais tarde.");

@@ -14,41 +14,6 @@ const VerifyEmail = () => {
   const [emailValidated, setEmailValidated] = useState(false);
   const [apiUrl, setApiUrl] = useState("");
 
-  const verifyEmail = async (token: string) => {
-    try {
-      const response = await axios.post(
-        `${apiUrl}/verify`,
-        { token },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      
-      if (response.status === 200) {
-        setMessage("Seu e-mail foi confirmado!");
-        setEmailValidated(true);
-      } else {
-        const result = await response.json();
-
-        if (response.status === 500) {
-          setMessage(`Erro no servidor`);
-        } else {
-          setMessage(`Falha na verificação`);
-        }
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setMessage("Ocorreu um erro");
-      } else {
-        setMessage("Ocorreu um erro desconhecido.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     const fetchApiUrl = async () => {
       const response = await axios.get('/api');
@@ -65,7 +30,67 @@ const VerifyEmail = () => {
       setMessage("Token não fornecido.");
       setLoading(false);
     }
-  }, [token]);
+  }, [token, apiUrl]);
+
+
+
+  const verifyEmail = async (token: string) => {
+    try {
+      if (!apiUrl) {
+        return;
+      }
+  
+      const response = await axios.post(
+        `${apiUrl}/verify`,
+        { token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200 || response.status === 204) {
+        setMessage("Seu e-mail foi confirmado!");
+        setEmailValidated(true);
+      } else {
+        throw new Error(`Erro: ${response.status}`);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const status = error.response.status;
+        let errorMessage;
+  
+        switch (status) {
+          case 406:
+            errorMessage = `Token inválido`;
+            break;
+          case 408:
+            errorMessage = `Tempo de espera excedido`;
+            break;
+          case 422:
+            errorMessage = `Erro de validação`;
+            break;
+          case 500:
+            errorMessage = `Erro interno do servidor: Falha ao verificar o usuário`;
+            break;
+          default:
+            errorMessage = `Falha na verificação: Erro desconhecido`;
+        }
+  
+        setMessage(errorMessage);
+      } else if (error instanceof Error) {
+        setMessage("Ocorreu um erro");
+      } else {
+        setMessage("Ocorreu um erro desconhecido.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  
 
   const handleLoginRedirect = () => {
     router.push("/");
@@ -122,12 +147,9 @@ const VerifyEmail = () => {
                     )}
 
                 </div>
-              )}
+          
             </div>
-          )}
         </div>
-      </div>
-    </div>
   );
 };
 
