@@ -211,7 +211,11 @@ async def verify(
     responses={
         401: {
             "model": DefaultErrorResponse,
-            "description": "Unauthorized - Invalid email or password",
+            "description": "Unauthorized - Invalid password",
+        },
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Email not found",
         },
         500: {
             "model": DefaultErrorResponse,
