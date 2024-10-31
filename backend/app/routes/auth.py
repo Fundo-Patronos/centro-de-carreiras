@@ -213,9 +213,9 @@ async def verify(
             "model": DefaultErrorResponse,
             "description": "Unauthorized - Invalid password",
         },
-        404: {
+        406: {
             "model": DefaultErrorResponse,
-            "description": "Not Found - Email not found",
+            "description": "Not Acceptable - Invalid email",
         },
         500: {
             "model": DefaultErrorResponse,
@@ -242,7 +242,7 @@ async def signin(
     except DataNotFound:
         print("Got email not present in the database")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Invalid email",
         )
     except RuntimeError as e:
