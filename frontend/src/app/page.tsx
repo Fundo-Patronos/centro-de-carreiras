@@ -153,7 +153,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
@@ -341,7 +341,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
@@ -457,7 +457,7 @@ const handleSubmit = async (
   } catch (error) {
     const err = error as AxiosError;
     if (err.response) {
-        if (err.response.status === 401) {
+        if (err.response.status === 401 || err.response.status === 406) {
           setLoginError("Usuário ou senha inválido");
         } else {
           setLoginError("Ocorreu um erro. Tente novamente mais tarde.");

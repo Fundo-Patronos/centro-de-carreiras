@@ -16,6 +16,7 @@ from app.schemas.user import (
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
+from fastapi import Response
 from fastapi import Header
 
 router = APIRouter()
@@ -115,7 +116,8 @@ async def signup(
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         try:
-            self.db.delete_user(user_id=user.id)
+            new_user = users_table.get_user_by_email(user.email)
+            users_table.delete_user(new_user.Id)
         except Exception as delete_error:
             print(
                 "Failed to delete user after email error. Message:",
@@ -202,13 +204,18 @@ async def verify(
             detail=str(e),
         )
 
+
 @router.post(
     "/signin",
     response_model=UserLoginResponse,
     responses={
         401: {
             "model": DefaultErrorResponse,
-            "description": "Unauthorized - Invalid email or password",
+            "description": "Unauthorized - Invalid password",
+        },
+        406: {
+            "model": DefaultErrorResponse,
+            "description": "Not Acceptable - Invalid email",
         },
         500: {
             "model": DefaultErrorResponse,
@@ -223,7 +230,9 @@ async def verify(
     ),
 )
 async def signin(
-    user: UserLogin, users_table: UsersTable = Depends(get_users_table)
+    user: UserLogin,
+    users_table: UsersTable = Depends(get_users_table),
+    response: Response = Response(),
 ):
     auth = Auth()
 
@@ -231,17 +240,20 @@ async def signin(
         existing_user = users_table.get_user_by_email(user.email)
 
     except DataNotFound:
+        print("Got email not present in the database")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Invalid email",
         )
     except RuntimeError as e:
+        print("Error occurred when trying to get email: " + str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
     if not auth.does_password_match(user.password, existing_user.password):
+        print(f"Invalid password received")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid password",
@@ -250,11 +262,19 @@ async def signin(
     token = auth.create_jwt_token_from_email(user.email)
     refresh_token = auth.create_refresh_token_from_email(user.email)
 
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24,
+    )
+
     return {
         "email": existing_user.email,
         "username": existing_user.username,
         "token": token,
-        "refresh_token": refresh_token,
     }
 
 
@@ -319,7 +339,6 @@ async def refresh_token(
         "email": user.email,
         "username": user.username,
         "token": new_access_token,
-        "refresh_token": refresh_token,
     }
 
 
