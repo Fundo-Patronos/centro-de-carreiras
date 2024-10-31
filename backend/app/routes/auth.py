@@ -235,17 +235,20 @@ async def signin(
         existing_user = users_table.get_user_by_email(user.email)
 
     except DataNotFound:
+        print("Got email not present in the database")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Invalid email",
         )
     except RuntimeError as e:
+        print("Error occurred when trying to get email: " + str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
     if not auth.does_password_match(user.password, existing_user.password):
+        print(f"Invalid password received")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid password",
