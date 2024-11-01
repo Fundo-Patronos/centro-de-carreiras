@@ -17,7 +17,10 @@ class InMemoryDatabase(Database):
         if table_id not in self.data:
             self.data[table_id] = []
         self.data[table_id].extend(
-            [item.model_dump() | {"Id": self.current_id} for item in items]
+            [
+                item.model_dump() | {"id": str(self.current_id)}
+                for item in items
+            ]
         )
         self.current_id += 1
 
@@ -41,12 +44,12 @@ class InMemoryDatabase(Database):
 
     def update(self, table_id: str, item: BaseModel):
         for table_item in self.data.get(table_id, []):
-            if table_item["Id"] == item.model_dump()["Id"]:
+            if table_item["id"] == item.model_dump()["id"]:
                 table_item.update(item.model_dump())
 
     def delete(self, table_id: str, item: BaseModel):
         self.data[table_id] = [
             table_item
             for table_item in self.data.get(table_id, [])
-            if not table_item["Id"] == item.model_dump()["Id"]
+            if not table_item["id"] == item.model_dump()["id"]
         ]

@@ -1,4 +1,4 @@
 [run]
 source = app
 omit =
-    */noco_database.py
+    */airtable_database.py

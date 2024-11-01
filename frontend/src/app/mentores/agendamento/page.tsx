@@ -1,9 +1,12 @@
-"use client";
-
-import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import TimeIntervalsTable from "../../../components/DataTable";
-import { Typography, Button, Snackbar, Alert } from "@mui/material";
+"use client"
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import TimeIntervalsTable from '../../../components/DataTable';
+import { Snackbar, Alert } from '@mui/material';
+import ConfirmationDialog from '../../../components/ConfirmationDialog';
+import Layout from "@/components/Layout";
+import { Button } from "@mui/material";
+import { Calendar, Clock, User } from 'lucide-react';
 
 interface Row {
   day: string;
@@ -12,129 +15,159 @@ interface Row {
 }
 
 const Agendamento = () => {
-  // Wrap useSearchParams usage inside a Suspense boundary
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <AgendamentoContent />
-    </Suspense>
-  );
-};
-
-const AgendamentoContent = () => {
   const searchParams = useSearchParams();
-  const mentor = searchParams.get("mentor"); // Get the 'mentor' value
-  const email = searchParams.get("email"); // Get the 'email' value
+  const router = useRouter();
+  const mentor = searchParams.get('mentor');
+  const email = searchParams.get('email');
 
   const [selectedRows, setSelectedRows] = useState<Row[]>([]);
-  const [message, setMessage] = useState("");
+  const [rowsAvailable, setRowsAvailable] = useState<boolean>(true);
+  const [message, setMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
 
   const handleSelectionChange = (newSelection: Row[]) => {
     setSelectedRows(newSelection);
   };
 
   const handleButtonClick = () => {
-    const timeIntervals = selectedRows.map(
-      (row: Row) => `${row.day} ${row.startTime} - ${row.endTime}`,
-    );
-    const generatedMessage = `Prezado ${mentor},\nEstou mandando esta mensagem a partir do site do centro de carreiras e quero marcar uma reunião nos horários: ${timeIntervals.join(", ")}.\n\nAtenciosamente,\n`;
+    const timeIntervals = selectedRows.map((row: Row) => `${row.day} ${row.startTime} - ${row.endTime}`);
+    const generatedMessage = `Olá ${mentor}!\n\nEstou entrando em contato através do Centro de Carreiras do Fundo Patronos e gostaria da sua ajuda para discutir os próximos passos da minha carreira.\n\nEstou disponível nos seguintes horários: ${timeIntervals.join(', ')}.\n\nObrigado!\n\n(Este email foi gerado automaticamente pelo Centro de Carreiras do Fundo Patronos)\n`;
     setMessage(generatedMessage);
+    setConfirmationOpen(true);
   };
 
-  const handleCopyToClipboard = () => {
-    navigator.clipboard
-      .writeText(message)
-      .then(() => {
-        setSnackbarOpen(true);
-      })
-      .catch((err) => {
-        console.error("Failed to copy message: ", err);
-      });
+  const handleRequestAvailability = () => {
+    const availabilityRequestMessage = `Olá ${mentor}!\n\nGostaria de saber se você tem outros horários disponíveis para mentoria, além dos que estão atualmente visíveis. Agradeço pela sua atenção.\n\nObrigado!\n\n(Este email foi gerado automaticamente pelo Centro de Carreiras do Fundo Patronos)\n`;
+    setMessage(availabilityRequestMessage);
+    setConfirmationOpen(true);
+  };
+
+  const handleConfirm = () => {
+    setConfirmationOpen(false);
+  };
+
+  const handleClose = () => {
+    setConfirmationOpen(false);
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
-  if (!mentor) {
-    return <p>Mentor não especificado.</p>;
-  }
+  const handleRedirectToMentors = () => {
+    router.push('/mentores');
+  };
 
   return (
-    <div>
-      <Typography variant="h3" gutterBottom align="center">
-        Agendamento
-      </Typography>
-      <Typography variant="h4" gutterBottom align="center">
-        Mostrando horários para {mentor}
-      </Typography>
+    <Layout currentPage="mentores">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+        {/* Responsive Hero Section */}
+        <section className="relative h-48 md:h-80 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+            <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')]" />
+          </div>
+          
+          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
+            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+              <User className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+              <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                Agende uma reunião
+              </h1>
+            </div>
+            <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
+              com <span className="font-semibold text-purple-600">{mentor}</span>
+            </p>
+          </div>
+        </section>
 
-      <TimeIntervalsTable
-        mentor={mentor}
-        onSelectionChange={handleSelectionChange}
-      />
+        {/* Responsive Schedule Selection Section */}
+        <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-8">
+          <div className="bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl border border-purple-100 overflow-hidden">
+            {/* Schedule Header */}
+            <div className="p-4 md:p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+              <div className="flex items-center gap-2 md:gap-3">
+                <Calendar className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
+                <h2 className="text-lg md:text-xl font-semibold text-gray-800">Horários Disponíveis</h2>
+              </div>
+            </div>
 
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleButtonClick}
-          size="large"
-        >
-          Gerar Mensagem
-        </Button>
-      </div>
+            {/* Schedule Grid */}
+            <div className="p-3 md:p-6">
+              <div className="mb-4 md:mb-6">
+                <div className="flex items-center gap-2 text-xs md:text-sm text-gray-500">
+                  <Clock className="w-4 h-4" />
+                  <span>Selecione os horários que melhor se adequam à sua agenda</span>
+                </div>
+              </div>
 
-      {message && (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Typography variant="h5" gutterBottom>
-            Email para {email}
-          </Typography>
+              {rowsAvailable ? (
+                <div className="bg-white p-2 md:p-6 overflow-x-auto">
+                  <TimeIntervalsTable 
+                    mentor={mentor ?? ""} 
+                    onSelectionChange={handleSelectionChange} 
+                    setRowsAvailable={setRowsAvailable}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 md:py-12 text-center px-4">
+                  <Clock className="w-10 h-10 md:w-12 md:h-12 text-gray-400 mb-3 md:mb-4" />
+                  <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
+                    Não há horários disponíveis
+                  </h3>
+                  <p className="text-xs md:text-sm text-gray-500 mb-4 md:mb-6">
+                    No momento não existem horários disponíveis para este mentor.
+                  </p>
+                </div>
+              )}
 
-          <div
-            style={{
-              padding: "20px",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              backgroundColor: "#fff",
-              width: "600px",
-              margin: "0 auto",
-              boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
-              {message}
-            </Typography>
-
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleCopyToClipboard}
-              style={{ marginTop: "20px" }}
-            >
-              Copiar para Área de Transferência
-            </Button>
+              {/* Responsive Action Buttons */}
+              <div className="mt-4 md:mt-6 flex flex-col md:flex-row gap-3 md:justify-end">
+                <Button
+                  variant="outlined"
+                  className="w-full md:w-auto text-purple-600 hover:bg-purple-50"
+                  onClick={handleRedirectToMentors}
+                >
+                  Ver Outros Mentores
+                </Button>
+                <Button
+                  variant="contained"
+                  className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg transition-shadow"
+                  disabled={rowsAvailable && !(selectedRows.length > 0)}
+                  onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
+                >
+                  {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
-      )}
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
+        <ConfirmationDialog
+          email={email ?? ""}
+          open={confirmationOpen}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+          message={message}
+        />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
           onClose={handleSnackbarClose}
-          severity="success"
-          sx={{ width: "100%" }}
         >
-          Mensagem copiada com sucesso!
-        </Alert>
-      </Snackbar>
-    </div>
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+            Requisição de email enviada!
+          </Alert>
+        </Snackbar>
+      </div>
+    </Layout>
   );
 };
 
-export default Agendamento;
+export default function AgendamentoBar() {
+  return (
+    <Suspense>
+      <Agendamento />
+    </Suspense>
+  )
+}
