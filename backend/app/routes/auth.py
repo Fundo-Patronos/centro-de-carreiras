@@ -266,8 +266,7 @@ async def signin(
     if not existing_user.is_verified:
         print("Unverified user received")
         raise HTTPException(
-            status_code=status.HTTP_425_TOO_EARLY,
-            detail="Unverified user"
+            status_code=status.HTTP_425_TOO_EARLY, detail="Unverified user"
         )
 
     token = auth.create_jwt_token_from_email(user.email)
