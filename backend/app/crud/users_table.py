@@ -15,6 +15,15 @@ class UsersTable:
         self.table_id = optional_table_id
         self.db = db
 
+    def parse_user_data(self, user: dict) -> dict:
+      user_data = user.get('fields', {})
+      user_data['id'] = user.get('id', '')
+
+      user_data.setdefault('linkedin', '')
+      user_data.setdefault('description', '')
+
+      return user_data
+
     def get_all_users(self) -> list[User]:
         """Gets all users from the database.
 
@@ -38,7 +47,8 @@ class UsersTable:
 
         params = {"username": username}
         user = self.db.read_one(table_id=self.table_id, params=params)
-        return User(**user)
+        user_data = self.parse_user_data(user)
+        return User(**user_data)
 
     def get_user_by_email(self, email: str) -> User:
         """
@@ -52,7 +62,8 @@ class UsersTable:
         """
         params = {"email": email}
         user = self.db.read_one(table_id=self.table_id, params=params)
-        return User(**user)
+        user_data = self.parse_user_data(user)
+        return User(**user_data)
 
     def create_user(self, user: UserCreate) -> None:
         """Creates a new user in the database.
