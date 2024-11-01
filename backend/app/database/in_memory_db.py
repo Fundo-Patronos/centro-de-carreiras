@@ -6,7 +6,7 @@ from app.exceptions import DataNotFound
 
 class InMemoryDatabase(Database):
     data: dict[str, Any] = {}
-    current_id: int = 0 
+    current_id: int = 0
 
     @staticmethod
     def reset():
@@ -17,7 +17,10 @@ class InMemoryDatabase(Database):
         if table_id not in self.data:
             self.data[table_id] = []
         self.data[table_id].extend(
-            [item.model_dump() | {"id": str(self.current_id)} for item in items]
+            [
+                item.model_dump() | {"id": str(self.current_id)}
+                for item in items
+            ]
         )
         self.current_id += 1
 

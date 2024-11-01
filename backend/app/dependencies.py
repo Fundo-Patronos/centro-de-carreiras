@@ -6,7 +6,6 @@ from app.database.database import Database
 from app.database.airtable_database import AirtableDatabase
 
 
-
 def get_db() -> Generator[Database, None, None]:
     yield AirtableDatabase()
 

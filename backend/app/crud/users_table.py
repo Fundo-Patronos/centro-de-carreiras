@@ -16,13 +16,13 @@ class UsersTable:
         self.db = db
 
     def parse_user_data(self, user: dict) -> dict:
-      user_data = user.get('fields', {})
-      user_data['id'] = user.get('id', '')
+        user_data = user.get("fields", {})
+        user_data["id"] = user.get("id", "")
 
-      user_data.setdefault('linkedin', '')
-      user_data.setdefault('description', '')
+        user_data.setdefault("linkedin", "")
+        user_data.setdefault("description", "")
 
-      return user_data
+        return user_data
 
     def get_all_users(self) -> list[User]:
         """Gets all users from the database.
