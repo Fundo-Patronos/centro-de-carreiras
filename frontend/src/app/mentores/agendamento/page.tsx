@@ -1,12 +1,12 @@
 "use client"
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import TimeIntervalsTable from '../../../components/DataTable';
-import { Typography, Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import Layout from "@/components/Layout";
-import { Button, Checkbox } from "@mui/material";
-import { Calendar, Clock, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from "@mui/material";
+import { Calendar, Clock, User } from 'lucide-react';
 
 interface Row {
   day: string;
@@ -104,7 +104,7 @@ const Agendamento = () => {
               {rowsAvailable ? (
                 <div className="bg-white p-2 md:p-6 overflow-x-auto">
                   <TimeIntervalsTable 
-                    mentor={mentor} 
+                    mentor={mentor ?? ""} 
                     onSelectionChange={handleSelectionChange} 
                     setRowsAvailable={setRowsAvailable}
                   />
@@ -124,14 +124,14 @@ const Agendamento = () => {
               {/* Responsive Action Buttons */}
               <div className="mt-4 md:mt-6 flex flex-col md:flex-row gap-3 md:justify-end">
                 <Button
-                  variant="outline"
+                  variant="outlined"
                   className="w-full md:w-auto text-purple-600 hover:bg-purple-50"
                   onClick={handleRedirectToMentors}
                 >
                   Ver Outros Mentores
                 </Button>
                 <Button
-                  variant="default"
+                  variant="contained"
                   className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg transition-shadow"
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
@@ -144,7 +144,7 @@ const Agendamento = () => {
         </div>
 
         <ConfirmationDialog
-          email={email}
+          email={email ?? ""}
           open={confirmationOpen}
           onClose={handleClose}
           onConfirm={handleConfirm}
@@ -164,4 +164,10 @@ const Agendamento = () => {
   );
 };
 
-export default Agendamento;
+export default function AgendamentoBar() {
+  return (
+    <Suspense>
+      <Agendamento />
+    </Suspense>
+  )
+}

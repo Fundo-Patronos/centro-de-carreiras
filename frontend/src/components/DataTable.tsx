@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridRowId, GridRowSelectionModel } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import axios from "axios";
 
 interface TimeIntervalsTableProps {
   mentor: string;
-  setRowsAvailable: (value: boolean) => void;
-  onSelectionChange: (selectedRows: any[]) => void;
+  setRowsAvailable: (_: boolean) => void;
+  onSelectionChange: (_: RowData[]) => void;
 }
 
 interface Schedule {
@@ -59,9 +59,9 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
     }
   }, [mentor, setRowsAvailable]);
 
-  const handleSelectionChange = useCallback((newSelectionModel: any) => {
+  const handleSelectionChange = useCallback((newSelectionModel: GridRowSelectionModel) => {
     // Get complete rows for the selected data
-    const selectedRows = newSelectionModel.map((id: number) => rows.find((row) => row.id === id));
+    const selectedRows = newSelectionModel.map((id: GridRowId) => rows.find((row) => row.id === id) as RowData);
     onSelectionChange(selectedRows);
   }, [onSelectionChange, rows]);
 
