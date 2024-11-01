@@ -45,7 +45,7 @@ class Database:
         """
 
     @abstractmethod
-    def create(self, table_id: str, items: list[BaseModel]) -> None:
+    def create(self, table_id: str, items: list[Item]) -> None:
         """Creates a new record in the database.
 
         Args:
@@ -57,7 +57,7 @@ class Database:
         """
 
     @abstractmethod
-    def update(self, table_id: str, item: BaseModel) -> None:
+    def update(self, table_id: str, item: Item) -> None:
         """Updates a record in the database.
 
         Args:
@@ -70,12 +70,12 @@ class Database:
         """
 
     @abstractmethod
-    def delete(self, table_id: str, item: BaseModel) -> None:
+    def delete(self, table_id: str, item_id: str) -> None:
         """Deletes a record in the database.
 
         Args:
             table_id (str): The table id to delete from.
-            item (BaseModel): The item to be deleted.
+            item_id (str): The item id to be deleted.
 
         Returns:
             None
