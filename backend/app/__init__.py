@@ -1,9 +1,10 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from dotenv import load_dotenv
 from app.routes.auth import router as auth_router
 from app.routes.mentoring import router as mentoring_router
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 load_dotenv()
 
@@ -16,13 +17,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://centro-de-carreiras-patronos-722033123279.us-central1.run.app/",
-        "http://localhost:3000",
-    ],  # Permite seu front-end em localhost:3000
+    allow_origins=[front_end_url, "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
-    allow_headers=["*"],  # Permite todos os cabeçalhos
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(mentoring_router)

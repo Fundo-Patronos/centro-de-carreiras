@@ -10,10 +10,14 @@ from app.schemas.user import (
     UserLogin,
     UserLoginResponse,
     UserVerifyRequest,
+    UserChangePasswordRequest,
+    UserForgotPasswordRequest,
 )
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
 from app.exceptions import DataNotFound
+from fastapi import Response
+from fastapi import Header
 
 router = APIRouter()
 
@@ -112,7 +116,8 @@ async def signup(
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         try:
-            self.db.delete_user(user_id=user.id)
+            new_user = users_table.get_user_by_email(user.email)
+            users_table.delete_user(new_user.Id)
         except Exception as delete_error:
             print(
                 "Failed to delete user after email error. Message:",
@@ -206,7 +211,11 @@ async def verify(
     responses={
         401: {
             "model": DefaultErrorResponse,
-            "description": "Unauthorized - Invalid email or password",
+            "description": "Unauthorized - Invalid password",
+        },
+        406: {
+            "model": DefaultErrorResponse,
+            "description": "Not Acceptable - Invalid email",
         },
         500: {
             "model": DefaultErrorResponse,
@@ -221,7 +230,9 @@ async def verify(
     ),
 )
 async def signin(
-    user: UserLogin, users_table: UsersTable = Depends(get_users_table)
+    user: UserLogin,
+    users_table: UsersTable = Depends(get_users_table),
+    response: Response = Response(),
 ):
     auth = Auth()
 
@@ -229,17 +240,20 @@ async def signin(
         existing_user = users_table.get_user_by_email(user.email)
 
     except DataNotFound:
+        print("Got email not present in the database")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Invalid email",
         )
     except RuntimeError as e:
+        print("Error occurred when trying to get email: " + str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
 
     if not auth.does_password_match(user.password, existing_user.password):
+        print(f"Invalid password received")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid password",
@@ -248,11 +262,19 @@ async def signin(
     token = auth.create_jwt_token_from_email(user.email)
     refresh_token = auth.create_refresh_token_from_email(user.email)
 
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24,
+    )
+
     return {
         "email": existing_user.email,
         "username": existing_user.username,
         "token": token,
-        "refresh_token": refresh_token,
     }
 
 
@@ -317,5 +339,117 @@ async def refresh_token(
         "email": user.email,
         "username": user.username,
         "token": new_access_token,
-        "refresh_token": refresh_token,
     }
+
+
+@router.post(
+    "/forgot-password",
+    responses={
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Email does not exist",
+        },
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to send reset token",
+        },
+    },
+    summary="Forgot Password",
+    description="Allows a user to request a password reset by sending a reset token to their email.",
+)
+async def forgot_password(
+    request_data: UserForgotPasswordRequest,
+    users_table: UsersTable = Depends(get_users_table),
+):
+    auth = Auth()
+
+    try:
+        user = users_table.get_user_by_email(request_data.user_email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    try:
+        auth.send_password_reset_email(email=user.email, user_name=user.name)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send reset email. Message: " + str(e),
+        )
+
+    return {"message": "Password reset token sent successfully to your email."}
+
+
+@router.post(
+    "/reset-password",
+    responses={
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Invalid or expired token",
+        },
+        400: {
+            "model": DefaultErrorResponse,
+            "description": "Bad Request - Invalid new password",
+        },
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to reset password",
+        },
+    },
+    summary="Reset Password",
+    description="Allows the user to reset their password using a valid reset token.",
+)
+async def reset_password(
+    request_data: UserChangePasswordRequest,
+    authorization: str = Header(None),
+    users_table: UsersTable = Depends(get_users_table),
+):
+    auth = Auth()
+    token = authorization.split(" ")[1]
+
+    try:
+        email = auth.decode_jwt_token_to_email(token)
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail="Reset token has expired",
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Invalid reset token",
+        )
+
+    try:
+        user = users_table.get_user_by_email(email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    # Hash the new password
+    user.password = auth.get_password_hash(request_data.new_password)
+
+    # Update the user's password
+    try:
+        users_table.update_user(user)
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to reset password",
+        )
+
+    return {"message": "Your password was changed successfuly."}

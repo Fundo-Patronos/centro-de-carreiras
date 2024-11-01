@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Button from "../../../components/GradientButton";
-
+import "./style.css";
+import axios from "axios";
 
 const VerifyEmail = () => {
   const { token } = useParams();
@@ -13,44 +14,10 @@ const VerifyEmail = () => {
   const [emailValidated, setEmailValidated] = useState(false);
   const [apiUrl, setApiUrl] = useState("");
 
-  const verifyEmail = async (token: string) => {
-    try {
-      const response = await fetch(`${apiUrl}/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-      if (response.ok) {
-        setMessage("Seu e-mail foi confirmado!");
-        setEmailValidated(true);
-      } else {
-        const result = await response.json();
-
-        if (response.status === 500) {
-          setMessage(`Erro no servidor: ${response.status}`);
-        } else {
-          setMessage(`Falha na verificação: ${result.detail}`);
-        }
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setMessage("Ocorreu um erro: " + error.message);
-      } else {
-        setMessage("Ocorreu um erro desconhecido.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-
     const fetchApiUrl = async () => {
-      const response = await fetch('/api');
-      const data = await response.json();
-      setApiUrl(data.apiUrl);
+      const response = await axios.get('/api');
+      setApiUrl(response.data.apiUrl);
     };
 
     fetchApiUrl();
@@ -63,7 +30,67 @@ const VerifyEmail = () => {
       setMessage("Token não fornecido.");
       setLoading(false);
     }
-  }, [token]);
+  }, [token, apiUrl]);
+
+
+
+  const verifyEmail = async (token: string) => {
+    try {
+      if (!apiUrl) {
+        return;
+      }
+  
+      const response = await axios.post(
+        `${apiUrl}/verify`,
+        { token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200 || response.status === 204) {
+        setMessage("Seu e-mail foi confirmado!");
+        setEmailValidated(true);
+      } else {
+        throw new Error(`Erro: ${response.status}`);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const status = error.response.status;
+        let errorMessage;
+  
+        switch (status) {
+          case 406:
+            errorMessage = `Token inválido`;
+            break;
+          case 408:
+            errorMessage = `Tempo de espera excedido`;
+            break;
+          case 422:
+            errorMessage = `Erro de validação`;
+            break;
+          case 500:
+            errorMessage = `Erro interno do servidor: Falha ao verificar o usuário`;
+            break;
+          default:
+            errorMessage = `Falha na verificação: Erro desconhecido`;
+        }
+  
+        setMessage(errorMessage);
+      } else if (error instanceof Error) {
+        setMessage("Ocorreu um erro");
+      } else {
+        setMessage("Ocorreu um erro desconhecido.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  
 
   const handleLoginRedirect = () => {
     router.push("/");
@@ -73,57 +100,56 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[linear-gradient(to_right,#FF6666,#C964E2)] ">
-      {/* Background Image */}
-      {/* <div
-            className="absolute bg-cover bg-center w-full"
-            style={{
-                backgroundImage: `url('images/squiggles/squiggle_01.png')`,
-                backgroundSize: "cover",
-                width: '50%',  
-                height: '50%', 
-                zIndex: -1,     
-            }}
-            ></div> */}
-      <div className="bg-white rounded-lg shadow-lg py-8 px-8 sm:py-6 sm:px-8 max-w-[90%] md:max-w-[600px] w-full shadow-black">
-        <h1 className="text-[28px] font-semibold text-[#2F2B3D]/[90%] mb-6 text-center mt-4">
-          {loading ? "Verificando seu e-mail. Aguarde, por favor..." : message}
-        </h1>
-        {!loading && (
-          <div className="mt-4">
-            {emailValidated && (
-              <div>
-                <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-center">
-                  Seu cadastro foi validado com sucesso!
-                </p>
-                <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-center">
-                  Faça login e acesse nossa plataforma.
-                </p>
-                <Button onClick={handleLoginRedirect} className="mb-4 p-2">
-                  Login
-                </Button>
-              </div>
-            )}
+    <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">
+      <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        {/* Background with rotation animation */}
+        <div
+          className={`absolute flex justify-center items-center 
+              h-full w-[100vh] bg-cover bg-no-repeat z-[-10]
+              ${loading ? "animate-spin-slow" : ""}`}
+          style={{
+            backgroundImage: "url('/images/identidade-visual/Ativo-1@5.png')",
+            transform: "rotate(0deg)",
+          }}
+        ></div>
+                <div className="bg-white rounded-lg shadow-lg py-8 px-8 sm:py-6 sm:px-8 max-w-[90%] md:max-w-[600px] w-full shadow-black">
+                    <h1 className="text-[28px] font-semibold text-[#2F2B3D]/[90%] mb-6 text-center mt-4">
+                        {loading ? "Verificando seu e-mail. Aguarde, por favor..." : message}
+                    </h1>
+                    {!loading && (
+                        <div className="mt-4">
+                            {emailValidated ? (
+                                <div>
+                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-center">
+                                        Seu cadastro foi validado com sucesso!
+                                    </p>
+                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-center">
+                                        Faça login e acesse nossa plataforma.
+                                    </p>
+                                    <Button onClick={handleLoginRedirect} className="mb-4 p-2">
+                                        Login
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify">
+                                        Pedimos desculpa, infelizmente ocorreu um erro e seu cadastro não foi validado.
+                                    </p>
+                                    <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
+                                        Clique no botão para tentarmos enviar outro e-mail de verificação.
+                                    </p>
+                                    <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
+                                        Enviar e-mail
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-            {!emailValidated && (
-              <div>
-                <p className="text-[18px] text-[#2F2B3D]/[70%] mb-1 text-justify">
-                  Pedimos desculpa, infelizemnte ocorreu algum erro e seu
-                  cadastro não foi validado.
-                </p>
-                <p className="text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
-                  Clique no botão para tentarmos enviar outro e-mail de
-                  verificação.
-                </p>
-                <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
-                  Enviar e-mail
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+                </div>
+          
+            </div>
+        </div>
   );
 };
 

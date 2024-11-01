@@ -10,6 +10,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "@/store/authStore";
 import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
+import { AxiosError } from "axios";
 
 interface LoginFormValues {
   email: string;
@@ -33,58 +34,70 @@ interface LayoutProps {
   initialValues: LoginFormValues;
 }
 
-const MobileLayout: React.FC<LayoutProps> = ({
-  handleSubmit,
-  showPassword,
-  setShowPassword,
-  loginError,
-  rememberMe,
-  setRememberMe,
-  setEmail,
-  setPassword,
-  initialValues,
-}) => (
-  <div className="min-h-screen flex items-center justify-center bg-white ">
-    <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
-      <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">
-        Bem-vindo ao Centro de Carreiras
-      </h2>
-      <p className="text-md text-[#2F2B3D]/[70%] mb-6">
-        Por favor, entre com sua conta para iniciar a sessão
-      </p>
+const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, setEmail, setPassword, initialValues}) => (
+    <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
+        <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        
+        {/* Background */}
+        <div
+            className="absolute  h-full bg-cover bg-no-repeat w-[90%] 2xl:w-3/10 transform scale-x-[-1] z-0"
+            style={{
+                backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                opacity: 0.25,
+                transform: 'rotate(0deg)',
+            }}
+        ></div>
 
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchemaLogin}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, setFieldValue }) => (
-          <Form className="w-full">
-            {/* E-MAIL */}
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-md text-black">
-                Email
-              </label>
-              <Field
-                name="email"
-                type="email"
-                className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                style={{
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  border: "none",
-                }}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const value = e.target.value;
-                  setEmail(value);
-                  setFieldValue("email", value);
-                }}
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-md text-red-500 text-sm"
-              />
+        {/* Content*/}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+            {/* Logo */}
+            <div className="flex items-center justify-center p-5 mb-5 mt-5">
+            <img 
+                src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                alt="Logo" 
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+            />
             </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-center justify-center  ">
+                    <h1 className="text-4xl text-center font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black text-center mt-4 text-[20px] mb-6">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+
+                <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mb-2">Bem-vindo ao Centro de Carreiras</h2>
+                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
+
+            <Formik
+                initialValues={initialValues} 
+                validationSchema={validationSchemaLogin}
+                onSubmit={handleSubmit}
+            >
+                {({ isSubmitting, setFieldValue }) => (
+                    <Form className="w-full  mx-auto">
+                        {/* E-MAIL */}
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block text-md text-black">Email</label>
+                            <Field
+                                name="email"
+                                type="email"
+                                className="w-full p-2 lg:p-3 text-black bg-transparent border border-gray-300 shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                                style={{
+                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                                    border: 'none',
+                                }}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const value = e.target.value;
+                                    setEmail(value); 
+                                    setFieldValue('email', value); 
+                                }}
+                            />
+                            <ErrorMessage name="email" component="div" className="text-md text-red-500 text-sm" />
+                        </div>
 
             {/* Password*/}
             <div className="mb-4">
@@ -140,7 +153,7 @@ const MobileLayout: React.FC<LayoutProps> = ({
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
@@ -159,40 +172,76 @@ const MobileLayout: React.FC<LayoutProps> = ({
         )}
       </Formik>
 
-      {/* Sign Up */}
-      <div className="mt-6 text-center">
-        <p className="text-black text-md text-[#2F2B3D]/[70%] inline">
-          Novo na plataforma?{" "}
-        </p>
-        <Link
-          href="/signup"
-          className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline"
-        >
-          Criar uma conta
-        </Link>
-      </div>
+            {/* Sign Up */}
+            <div className="mt-6 text-center">
+                <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Novo na plataforma? </p>
+                <Link href="/signup" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                    Criar uma conta
+                </Link>
+            </div>
+
+            {/* Texts */}
+            <div className="p-5 mt-10">
+                        <div className="items-center justify-center text-center text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 );
 
-const DesktopLayout: React.FC<LayoutProps> = ({
-  handleSubmit,
-  showPassword,
-  setShowPassword,
-  loginError,
-  rememberMe,
-  setRememberMe,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  initialValues,
-}) => (
-  <div className="min-h-screen flex">
-    {/* HERO*/}
-    <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
-      <div className="w-full h-full  bg-black rounded-lg"></div>
-    </div>
+const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail,password,setPassword, initialValues}) => (
+    <div className="min-h-screen flex">
+        {/* HERO*/}
+        <div className="flex-grow bg-white flex items-center justify-center p-[20px]">
+            <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
+                {/* Background */}
+                <div
+                className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
+                           min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4"
+                style={{
+                    backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                }}
+                ></div>
+
+                {/* Content*/}
+                <div className="w-full h-full flex flex-col justify-between items-start text-left">
+                    {/* Logo */}
+                    <div className="flex items-center justify-start p-5">
+                    <img 
+                        src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                        alt="Logo" 
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                    />
+                    </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-start justify-center text-left max-w-[65%] ">
+                    <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black mt-4 text-2xl max-w-[70%]">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+
+                    {/* Texts left corner */}
+                    <div className="p-5">
+                        <div className="text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     {/* LOGIN FORM */}
     <div className="w-1/2 lg:w-[500px] xl:w-[500px] 2xl:w-[600px] flex flex-col items-center justify-center bg-white px-[3vw]  lg:px-[50px] 2xl:px-[80px]">
@@ -292,7 +341,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({
                 </label>
               </div>
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold"
               >
                 Esqueci minha senha
@@ -337,15 +386,15 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [initialValues, setInitialValues] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(true);
+  const [apiUrl, setApiUrl] = useState('');
   const router = useRouter();
-  const [apiUrl, setApiUrl] = useState("");
-
+  
   useEffect(() => {
 
     const fetchApiUrl = async () => {
-      const response = await fetch('/api');
-      const data = await response.json();
-      setApiUrl(data.apiUrl);
+      const response = await axios.get('/api');
+      const url = response.data.apiUrl;
+      setApiUrl(url);
     };
 
     fetchApiUrl();
@@ -378,7 +427,7 @@ const handleSubmit = async (
   { setSubmitting }: FormikHelpers<LoginFormValues>
 ) => {
   try {
-    const response = await axios.post(`${apiUrl}/signin`, values);
+    const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
       const { email, username, token, refresh_token } = response.data;
@@ -391,7 +440,7 @@ const handleSubmit = async (
         {
           expires: 1, // Expires in 1 day (you can customize this)
           secure: true,
-          sameSite: "strict",
+          sameSite: "none",
         }
       );
 
@@ -404,12 +453,22 @@ const handleSubmit = async (
         }
 
       router.push("/home");
-    } else {
-      setLoginError("Usuário ou senha inválido");
-    }
+    } 
   } catch (error) {
-    console.error("Erro ao tentar logar:", error);
-    setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+    const err = error as AxiosError;
+    if (err.response) {
+        if (err.response.status === 401 || err.response.status === 406) {
+          setLoginError("Usuário ou senha inválido");
+        } else {
+          setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+        }
+      } else if (err.request) {
+        console.error("Erro de rede ou servidor indisponível");
+        setLoginError("Servidor indisponível. Tente novamente mais tarde.");
+      } else {
+        console.error("Erro na requisição:", err.message);
+        setLoginError("Erro inesperado. Tente novamente.");
+      }
   } finally {
     setSubmitting(false);
   }

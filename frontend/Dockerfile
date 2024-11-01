@@ -24,6 +24,7 @@ ENV NODE_ENV=production
 # Copy only the necessary files for production
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/.next /app/.next
+COPY --from=build /app/public /app/public
 COPY package.json ./
 
 # Expose the port the app runs on

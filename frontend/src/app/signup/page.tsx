@@ -1,16 +1,15 @@
 "use client";
 
-import Button from "../../components/GradientButton";
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
-import {
-  validationSchemaSignUp,
-  isEmailValid,
-} from "../../hooks/validationSchema";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
-import AuthPopup from "../../components/AuthPopup";
+import React from 'react';
+import Button from '../../components/GradientButton';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; 
+import { Formik, Form, Field, ErrorMessage, FormikHelpers} from 'formik';
+import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSchema';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import AuthPopup from '../../components/AuthPopup';
+import axios from 'axios';
 
 interface SignUpFormValues {
   username: string;
@@ -38,29 +37,45 @@ interface LayoutProps {
   setFoundDataWarning: (_warning: string | null) => void;
 }
 
-const MobileLayout: React.FC<LayoutProps> = ({
-  handleSubmit,
-  showPassword,
-  setShowPassword,
-  showConfirmPassword,
-  setShowConfirmPassword,
-  emailWarning,
-  setEmailWarning,
-  foundDataWarning,
-  setFoundDataWarning,
-}) => (
-  <div className="min-h-screen flex items-center justify-center bg-white ">
-    <div className="w-full h-full flex flex-col items-center justify-center px-[10vw] sd:px-[18vw] md:px-[24vw] ">
-      <h2 className="text-2xl text-[#2F2B3D]/[90%] mb-2">
-        Bem-vindo ao Centro de Carreiras
-      </h2>
-      <p className="text-md text-[#2F2B3D]/[70%] mb-6">
-        Por favor, crie sua conta para conhecer nossa plataforma
-      </p>
+const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning}) => (
+    <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
+        <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
+        
+        {/* Background */}
+        <div
+            className="absolute  h-full bg-cover bg-no-repeat w-[100%] 2xl:w-3/10 transform scale-x-[-1] z-0"
+            style={{
+                backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                opacity: 0.25,
+                transform: 'rotate(0deg)',
+            }}
+        ></div>
 
-      <h1 className="text-4xl font-semibold text-[#2F2B3D]/[90%] mb-4">
-        Cadastre-se
-      </h1>
+        {/* Content*/}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+            {/* Logo */}
+            <div className="flex items-center justify-center p-5 mb-5 mt-5">
+            <img 
+                src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                alt="Logo" 
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+            />
+            </div>
+
+            {/* Main messagens*/}
+            <div className="flex-grow flex flex-col items-center justify-center  ">
+                    <h1 className="text-4xl text-center font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black text-center mt-4 text-[20px] mb-6">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+            </div>
+
+                <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mt-2 mb-2">Bem-vindo ao Centro de Carreiras</h2>
+                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, crie sua conta para conhecer nossa plataforma</p>
+
+                <h1 className="text-4xl font-semibold text-[#2F2B3D]/[90%] mb-4">Cadastre-se</h1>
 
       <Formik
         initialValues={{
@@ -299,38 +314,76 @@ const MobileLayout: React.FC<LayoutProps> = ({
         )}
       </Formik>
 
-      {/* Login */}
-      <div className="mt-6 text-center">
-        <p className="text-black text-md text-[#2F2B3D]/[70%] inline">
-          Já possui conta?{" "}
-        </p>
-        <Link
-          href="/"
-          className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline"
-        >
-          Faça Login
-        </Link>
-      </div>
+                {/* Login */}
+                <div className="mt-6 text-center">
+                    <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Já possui conta? </p>
+                    <Link href="/" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                        Faça Login
+                    </Link>
+                </div>
+
+                {/* Texts */}
+                <div className="p-5 mt-10">
+                            <div className="items-center justify-center text-center text-black text-left text-[18px]">
+                            <p>Mentorias.</p>
+                            <p>Oportunidades.</p>
+                            <p>Networking.</p>
+                            <p>De ex-aluno para aluno.</p>
+                            </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 );
 
-const DesktopLayout: React.FC<LayoutProps> = ({
-  handleSubmit,
-  showPassword,
-  setShowPassword,
-  showConfirmPassword,
-  setShowConfirmPassword,
-  emailWarning,
-  setEmailWarning,
-  foundDataWarning,
-  setFoundDataWarning,
-}) => (
-  <div className="min-h-screen flex">
-    {/* HERO */}
-    <div className="flex-grow bg-white flex items-center justify-center p-[5px]">
-      <div className="w-full h-full bg-black rounded-lg"></div>
-    </div>
+const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, emailWarning, setEmailWarning, foundDataWarning, setFoundDataWarning }) => (
+    <div className="min-h-screen flex">
+        {/* HERO*/}
+        <div className="flex-grow bg-white flex items-center justify-center p-[20px]">
+            <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
+                {/* Background */}
+                <div
+                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
+                                min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4 "
+                    style={{
+                        backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                    }}
+                ></div>
+
+
+                {/* Content*/}
+                <div className="w-full h-full flex flex-col justify-between items-start">
+                    {/* Logo */}
+                    <div className="flex items-center justify-start p-5">
+                    <img 
+                        src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
+                        alt="Logo" 
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                    />
+                    </div>
+
+                    {/* Main messagens*/}
+                    <div className="flex-grow flex flex-col items-start justify-center text-left max-w-[65%] ">
+                    <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#C964E2] via-[#FF6666] to-[#FF9700]">
+                        Pronto para decolar a sua carreira?
+                    </h1>
+                        <p className="text-black mt-4 text-2xl max-w-[70%]">
+                        Nós te conectamos com talentos que já passaram pela Unicamp.
+                        </p>
+                    </div>
+
+                    {/* Texts left corner */}
+                    <div className="p-5">
+                        <div className="text-black text-left text-[18px]">
+                        <p>Mentorias.</p>
+                        <p>Oportunidades.</p>
+                        <p>Networking.</p>
+                        <p>De ex-aluno para aluno.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     {/* SIGNUP FORM */}
     <div className="w-1/2 lg:w-[500px] xl:w-[500px] 2xl:w-[600px] flex flex-col items-center justify-center bg-white px-[3vw]  lg:px-[50px] 2xl:px-[80px]">
@@ -420,7 +473,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({
                     const isValid = isEmailValid(e.target.value);
                     if (!isValid) {
                       setEmailWarning(
-                        "Esse e-mail precisará de aprovação manual por não pertencer aos domínios da Unicamp.",
+                        "Utilize o seu e-mail de aluno (@dac.unicamp.br). Caso não possua, seu cadastro será enviado para aprovação do Patronos.",
                       );
                     } else {
                       setEmailWarning("");
@@ -582,20 +635,15 @@ const DesktopLayout: React.FC<LayoutProps> = ({
         )}
       </Formik>
 
-      {/* Login */}
-      <div className="mt-6 text-center">
-        <p className="text-black text-md text-[#2F2B3D]/[70%] inline">
-          Já possui conta?{" "}
-        </p>
-        <Link
-          href="/"
-          className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline"
-        >
-          Faça Login
-        </Link>
-      </div>
+                {/* Login */}
+                <div className="mt-6 text-center">
+                    <p className="text-black text-md text-[#2F2B3D]/[70%] inline">Já possui conta? </p>
+                    <Link href="/" className="text-md text-[#103768]/[100%] hover:text-[#103768] hover:font-semibold inline">
+                        Faça Login
+                    </Link>
+                </div>
+            </div>
     </div>
-  </div>
 );
 
 export default function SignUp() {
@@ -611,11 +659,9 @@ export default function SignUp() {
   const router = useRouter();
 
   useEffect(() => {
-
     const fetchApiUrl = async () => {
-      const response = await fetch('/api');
-      const data = await response.json();
-      setApiUrl(data.apiUrl);
+      const response = await axios.get('/api');
+      setApiUrl(response.data.apiUrl);
     };
 
     fetchApiUrl();
@@ -644,47 +690,48 @@ export default function SignUp() {
     console.log(debugMessage);
 
     try {
-      const response = await fetch(`${apiUrl}/signup`, {
-        method: "POST",
+      const response = await axios.post(`${apiUrl}/signup`, values, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
       });
+      
+      const result = response.data;
 
-      const result = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         if (result.email_sent) {
           setIsEmailSent(true);
         } else {
           setIsEmailSent(false);
         }
         setIsPopupOpen(true);
-      } else if (response.status === 409) {
-        console.log(result);
-        if (result.email_in_use && result.username_in_use) {
-          setFoundDataWarning("Este e-mail e nome de usuário já estam em uso.");
-          values.email = "";
-          values.username = "";
-        } else if (result.email_in_use) {
-          setFoundDataWarning("Este e-mail já foi cadastrado.");
-          values.email = "";
-        } else if (result.username_in_use) {
-          setFoundDataWarning("Este nome de usuário já está em uso.");
-          values.username = "";
-        }
-      } else {
-        alert("Erro ao cadastrar. Tente novamente.");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
-      } else {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 409) {
+          const result = error.response.data;
+          if (result.email_in_use && result.username_in_use) {
+            setFoundDataWarning("Este e-mail e nome de usuário já estão em uso.");
+            values.email = "";
+            values.username = "";
+          } else if (result.email_in_use) {
+            setFoundDataWarning("Este e-mail já foi cadastrado.");
+            values.email = "";
+          } else if (result.username_in_use) {
+            setFoundDataWarning("Este nome de usuário já está em uso.");
+            values.username = "";
+          }
+        } else if (error instanceof Error) {
+          alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
+        } else {
+          alert("Ocorreu um erro desconhecido. Tente novamente mais tarde.");
+        }
+      } else { 
         alert("Ocorreu um erro desconhecido. Tente novamente mais tarde.");
       }
     }
   };
+
   return (
     <>
       {isMobile ? (
