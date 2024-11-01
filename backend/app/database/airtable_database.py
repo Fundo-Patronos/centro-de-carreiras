@@ -28,7 +28,6 @@ class AirtableDatabase(Database):
         parsed_response["id"] = response.get("id", "")
 
         return parsed_response
-        
 
     def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
         """Gets a single record from the Airtable database using filterByFormula.
@@ -141,7 +140,10 @@ class AirtableDatabase(Database):
             if not offset:
                 break
 
-        return [AirtableDatabase._get_parsed_response(record) for record in all_records]
+        return [
+            AirtableDatabase._get_parsed_response(record)
+            for record in all_records
+        ]
 
     def create(self, table_id: str, items: list[Item]) -> None:
         headers = {
