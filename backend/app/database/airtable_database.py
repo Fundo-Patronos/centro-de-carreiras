@@ -1,9 +1,8 @@
 import os
 import requests
 from typing import Any, Optional
-from pydantic import BaseModel
-from urllib.parse import urlencode, quote_plus
 
+from app.models.abstract_item import Item
 from app.database.database import Database
 from app.exceptions import DataNotFound
 
@@ -22,6 +21,14 @@ class AirtableDatabase(Database):
             raise ValueError(
                 "AIRTABLE_BASE_ID environment variable is not set."
             )
+
+    @staticmethod
+    def _get_parsed_response(response: dict[str, Any]) -> dict:
+        parsed_response = response.get("fields", {})
+        parsed_response["id"] = response.get("id", "")
+
+        return parsed_response
+        
 
     def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
         """Gets a single record from the Airtable database using filterByFormula.
@@ -80,7 +87,7 @@ class AirtableDatabase(Database):
             raise DataNotFound("No items found with the given parameters.")
 
         # Return the first matching record
-        return records[0]
+        return AirtableDatabase._get_parsed_response(records[0])
 
     def read_all(
         self, table_id: str, params: Optional[dict[str, Any]] = None
@@ -134,9 +141,9 @@ class AirtableDatabase(Database):
             if not offset:
                 break
 
-        return all_records
+        return [AirtableDatabase._get_parsed_response(record) for record in all_records]
 
-    def create(self, table_id: str, items: list[BaseModel]) -> None:
+    def create(self, table_id: str, items: list[Item]) -> None:
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
@@ -153,7 +160,7 @@ class AirtableDatabase(Database):
         )
         response.raise_for_status()
 
-    def update(self, table_id: str, item: BaseModel) -> None:
+    def update(self, table_id: str, item: Item) -> None:
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",

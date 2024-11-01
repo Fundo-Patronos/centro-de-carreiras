@@ -1,7 +1,6 @@
 from abc import ABC
 from pydantic import BaseModel
 from typing import Literal
-from datetime import time
 
 
 class Schedule(BaseModel):

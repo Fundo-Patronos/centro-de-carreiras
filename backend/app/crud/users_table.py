@@ -15,15 +15,6 @@ class UsersTable:
         self.table_id = optional_table_id
         self.db = db
 
-    def parse_user_data(self, user: dict) -> dict:
-        user_data = user.get("fields", {})
-        user_data["id"] = user.get("id", "")
-
-        user_data.setdefault("linkedin", "")
-        user_data.setdefault("description", "")
-
-        return user_data
-
     def get_all_users(self) -> list[User]:
         """Gets all users from the database.
 
@@ -47,8 +38,7 @@ class UsersTable:
 
         params = {"username": username}
         user = self.db.read_one(table_id=self.table_id, params=params)
-        user_data = self.parse_user_data(user)
-        return User(**user_data)
+        return User(**user)
 
     def get_user_by_email(self, email: str) -> User:
         """
@@ -62,8 +52,7 @@ class UsersTable:
         """
         params = {"email": email}
         user = self.db.read_one(table_id=self.table_id, params=params)
-        user_data = self.parse_user_data(user)
-        return User(**user_data)
+        return User(**user)
 
     def create_user(self, user: UserCreate) -> None:
         """Creates a new user in the database.
@@ -86,10 +75,10 @@ class UsersTable:
 
         self.db.update(table_id=self.table_id, item=user)
 
-    def delete_user(self, user_id: int) -> None:
+    def delete_user(self, user_id: str) -> None:
         """Deletes a user from the database by user ID.
 
         Args:
             user_id (int): The ID of the user to be deleted.
         """
-        self.db.delete(table_id=self.table_id, item={"Id": user_id})
+        self.db.delete(table_id=self.table_id, item_id=user_id)
