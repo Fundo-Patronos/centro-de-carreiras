@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from app.models.abstract_item import Item
 
 
-class Opportunity(BaseModel):
-    id: int
+class Opportunity(Item):
     title: str
     description: str

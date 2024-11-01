@@ -117,7 +117,7 @@ async def signup(
         print("Failed to send email. Message:", str(e))
         try:
             new_user = users_table.get_user_by_email(user.email)
-            users_table.delete_user(new_user.Id)
+            users_table.delete_user(new_user.id)
         except Exception as delete_error:
             print(
                 "Failed to delete user after email error. Message:",
@@ -217,6 +217,10 @@ async def verify(
             "model": DefaultErrorResponse,
             "description": "Not Acceptable - Invalid email",
         },
+        425: {
+            "model": DefaultErrorResponse,
+            "description": "Too Early - Unverified user",
+        },
         500: {
             "model": DefaultErrorResponse,
             "description": "Internal Server Error - Failed to login user",
@@ -253,10 +257,17 @@ async def signin(
         )
 
     if not auth.does_password_match(user.password, existing_user.password):
-        print(f"Invalid password received")
+        print("Invalid password received")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid password",
+        )
+
+    if not existing_user.is_verified:
+        print("Unverified user received")
+        raise HTTPException(
+            status_code=status.HTTP_425_TOO_EARLY,
+            detail="Unverified user"
         )
 
     token = auth.create_jwt_token_from_email(user.email)
