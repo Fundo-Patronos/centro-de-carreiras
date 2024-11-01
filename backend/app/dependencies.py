@@ -3,11 +3,12 @@ from fastapi import Depends
 
 from app.crud.users_table import UsersTable
 from app.database.database import Database
-from app.database.noco_database import NocoDatabase
+from app.database.airtable_database import AirtableDatabase
+
 
 
 def get_db() -> Generator[Database, None, None]:
-    yield NocoDatabase()
+    yield AirtableDatabase()
 
 
 def get_users_table(
