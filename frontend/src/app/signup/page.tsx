@@ -152,7 +152,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                     const isValid = isEmailValid(_e.target.value);
                     if (!isValid) {
                       setEmailWarning(
-                        "Esse e-mail precisará de aprovação manual por não pertencer aos domínios da Unicamp.",
+                        "Utilize o seu e-mail de aluno (@dac.unicamp.br). Caso não possua, seu cadastro será enviado para aprovação do Patronos.",
                       );
                     } else {
                       setEmailWarning("");
