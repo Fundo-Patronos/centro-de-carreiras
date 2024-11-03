@@ -13,6 +13,7 @@ import axios from 'axios';
 
 interface SignUpFormValues {
   username: string;
+  name?: string ;
   email: string;
   password: string;
   graduation_year: number | "";
@@ -79,6 +80,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
       <Formik
         initialValues={{
           username: "",
+          name: "",
           email: "",
           password: "",
           graduation_year: "",
@@ -380,6 +382,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
       <Formik
         initialValues={{
           username: "",
+          name: "",
           email: "",
           password: "",
           graduation_year: "",

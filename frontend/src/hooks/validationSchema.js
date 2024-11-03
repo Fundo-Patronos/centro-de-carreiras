@@ -13,7 +13,6 @@ export const validationSchemaLogin = Yup.object().shape({
 
 export const validationSchemaSignUp = Yup.object().shape({
   username: Yup.string().required("Nome de usuário é obrigatório"),
-  name: Yup.string().required("Nome completo é obrigatório"),
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
   password: Yup.string()
     .min(8, "A senha deve ter pelo menos 8 caracteres")
