@@ -9,7 +9,6 @@ def create_test_user(username: str = "testuser") -> UserCreate:
         username=username,
         email="test@test.com",
         password="testpassword",
-        name="testname",
         linkedin="testlinkedin",
         graduation_year=2022,
         course="testcourse",
@@ -36,10 +35,10 @@ def test_update_user(test_db):
     users_table.create_user(user)
 
     user = users_table.get_user("testuser")
-    user.name = "newname"
+    user.course= = "newtestecourse"
     users_table.update_user(user)
 
-    assert users_table.get_user("testuser").name == "newname"
+    assert users_table.get_user("testuser").course == "newtestecourse"
 
 
 def test_get_all_users(test_db):

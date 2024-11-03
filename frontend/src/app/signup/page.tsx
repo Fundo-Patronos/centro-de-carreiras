@@ -13,7 +13,6 @@ import axios from 'axios';
 
 interface SignUpFormValues {
   username: string;
-  name: string;
   email: string;
   password: string;
   graduation_year: number | "";
@@ -80,7 +79,6 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
       <Formik
         initialValues={{
           username: "",
-          name: "",
           email: "",
           password: "",
           graduation_year: "",
@@ -110,25 +108,6 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 }}
               />
               {touched.username && errors.username && (
-                <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
-                  *
-                </span>
-              )}
-            </div>
-
-            {/* Full Name */}
-            <div className="relative flex items-center">
-              <Field
-                name="name"
-                type="text"
-                placeholder="Nome Completo"
-                className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                style={{
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  border: "none",
-                }}
-              />
-              {touched.name && errors.name && (
                 <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
                   *
                 </span>
@@ -401,7 +380,6 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
       <Formik
         initialValues={{
           username: "",
-          name: "",
           email: "",
           password: "",
           graduation_year: "",
@@ -431,25 +409,6 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 }}
               />
               {touched.username && errors.username && (
-                <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
-                  *
-                </span>
-              )}
-            </div>
-
-            {/* Full Name */}
-            <div className="relative flex items-center">
-              <Field
-                name="name"
-                type="text"
-                placeholder="Nome Completo"
-                className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                style={{
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  border: "none",
-                }}
-              />
-              {touched.name && errors.name && (
                 <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
                   *
                 </span>

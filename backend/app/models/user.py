@@ -8,7 +8,6 @@ from app.models.abstract_item import Item
 class User(Item, ABC):
     id: str
     username: str
-    name: str
     email: EmailStr
     password: str
     graduation_year: int
