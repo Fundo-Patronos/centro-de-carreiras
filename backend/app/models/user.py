@@ -15,6 +15,7 @@ class User(Item, ABC):
 
     # Optional fields
     tags: Optional[str] = None
+    name: str = ""
     linkedin: str = ""
     description: str = ""
     role: str = "STUDENT"
