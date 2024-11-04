@@ -5,6 +5,7 @@ from app.schemas.user import UserCreate
 
 DEFAULT_TEST_EMAIL = "test@test.com"
 
+
 def create_test_user(email: str = DEFAULT_TEST_EMAIL) -> UserCreate:
     return UserCreate(
         email=email,
