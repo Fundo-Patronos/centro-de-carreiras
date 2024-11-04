@@ -12,8 +12,7 @@ import AuthPopup from '../../components/AuthPopup';
 import axios from 'axios';
 
 interface SignUpFormValues {
-  username: string;
-  name?: string ;
+  name: string;
   email: string;
   password: string;
   graduation_year: number | "";
@@ -79,7 +78,6 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
 
       <Formik
         initialValues={{
-          username: "",
           name: "",
           email: "",
           password: "",
@@ -93,23 +91,20 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
       >
         {({ setFieldTouched, isSubmitting, touched, errors }) => (
           <Form className="w-full space-y-6">
-            {/* Username */}
+
+            {/* Full Name */}
             <div className="relative flex items-center">
               <Field
-                name="username"
+                name="name"
                 type="text"
-                placeholder="Nome do Usuário"
+                placeholder="Nome Completo"
                 className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                 style={{
                   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
                   border: "none",
                 }}
-                onBlur={() => {
-                  setFieldTouched("username", true);
-                  setFoundDataWarning("");
-                }}
               />
-              {touched.username && errors.username && (
+              {touched.name && errors.name && (
                 <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
                   *
                 </span>
@@ -179,7 +174,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 <Field
                   name="graduation_year"
                   type="number"
-                  placeholder="Ano de Graduação"
+                  placeholder="Ano Previsto de Graduação"
                   className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                   style={{
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
@@ -381,7 +376,6 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
 
       <Formik
         initialValues={{
-          username: "",
           name: "",
           email: "",
           password: "",
@@ -395,23 +389,20 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
       >
         {({ setFieldTouched, isSubmitting, touched, errors }) => (
           <Form className="w-full space-y-6">
-            {/* Username */}
+
+            {/* Full Name */}
             <div className="relative flex items-center">
               <Field
-                name="username"
+                name="name"
                 type="text"
-                placeholder="Nome do Usuário"
+                placeholder="Nome Completo"
                 className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                 style={{
                   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
                   border: "none",
                 }}
-                onBlur={() => {
-                  setFieldTouched("username", true);
-                  setFoundDataWarning("");
-                }}
               />
-              {touched.username && errors.username && (
+              {touched.name && errors.name && (
                 <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
                   *
                 </span>
@@ -481,7 +472,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 <Field
                   name="graduation_year"
                   type="number"
-                  placeholder="Ano de Graduação"
+                  placeholder="Ano Previsto de Graduação"
                   className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                   style={{
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
@@ -641,15 +632,15 @@ export default function SignUp() {
     values.is_domain_valid = isEmailValid(values.email);
 
     const debugMessage = `
-            Nome de usuário: ${values.username}
             Nome completo: ${values.name}
             E-mail: ${values.email}
-            Ano de graduação: ${values.graduation_year}
+            Ano Previsto de graduação: ${values.graduation_year}
             Curso: ${values.course}
             linkedin: ${values.linkedin ? values.linkedin : "Não fornecido"}
             Validação de domínio: ${values.is_domain_valid}
         `;
     console.log(debugMessage);
+    console.log(values);
 
     try {
       const response = await axios.post(`${apiUrl}/signup`, values, {
@@ -672,16 +663,9 @@ export default function SignUp() {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 409) {
           const result = error.response.data;
-          if (result.email_in_use && result.username_in_use) {
-            setFoundDataWarning("Este e-mail e nome de usuário já estão em uso.");
-            values.email = "";
-            values.username = "";
-          } else if (result.email_in_use) {
+          if (result.email_in_use) {
             setFoundDataWarning("Este e-mail já foi cadastrado.");
             values.email = "";
-          } else if (result.username_in_use) {
-            setFoundDataWarning("Este nome de usuário já está em uso.");
-            values.username = "";
           }
         } else if (error instanceof Error) {
           alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
