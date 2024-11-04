@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import type { JSX } from "react";
 
@@ -20,6 +21,13 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = () => {
+    Cookies.remove("auth-storage");
+    Cookies.remove("refreshToken");
+    
+    window.location.href = "/";
+  };
+
   return (
     <nav className="bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4 lg:px-20 lg:py-4">
@@ -31,7 +39,7 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
             alt="Associação Fundo Patrimonial Patronos"
             width={50}
             height={40}
-            style={{ width: "auto", height: "auto" }} 
+            style={{ width: "auto", height: "auto" }}
           />
           {/* Separation Bar */}
           <div className="h-12 border-l-2 border-gray-400"></div>
@@ -100,23 +108,15 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
             >
               Vagas
             </Link>
+
+            <div className="h-6 border-l-2 border-black opacity-50 px-1"></div>
+
             <Link
-              href="/ser-um-mentor"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/ser-um-mentor" ? "font-bold text-red-600" : ""
-              }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
+              href="/"
+              onClick={handleLogout}
+              className="block py-2 text-gray-800 hover:text-red-600"
             >
-              Ser um Mentor
-            </Link>
-            <Link
-              href="/contato"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/contato" ? "font-bold text-red-600" : ""
-              }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
-            >
-              Contato
+              Logout
             </Link>
           </div>
         </div>
@@ -152,23 +152,15 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           >
             Vagas
           </Link>
+
+          <div className="border-t-2 border-black opacity-60 mt-3 mb-1"></div>
+
           <Link
-            href="/ser-um-mentor"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/ser-um-mentor" ? "font-bold text-red-600" : ""
-            }`}
-            onClick={toggleMenu} // Close dropdown after click
+            href="/"
+            onClick={handleLogout}
+            className="block py-2 text-gray-800 hover:text-red-600 "
           >
-            Ser um Mentor
-          </Link>
-          <Link
-            href="/contato"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/contato" ? "font-bold text-red-600" : ""
-            }`}
-            onClick={toggleMenu} // Close dropdown after click
-          >
-            Contato
+            Logout
           </Link>
         </div>
       )}
