@@ -430,8 +430,8 @@ const handleSubmit = async (
     const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
-      const { email, username, token, refresh_token } = response.data;
-      login({ email, username }, token, refresh_token); // Store the user data in Zustand
+      const { email, token, refresh_token } = response.data;
+      login({ email }, token, refresh_token); // Store the user data in Zustand
 
       // Save token to cookies instead of localStorage
       Cookies.set(
