@@ -1,154 +1,131 @@
+'use client';
+
+import Testimonials from "../../components/Testimonials";
+import GradientButton from "@/components/GradientButton";
 import Layout from "@/components/Layout";
-import { Button } from "@/components/Button";
 import Image from "next/image";
+import router from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    const storedName = localStorage.getItem('name');
+    if (storedName) {
+      setName(storedName);
+    }
+  });
+
   return (
     <Layout currentPage="home">
       <div className="min-h-screen flex flex-col">
         {/* First Section with Background Image */}
-        <section className="relative w-full h-[600px]">
+        <section className="relative w-full h-[30vh]">
           <Image
             src="/images/campus.jpg"
             alt="Background Image"
             fill
             style={{ objectFit: "cover" }}
             priority={true}
-            className="absolute inset-0 z-[-1]"
+            className="absolute inset-0 z-[-1] blur-sm"
           />
           {/* Darkening overlay */}
           <div className="absolute inset-0 bg-black opacity-50 z-[-1]"></div>
 
-          <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <h1 className="text-5xl font-black max-w-[70%] md:max-w-[50%]">
-              Centro de Carreiras Patronos
+          <div className="relative z-10 flex w flex-col items-center justify-center h-full text-center text-white px-4">
+            <h1 className="text-6xl font-black max-w-[90%] md:max-w-[50%]">
+              Olá, Bruno!
             </h1>
-            <p className="mt-4 text-lg max-w-[70%] md:max-w-[50%]">
-              Alavanque sua carreira com mentorias de ex-alunos da Universidade
-              Estadual de Campinas
-            </p>
-            <div className="mt-8 space-x-4">
-              <Button href="/mentores" className="bg-red-600 hover:bg-red-700">
-                Visualizar mentores
-              </Button>
-              <Button
-                href="/saber-mais"
-                className="bg-gray-600 hover:bg-gray-700"
-              >
-                Saber mais
-              </Button>
+          </div>
+        </section>
+
+        <section id="explore" className="px-8 py-16">
+          <div className="mb-8">
+              <h2 className="flex items-center text-lg text-black font-light text-left sm:text-xl">
+                <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
+                Explore
+              </h2>
+          </div>
+
+          {/* Container dos Cartões */}
+          <div className="flex flex-col md:flex-row justify-center gap-8">
+            {/* Cartão de Mentorias */}
+            <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden max-w-4xl">
+              <div className="md:w-1/2">
+                <Image
+                  src="/images/impulsionando_sua_carreira.jpg"
+                  alt="Mentorias"
+                  width={600}
+                  height={400}
+                  className="object-cover h-full w-full"
+                />
+              </div>
+              <div className="p-8 md:w-1/2 flex flex-col justify-between">
+                <div className="mb-3">
+                  <h3 className="text-2xl font-bold text-black">Mentorias</h3>
+                  <p className="text-gray-700 mt-4">
+                    Aprenda com quem já trilhou o caminho que você deseja seguir.
+                  </p>
+                  <ul className="text-gray-600 mt-4 list-disc list-inside">
+                    <li>Acesse mentores experientes em diversas áreas.</li>
+                    <li>Receba orientações individualizadas sobre carreira.</li>
+                    <li>Agende sessões de mentoria conforme sua disponibilidade.</li>
+                  </ul>
+                </div>
+                <GradientButton
+                  onClick={() => router.push('/mentores')}
+                >
+                  Conheça nossos mentores
+                </GradientButton>
+              </div>
+            </div>
+
+            {/* Cartão de Vagas */}
+            <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden max-w-4xl">
+              <div className="md:w-1/2">
+                <Image
+                  src="/images/te_conectar_ao_mercado.jpg"
+                  alt="Vagas"
+                  width={600}
+                  height={400}
+                  className="object-cover h-full w-full"
+                />
+              </div>
+              <div className="p-8 md:w-1/2 flex flex-col justify-between">
+                <div className="mb-3">
+                  <h3 className="text-2xl font-bold text-black">Vagas</h3>
+                  <p className="text-gray-700 mt-4">
+                    Exclusivas para você, que vive o desafio e a excelência da Unicamp.
+                  </p>
+                  <ul className="text-gray-600 mt-4 list-disc list-inside">
+                    <li>Um canal de aplicações exclusivo para alunos da Unicamp.</li>
+                    <li>Conecte-se diretamente empresas parceiras em diversas áreas.</li>
+                    <li>Explore oportunidades de parceiros do Patronos</li>
+                  </ul>
+                </div>
+                <GradientButton
+                  onClick={() => router.push('/mentores')}
+                >
+                  Confira as vagas disponíveis
+                </GradientButton>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Second Section - About */}
-        <section className="flex flex-col md:flex-row justify-between items-center px-32 py-16 bg-white">
-          <div className="flex flex-col justify-center text-center md:text-left">
-            <h2 className="flex items-center text-lg text-black font-light text-left mb-8 sm:text-xl -mx-10">
-              <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
-              Sobre o centro de carreiras
-            </h2>
-            <h2 className="text-3xl text-black font-semibold mb-4">
-              Um espaço para se conectar e participar de mentorias com ex-alunos
-              da Universidade Estadual de Campinas
-            </h2>
-            <p className="text-gray-600 mb-4 max-w-[90%] md:max-w-[80%]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
-              cursus, mi quis viverra ornare, eros dolor interdum nulla.
-              <br /> <br />
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus
-              quod beatae, odit dignissimos repellendus officiis animi modi
-              minima dolores quo cupiditate rem voluptatem maxime a hic
-              laudantium nostrum? Deserunt, velit.
-            </p>
-            <div className="mt-4 space-x-4">
-              <Button href="/mentores" className="bg-red-600 hover:bg-red-700">
-                Visualizar mentores
-              </Button>
-            </div>
-          </div>
-          <Image
-            src="/images/mentoria.jpeg"
-            alt="Mentoria"
-            width={500}
-            height={300}
-            style={{ width: "auto", height: "auto" }} // Ensuring proper aspect ratio handling
-            className="rounded-lg"
-          />
-        </section>
-
-        {/* Third Section - Mission */}
-        <section className="px-32 py-16 bg-white">
+        <section className="px-8">
           <div className="mb-8">
             <h2 className="flex items-center text-lg text-black font-light text-left sm:text-xl">
               <span className="inline-block w-12 h-0.5 bg-black mr-2"></span>
-              Nossa missão
+              Depoimentos
             </h2>
           </div>
-
-          {/* Card Container */}
-          <div className="flex flex-col md:flex-row justify-center gap-8">
-            {/* Card 1 */}
-            <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
-              <Image
-                src="/images/impulsionando_sua_carreira.jpg"
-                alt="Impulsionar sua carreira"
-                width={400}
-                height={200}
-                className="rounded-lg"
-                style={{ width: "auto", height: "auto" }} // Fix for width/height mismatch warning
-              />
-              <h3 className="text-xl font-semibold mt-4 text-black">
-                Impulsionar sua carreira
-              </h3>
-              <p className="text-gray-600 mt-2">
-                Entre em contato com mentores selecionados de diversas empresas.
-              </p>
-              <Button
-                href="/mentores"
-                className="bg-red-600 hover:bg-red-700 mt-4"
-              >
-                Mentores
-              </Button>
-            </div>
-
-            {/* Card 2 */}
-            <div className="max-w-sm bg-white p-4 rounded-lg shadow-md">
-              <Image
-                src="/images/te_conectar_ao_mercado.jpg"
-                alt="Te conectar ao mercado"
-                width={400}
-                height={200}
-                className="rounded-lg"
-                style={{ width: "auto", height: "auto" }} // Fix for width/height mismatch warning
-              />
-              <h3 className="text-xl font-semibold mt-4 text-black">
-                Te conectar ao mercado
-              </h3>
-              <p className="text-gray-600 mt-2">
-                Tenha acesso a vagas selecionadas pelos mentores presentes no
-                centro de carreiras.
-              </p>
-              <Button
-                href="/vagas"
-                className="bg-red-600 hover:bg-red-700 mt-4"
-              >
-                Vagas selecionadas
-              </Button>
-            </div>
-          </div>
+          <Testimonials />
         </section>
 
-        {/* 4th section - testimony */}
-        <section className="relative w-full h-[400px] bg-gray-900">
-          <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-            <blockquote className="text-2xl font-semibold max-w-2xl">
-              &quot;Este aplicativo mudou minha vida! Agora eu consigo agendar
-              mentorias facilmente e aprender com os melhores.&quot;
-            </blockquote>
-            <cite className="mt-4">— Usuário do Centro de Carreiras</cite>
-          </div>
-        </section>
+
       </div>
     </Layout>
   );
