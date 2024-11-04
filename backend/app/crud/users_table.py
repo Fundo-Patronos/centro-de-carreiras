@@ -26,21 +26,7 @@ class UsersTable:
             User(**user) for user in self.db.read_all(table_id=self.table_id)
         ]
 
-    def get_user(self, username: str) -> User:
-        """Gets a user from the database.
-
-        Args:
-            username (str): The username of the user to be retrieved.
-
-        Returns:
-            User: The user retrieved from the database.
-        """
-
-        params = {"username": username}
-        user = self.db.read_one(table_id=self.table_id, params=params)
-        return User(**user)
-
-    def get_user_by_email(self, email: str) -> User:
+    def get_user(self, email: str) -> User:
         """
         Gets a user from the database by email.
 
