@@ -20,13 +20,13 @@ const AuthPopup: React.FC<AuthPopupProps> = ({
   const [timeLeft, setTimeLeft] = useState(TOKEN_EXPIRATION_TIMER);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setInterval> | null = null;
     if (isOpen && emailSent && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 60000);
     }
-
+  
     return () => {
       if (timer) {
         clearInterval(timer);
