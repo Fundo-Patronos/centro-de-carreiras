@@ -7,6 +7,7 @@ from app.models.abstract_item import Item
 
 class User(Item, ABC):
     id: str
+    name: str
     email: EmailStr
     password: str
     graduation_year: int
@@ -14,7 +15,6 @@ class User(Item, ABC):
 
     # Optional fields
     tags: Optional[str] = None
-    name: str = ""
     linkedin: str = ""
     description: str = ""
     role: str = "STUDENT"
