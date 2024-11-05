@@ -12,6 +12,11 @@ import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
 import { AxiosError } from "axios";
 
+// Defina os headers globais para Axios
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+
 interface LoginFormValues {
   email: string;
   password: string;
