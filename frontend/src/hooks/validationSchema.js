@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const ALLOWED_DOMAINS = ["@dac.unicamp.br", "@unicamp.br"];
+const ALLOWED_DOMAINS = ["@dac.unicamp.br", "@unicamp.br", "@patronos.org"];
 
 export const isEmailValid = (email) => {
   return ALLOWED_DOMAINS.some((domain) => email.endsWith(domain));
@@ -12,7 +12,6 @@ export const validationSchemaLogin = Yup.object().shape({
 });
 
 export const validationSchemaSignUp = Yup.object().shape({
-  username: Yup.string().required("Nome de usuário é obrigatório"),
   name: Yup.string().required("Nome completo é obrigatório"),
   email: Yup.string().email("Email inválido").required("Email é obrigatório"),
   password: Yup.string()
