@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from app.routes.auth import router as auth_router
 from app.routes.mentoring import router as mentoring_router
+from app.routes.send_email import router as send_email_router
 from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
@@ -24,3 +25,4 @@ app.add_middleware(
 
 app.include_router(mentoring_router)
 app.include_router(auth_router)
+app.include_router(send_email_router)
