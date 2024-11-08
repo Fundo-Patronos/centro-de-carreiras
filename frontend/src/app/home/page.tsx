@@ -25,7 +25,6 @@ export default function Home() {
         <StatsSection />
         <ExploreSection />
         
-        {/* Mobile-Optimized Testimonials Section */}
         <section className="px-4 py-12 md:py-16 bg-white">
           <div className="container mx-auto">
             <div className="mb-8 md:mb-12">
