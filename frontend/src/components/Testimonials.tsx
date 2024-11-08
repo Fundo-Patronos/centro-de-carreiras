@@ -43,7 +43,7 @@ const Testimonials: React.FC = () => {
   return (
     <section
       className="my-5 bg-cover bg-center bg-no-repeat py-16 rounded-lg shadow-md"
-      style={{ backgroundImage: "url('/images/identidade-visual/Ativo-9assets.png')" }} // Coloque o caminho da sua imagem de fundo aqui
+      style={{ backgroundImage: "url('/images/identidade-visual/Ativo-9assets.svg')" }} // Coloque o caminho da sua imagem de fundo aqui
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto bg-white bg-opacity-80 p-6 rounded-lg shadow-md">
         {testimonials.map((testimonial, index) => (
