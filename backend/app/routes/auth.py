@@ -28,7 +28,7 @@ router = APIRouter()
     responses={
         409: {
             "model": SignUpConflictErrorResponse,
-            "description": "Conflict - Email or username already in use",
+            "description": "Conflict - Email already in use",
         },
         500: {
             "model": DefaultErrorResponse,
@@ -53,11 +53,10 @@ async def signup(
     auth = Auth()
 
     email_in_use = False
-    username_in_use = False
 
     # Check if user already exists
     try:
-        users_table.get_user_by_email(user.email)
+        users_table.get_user(user.email)
         email_in_use = True
     except DataNotFound:
         pass
@@ -68,23 +67,11 @@ async def signup(
             detail=str(e),
         )
 
-    try:
-        users_table.get_user(user.username)
-        username_in_use = True
-    except DataNotFound:
-        pass
-    except RuntimeError as e:
-        print("Runtime error:", str(e))
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e),
-        )
-
-    if username_in_use or email_in_use:
+    if email_in_use:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content=SignUpConflictErrorResponse(
-                email_in_use=email_in_use, username_in_use=username_in_use
+                email_in_use=email_in_use
             ).model_dump(),
         )
 
@@ -106,7 +93,6 @@ async def signup(
     if not user.is_domain_valid:
         return {
             "email": user.email,
-            "username": user.username,
             "email_sent": False,
         }
 
@@ -116,7 +102,7 @@ async def signup(
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         try:
-            new_user = users_table.get_user_by_email(user.email)
+            new_user = users_table.get_user(user.email)
             users_table.delete_user(new_user.id)
         except Exception as delete_error:
             print(
@@ -135,7 +121,6 @@ async def signup(
 
     return {
         "email": user.email,
-        "username": user.username,
         "email_sent": True,
     }
 
@@ -160,8 +145,8 @@ async def signup(
     summary="User Verification",
     description=(
         "Verify a user account. This endpoint accepts a JWT token and verifies the "
-        "user account associated with the email in the token. It returns the email, "
-        "username, and a boolean indicating if the user is verified."
+        "user account associated with the email in the token. It returns the email"
+        "and a boolean indicating if the user is verified."
     ),
 )
 async def verify(
@@ -190,7 +175,7 @@ async def verify(
         )
 
     try:
-        user = users_table.get_user_by_email(email)
+        user = users_table.get_user(email)
         user.is_verified = True
         users_table.update_user(user)
     except RuntimeError as e:
@@ -241,7 +226,7 @@ async def signin(
     auth = Auth()
 
     try:
-        existing_user = users_table.get_user_by_email(user.email)
+        existing_user = users_table.get_user(user.email)
 
     except DataNotFound:
         print("Got email not present in the database")
@@ -283,7 +268,6 @@ async def signin(
 
     return {
         "email": existing_user.email,
-        "username": existing_user.username,
         "token": token,
     }
 
@@ -332,7 +316,7 @@ async def refresh_token(
         )
 
     try:
-        user = users_table.get_user_by_email(email)
+        user = users_table.get_user(email)
     except DataNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -347,7 +331,6 @@ async def refresh_token(
     new_access_token = auth.create_jwt_token_from_email(user.email)
     return {
         "email": user.email,
-        "username": user.username,
         "token": new_access_token,
     }
 
@@ -374,7 +357,7 @@ async def forgot_password(
     auth = Auth()
 
     try:
-        user = users_table.get_user_by_email(request_data.user_email)
+        user = users_table.get_user(request_data.user_email)
     except DataNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -438,7 +421,7 @@ async def reset_password(
         )
 
     try:
-        user = users_table.get_user_by_email(email)
+        user = users_table.get_user(email)
     except DataNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
