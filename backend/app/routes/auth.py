@@ -268,6 +268,7 @@ async def signin(
 
     return {
         "email": existing_user.email,
+        "user_name": existing_user.name,
         "token": token,
     }
 

@@ -4,10 +4,10 @@ import { persist } from 'zustand/middleware';
 import axios from 'axios';
 
 interface AuthState {
-  user: { email: string;} | null;
+  user: { email: string; user_name: string} | null;
   accessToken: string | null;
   refreshToken: string | null;
-  login: (_user: { email: string}, _accessToken: string, _refreshToken: string) => void;
+  login: (_user: { email: string; user_name: string}, _accessToken: string, _refreshToken: string) => void;
   logout: () => void;
   setAccessToken: (_accessToken: string) => void;
   refreshAccessToken: () => Promise<void>;

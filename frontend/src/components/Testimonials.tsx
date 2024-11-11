@@ -15,27 +15,28 @@ const testimonials: Testimonial[] = [
     name: "Gustavo Beltrami",
     title: "CEO DeX",
     course: "Engenharia Mecânica 012",
-    image: "/images/profile.png"
+    image: "/images/gustavo.jpeg"
   },
   {
     quote: "Como Diretor de Projetos do Patronos, espero que o Centro de Carreiras fortaleça ainda mais a comunidade da Unicamp, estimulando o networking entre alunos e profissionais experientes, além de aproximar talentos da Unicamp com oportunidades do mercado de trabalho.",
     name: "Matheus Pires",
     title: "Diretor de Projetos, Patronos",
     course: "Engenharia Mecânica 015",
-    image: "/images/profile.png",
+    image: "/images/matheus.jpeg",
   },
   {
-    quote: "Como recrutador, sei o potencial dos alunos da Unicamp e espero, pelo canal de aplicação de vagas exclusivo do Centro de Carreiras, poder ajudá-los a encontrarem posições mercado de trabalho.",
-    name: "Fulano de tal",
-    title: "Recrutador, Empresa X",
-    image: "/images/profile.png"
+    quote: "É gratificante ver alunos e ex-alunos unindo forças para criar o centro de carreiras. Juntos, estamos construindo um canal que não apenas conecta pessoas, mas transforma vidas, inspirando e abrindo caminhos para novas jornadas profissionais.",
+    name: "Gabriel Paiva",
+    title: "Desenvolvedor",
+    course: "Ciência de Computação 021",
+    image: "/images/paiva.jpeg"
   },
   {
     quote: "Nossa visão para o Centro de Carreiras é que ele seja aquilo que eu gostaria de ter tido enquanto calouro: um espaço para melhor desenvolver o meu caminho.",
     name: "Bruno Freitas",
     title: "Desenvolvedor",
     course: "Engenharia de Computação 021",
-    image: "/images/profile.png"
+    image: "/images/bruno.jpeg"
   },
 ];
 

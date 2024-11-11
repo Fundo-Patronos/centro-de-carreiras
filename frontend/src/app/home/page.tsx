@@ -12,9 +12,11 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedName = localStorage.getItem('name');
+    const authData = localStorage.getItem('auth-storage');
+    const storedName = authData ? JSON.parse(authData).state.user.user_name : null;
     if (storedName) {
-      setName(storedName);
+      const firstName = storedName.split(' ')[0];
+      setName(firstName);
     }
   }, []);
 
@@ -22,7 +24,6 @@ export default function Home() {
     <Layout currentPage="home">
       <div className="min-h-screen flex flex-col">
         <HeroSection userName={name || 'Visitante'} />
-        <StatsSection />
         <ExploreSection />
         
         <section className="px-4 py-12 md:py-16 bg-white">

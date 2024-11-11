@@ -15,7 +15,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userName }) => {
         fill
         style={{ objectFit: "cover" }}
         priority={true}
-        className="absolute inset-0 z-[-1]"
+        className="absolute inset-0 z-[-1] filter blur-[3px]"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/50 z-[-1]"></div>
 
