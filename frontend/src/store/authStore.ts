@@ -69,7 +69,7 @@ axios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const { refreshAccessToken, accessToken } = useAuthStore.getState();
-    if (error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
+    if (error.response && error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
       try {
         await refreshAccessToken(); // Renova o token
         error.config.__isRetryRequest = true;

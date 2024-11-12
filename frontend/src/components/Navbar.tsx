@@ -4,8 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import type { JSX } from "react";
+import axios from "axios";
+import { useAuthStore } from "@/store/authStore";
 
 interface NavbarProps {
 
@@ -13,20 +15,47 @@ interface NavbarProps {
 
 }
 
+interface AuthStoreState {
+  logout: () => void;
+}
+
+
 export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('');
+  const logout = useAuthStore((state : AuthStoreState) => state.logout); 
+
+  useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await axios.get('/api');
+      const url = response.data.apiUrl;
+      setApiUrl(url);
+    };
+
+    fetchApiUrl();
+  }, []);
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = () => {
-    Cookies.remove("auth-storage");
-    Cookies.remove("refreshToken");
-    
-    window.location.href = "/";
+  const handleLogout = async () => {
+    try {
+      logout();
+
+      await axios.post(`${apiUrl}/logout`, {}, { withCredentials: true });
+  
+      Cookies.remove("auth-storage");
+  
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
+
 
   return (
     <nav className="bg-white shadow-md">
