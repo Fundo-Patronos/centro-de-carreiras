@@ -447,6 +447,7 @@ async def reset_password(
 
     return {"message": "Your password was changed successfuly."}
 
+
 @router.post(
     "/logout",
     summary="User Logout",
@@ -466,5 +467,5 @@ async def logout(response: Response):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An unexpected error occurred: {str(e)}"
+            detail=f"An unexpected error occurred: {str(e)}",
         )
