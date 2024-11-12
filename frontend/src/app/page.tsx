@@ -12,6 +12,10 @@ import axios from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
 import { AxiosError } from "axios";
 
+// Defina os headers globais para Axios
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+
+
 interface LoginFormValues {
   email: string;
   password: string;
@@ -455,11 +459,14 @@ const handleSubmit = async (
     } 
   } catch (error) {
     const err = error as AxiosError;
+    console.log("Error completo:", err); 
+    
     if (err.response) {
         if (err.response.status === 401 || err.response.status === 406) {
-          setLoginError("Usuário ou senha inválido");
+            setLoginError("Usuário ou senha inválido");
         } else {
-          setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+            console.error(err.response.headers);
+            setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
         }
       } else if (err.request) {
         console.error("Erro de rede ou servidor indisponível");
