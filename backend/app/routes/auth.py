@@ -446,3 +446,26 @@ async def reset_password(
         )
 
     return {"message": "Your password was changed successfuly."}
+
+
+@router.post(
+    "/logout",
+    summary="User Logout",
+    responses={
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to remove Refresh Token",
+        },
+    },
+    description="Logout the user and remove the refresh token cookie.",
+    status_code=status.HTTP_200_OK,
+)
+async def logout(response: Response):
+    try:
+        response.delete_cookie("refresh_token")
+        return {"message": "User logged out successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred: {str(e)}",
+        )

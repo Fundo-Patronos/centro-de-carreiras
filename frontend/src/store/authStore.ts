@@ -86,6 +86,7 @@ export const useAuthStore = create<AuthState>()(
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
+
     const { refreshAccessToken } = useAuthStore.getState();
 
     // Verifica se o erro é de autenticação (401)
