@@ -87,7 +87,7 @@ axios.interceptors.response.use(
   (response) => response,
   async (error) => {
 
-    const { refreshAccessToken, accessToken } = useAuthStore.getState();
+    const { refreshAccessToken } = useAuthStore.getState();
 
     // Verifica se o erro é de autenticação (401)
     if (error.response && error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
