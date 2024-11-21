@@ -461,6 +461,8 @@ const handleSubmit = async (
     const err = error as AxiosError;
     console.log("Error completo:", err); 
     
+    console.log("Error completo:", err); 
+    
     if (err.response) {
         if (err.response.status === 401 || err.response.status === 406) {
             setLoginError("Usuário ou senha inválido");
