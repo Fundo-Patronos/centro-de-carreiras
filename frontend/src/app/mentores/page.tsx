@@ -18,7 +18,7 @@ export default function Mentoria() {
       <section
         className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
         style={{
-          height: "300px", // Adjusted height for a more compact section
+          height: "30vh", // Adjusted height for a more compact section
         }}
       >
         {/* Background Image */}
