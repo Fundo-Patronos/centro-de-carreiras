@@ -59,8 +59,8 @@ const Candidatura = () => {
 
       try {
         setLoading(true);
-        //const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
-        //setOpportunity(response.data);
+        // const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
+        // setOpportunity(response.data);
 
         const mockOpportunity = {
             id: '1',
@@ -168,10 +168,12 @@ const Candidatura = () => {
                     </p>
                 </div>
             ): error && (
-                <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-                    <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                      {errorMessage}
-                    </h1>
+                <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+                        <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                        {errorMessage}
+                        </h1>
+                    </div>
                 </div>
             )}            
         </section>
@@ -279,7 +281,7 @@ const Candidatura = () => {
                         <div className="w-full text-right">
                             <Button
                             onClick={()=> setShowPopup(true)}
-                            className="px-6 py-2"
+                            className="w-auto px-8 py-2"
                             >
                             Enviar Candidatura
                             </Button>
@@ -332,7 +334,7 @@ const Candidatura = () => {
                         Cancelar
                     </button>
                     <Button
-                        className="px-4 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700"
+                        className="w-auto px-4 py-2 "
                         onClick={handleSubmit} 
                     >
                         Enviar Email
