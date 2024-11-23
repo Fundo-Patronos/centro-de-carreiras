@@ -59,19 +59,19 @@ const Candidatura = () => {
 
       try {
         setLoading(true);
-        // const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
-        // setOpportunity(response.data);
+        const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
+        setOpportunity(response.data);
 
-        const mockOpportunity = {
-            id: '1',
-            Name: 'Desenvolvedor Backend',
-            Status: 'Aberta',
-            Vaga: 'Desenvolvedor Backend Junior',
-            Tipo: 'Full-time',
-            Contato: 'a246932@dac.unicamp.br',
-          };
-    
-        setOpportunity(mockOpportunity);
+    //     const mockOpportunity = {
+    //         id: '1',
+    //         Name: 'Desenvolvedor Backend',
+    //         Status: 'Aberta',
+    //         Vaga: 'Desenvolvedor Backend Junior',
+    //         Tipo: 'Full-time',
+    //         Contato: 'a246932@dac.unicamp.br',
+    //       };
+    // 
+    //     setOpportunity(mockOpportunity);
         setError(null);
 
       } catch {

@@ -42,24 +42,47 @@ class AirtableDatabase(Database):
         Raises:
             DataNotFound: If no records match the given parameters.
         """
-        # Construct the filterByFormula parameter
-        # For example, if params = {'email': 'example@example.com'}
-        # The formula will be: {email} = 'example@example.com'
+
+        # In case the filter is by id
+        if "id" in params:
+            id = params["id"]
+
+            headers = {"Authorization": f"Bearer {self._api_key}"}
+
+            response = requests.get(
+                url=self._url.format(base_id=self._base_id, table_id=table_id)
+                + "/"
+                + id,
+                headers=headers,
+            )
+            print(response.status_code)
+
+            if response.status_code == 403:
+                raise PermissionError(
+                    "Access forbidden: check your API key and permissions."
+                )
+            elif response.status_code == 404:
+                raise DataNotFound("No items found with the given parameters.")
+            elif response.status_code != 200:
+                raise RuntimeError(
+                    f"Failed to retrieve data from Airtable. Status code: {response.status_code}"
+                )
+
+            record = response.json()
+
+            return AirtableDatabase._get_parsed_response(record)
+
         filter_expressions = []
         for field, value in params.items():
-            # Airtable field names need to be enclosed in {}
-            # String values should be enclosed in single quotes
             expression = f"{{{field}}} = '{value}'"
             filter_expressions.append(expression)
 
-        # Combine expressions using AND if multiple parameters are provided
         filter_formula = (
             "AND(" + ", ".join(filter_expressions) + ")"
             if len(filter_expressions) > 1
             else filter_expressions[0]
         )
 
-        # URL encode the filterByFormula parameter
         query_params = {"filterByFormula": filter_formula}
 
         headers = {"Authorization": f"Bearer {self._api_key}"}
