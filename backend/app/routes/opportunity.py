@@ -56,3 +56,6 @@ async def get_opportunity(
     except RuntimeError as e:
         print(e)
         raise HTTPException(status_code=503, detail=str(e))
+    except PermissionError as e:
+        print(e)
+        raise HTTPException(status_code=503, detail=str(e))

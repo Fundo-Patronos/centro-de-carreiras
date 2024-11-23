@@ -58,6 +58,7 @@ class AirtableDatabase(Database):
             print(response.status_code)
 
             if response.status_code == 403:
+                print(response.json())
                 raise PermissionError(
                     "Access forbidden: check your API key and permissions."
                 )
