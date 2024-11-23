@@ -14,14 +14,20 @@ front_end_url = os.getenv("FRONT_END_BASE_URL", None)
 if front_end_url is None:
     raise ValueError("FRONT_END_BASE_URL is not set")
 
+print(f"Front End URL Cloud: {front_end_url}")
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[front_end_url, "http://localhost:3000"],
+    allow_origins=[
+        front_end_url,
+        "https://frontend-722033123279.us-central1.run.app",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 app.include_router(mentoring_router)

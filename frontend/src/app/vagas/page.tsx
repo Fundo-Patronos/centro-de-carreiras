@@ -18,7 +18,7 @@ export default function Mentoria() {
       <section
         className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
         style={{
-          height: "300px", // Adjusted height for a more compact section
+          height: "30vh", // Adjusted height for a more compact section
         }}
       >
         {/* Background Image */}
@@ -46,7 +46,7 @@ export default function Mentoria() {
             Seu próximo passo começa aqui
           </h1>
           <p className="mt-4 text-2xl text-gray-700">
-            Explore vagas e oportunidades dos nossos parceiros
+            Explore vagas e oportunidades dos nossos parceiros, em aplicações exclusivas para alunos da Unicamp
           </p>
         </div>
       </section>

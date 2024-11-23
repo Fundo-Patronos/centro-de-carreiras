@@ -7,6 +7,7 @@ import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import Layout from "@/components/Layout";
 import { Button } from "@mui/material";
 import { Calendar, Clock, User } from 'lucide-react';
+import GradientButton from '@/components/GradientButton';
 
 interface Row {
   day: string;
@@ -130,14 +131,14 @@ const Agendamento = () => {
                 >
                   Ver Outros Mentores
                 </Button>
-                <Button
-                  variant="contained"
+                <GradientButton
+                  // variant="contained"
                   className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg transition-shadow"
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
                   {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
-                </Button>
+                </GradientButton>
               </div>
             </div>
           </div>
