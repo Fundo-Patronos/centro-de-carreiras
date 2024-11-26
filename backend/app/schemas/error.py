@@ -7,4 +7,3 @@ class DefaultErrorResponse(BaseModel):
 
 class SignUpConflictErrorResponse(BaseModel):
     email_in_use: bool = False
-    username_in_use: bool = False

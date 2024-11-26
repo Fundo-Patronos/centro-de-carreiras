@@ -40,3 +40,7 @@ next-env.d.ts
 
 # python
 venv/
+
+# npm (we're using pnpm)
+package-lock.json
+.npm

@@ -1,13 +1,13 @@
-// src/store/authStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 interface AuthState {
-  user: { email: string; username: string } | null;
+  user: { email: string;} | null;
   accessToken: string | null;
   refreshToken: string | null;
-  login: (_user: { email: string; username: string }, _accessToken: string, _refreshToken: string) => void;
+  login: (_user: { email: string}, _accessToken: string, _refreshToken: string) => void;
   logout: () => void;
   setAccessToken: (_accessToken: string) => void;
   refreshAccessToken: () => Promise<void>;
@@ -50,8 +50,26 @@ export const useAuthStore = create<AuthState>()(
       refreshAccessToken: async () => {
         const { refreshToken } = get();
         try {
-          const response = await axios.post('/api/refresh-token', { refreshToken });
+          const response = await axios.post('/api/refresh-token', { refreshToken }, { withCredentials: true });
+          const newAccessToken = response.data.accessToken;
+
+          // Atualiza o estado global com o novo token de acesso
           set({ accessToken: response.data.accessToken });
+
+         // Atualiza o token de acesso também no cookie
+          Cookies.set(
+            "auth-storage",
+            JSON.stringify({
+              ...get(), // Mantém o estado atual (user, refreshToken)
+              accessToken: newAccessToken, // Atualiza apenas o accessToken
+            }),
+            {
+              expires: 1, // Expira em 1 dia
+              secure: true,
+              sameSite: "none",
+            }
+          );
+          
         } catch (error) {
           console.error('Failed to refresh access token', error);
           set({ user: null, accessToken: null, refreshToken: null });
@@ -68,17 +86,31 @@ export const useAuthStore = create<AuthState>()(
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const { refreshAccessToken, accessToken } = useAuthStore.getState();
-    if (error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
+
+    const { refreshAccessToken } = useAuthStore.getState();
+
+    // Verifica se o erro é de autenticação (401)
+    if (error.response && error.response.status === 401 && error.config && !error.config.__isRetryRequest) {
       try {
-        await refreshAccessToken(); // Renova o token
+        // Tenta renovar o token de acesso
+        await refreshAccessToken();
+
+        // Captura o token atualizado do estado após a renovação
+        const updatedAccessToken = useAuthStore.getState().accessToken;
+
+        // Marca a requisição como um retry e define o novo cabeçalho de autorização
         error.config.__isRetryRequest = true;
-        error.config.headers['Authorization'] = `Bearer ${accessToken}`; // Reenvia com o novo token
+        error.config.headers['Authorization'] = `Bearer ${updatedAccessToken}`;
+
+        // Refaz a requisição original com o token atualizado
         return axios(error.config);
       } catch (refreshError) {
+        // Retorna o erro caso a renovação falhe
         return Promise.reject(refreshError);
       }
     }
+
+    // Retorna o erro se não for um erro de autenticação ou se a renovação falhar
     return Promise.reject(error);
   }
 );

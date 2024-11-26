@@ -80,106 +80,114 @@ const ResetPassword = ({ params }: ResetPasswordProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">
-      <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
-        <div
-          className="absolute w-[50%] h-[100vw] z-[-1]"
-          style={{
-            backgroundImage: `url('/images/identidade-visual/Ativo-10linhas.png')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            transform: 'rotate(90deg)',
-          }}
-        ></div>
 
-        <div className="bg-white rounded-lg shadow-lg py-8 px-20 sm:py-6 sm:px-12 max-w-[60%] md:max-w-[500px] w-full">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-4 text-center mt-4">
-            Redefinir Senha
-          </h1>
-          <p className="text-md text-gray-600 text-center mb-6">
-            Insira e confirme sua nova senha abaixo.
-          </p>
-
-          <Formik
-            initialValues={{ new_password: "" }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting }) => (
-
-              <Form className="w-full space-y-6">
-                <div className="relative mb-6">
-                    <div className="relative ">
-                    <Field
+      <div className="fixed inset-0 flex items-center justify-center bg-[rgb(255,255,255,0.95)]">
+        <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center px-6 sm:px-10 md:px-[15vw] overflow-hidden">
+          <div className="absolute z-[-1] w-full h-full flex justify-center items-center">
+              <div
+                  className="md:hidden h-full bg-cover bg-no-repeat w-full transform scale-x-[-1] z-0"
+                  style={{
+                      backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
+                      opacity: 0.90,
+                  }}
+              ></div>
+              
+              <div
+                  className="hidden md:block bg-cover bg-no-repeat transform scale-x-[-1] z-0 w-[100vw] h-[20vw] "
+                  style={{
+                      backgroundImage: `url('/images/identidade-visual/Ativo-6.png')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                  }}
+              ></div>
+          </div>
+    
+          <div className="bg-white rounded-lg shadow-lg py-6 px-6 sm:py-8 sm:px-12 max-w-[90%] md:max-w-[500px] w-full">
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 text-center mt-4">
+              Redefinir Senha
+            </h1>
+            <p className="text-sm sm:text-md text-gray-600 text-center mb-6">
+              Insira e confirme sua nova senha abaixo.
+            </p>
+    
+            <Formik
+              initialValues={{ new_password: "" }}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ isSubmitting }) => (
+                <Form className="w-full space-y-4 sm:space-y-6">
+                  <div className="relative mb-4 sm:mb-6">
+                    <div className="relative">
+                      <Field
                         name="new_password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Nova Senha"
                         className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                         style={{
-                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                            border: 'none',
-                        }}                    />
-                    <span
+                          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                          border: 'none',
+                        }}
+                      />
+                      <span
                         className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
                         onClick={() => setShowPassword(!showPassword)}
-                    >
+                      >
                         {showPassword ? (
-                            <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                          <EyeSlashIcon className="h-5 w-5 text-gray-700" />
                         ) : (
-                            <EyeIcon className="h-5 w-5 text-gray-700" />
-                        )}                  </span>
+                          <EyeIcon className="h-5 w-5 text-gray-700" />
+                        )}
+                      </span>
                     </div>
-                    <ErrorMessage name="new_password" component="div" className="absolute text-red-500 text-sm top-full " />
-
-                </div>
-                
-                <div className = "relative mb-6">
-                    <div className="relative ">
-                        <Field
-                            name="confirmPassword"
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            placeholder="Confirmar Nova Senha"
-                            className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                            style={{
-                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                                border: 'none',
-                            }}
-                        />
-                    <span
+                    <ErrorMessage name="new_password" component="div" className="absolute text-red-500 text-sm top-full" />
+                  </div>
+    
+                  <div className="relative mb-4 sm:mb-6">
+                    <div className="relative">
+                      <Field
+                        name="confirmPassword"
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        placeholder="Confirmar Nova Senha"
+                        className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                        style={{
+                          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                          border: 'none',
+                        }}
+                      />
+                      <span
                         className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
+                      >
                         {showConfirmPassword ? (
-                            <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                          <EyeSlashIcon className="h-5 w-5 text-gray-700" />
                         ) : (
-                            <EyeIcon className="h-5 w-5 text-gray-700" />
-                        )}                    
-                        </span>
+                          <EyeIcon className="h-5 w-5 text-gray-700" />
+                        )}
+                      </span>
                     </div>
                     <ErrorMessage name="confirmPassword" component="div" className="absolute text-red-500 text-sm top-full" />
-                </div>
-
-                
-
-                {message && <p className="text-center text-[14px] text-gray-700 mb-4">{message}</p>}
-
-                <Button type="submit" className="w-full py-2 mt-3" disabled={isSubmitting || loading}>
-                  {loading ? 'Enviando...' : 'Redefinir Senha'}
-                </Button>
-
-                <div className="text-center mt-3 mb-2">
-                  <Link href="/" className="text-md text-[#103768] hover:font-semibold">
-                    Voltar ao Login
-                  </Link>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                  </div>
+    
+                  {message && <p className="text-center text-sm sm:text-md text-gray-700 mb-4">{message}</p>}
+    
+                  <Button type="submit" className="w-full py-2 mt-3" disabled={isSubmitting || loading}>
+                    {loading ? 'Enviando...' : 'Redefinir Senha'}
+                  </Button>
+    
+                  <div className="text-center mt-3 mb-2">
+                    <Link href="/" className="text-sm sm:text-md text-[#103768] hover:font-semibold">
+                      Voltar ao Login
+                    </Link>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default ResetPassword;

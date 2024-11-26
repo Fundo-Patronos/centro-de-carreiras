@@ -2,7 +2,6 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
-    username: str
     name: str
     email: EmailStr
     password: str
@@ -21,7 +20,6 @@ class UserCreateRequest(UserCreate):
 
 
 class UserResponse(BaseModel):
-    username: str
     email: EmailStr
     email_sent: bool
 
@@ -32,7 +30,6 @@ class UserLogin(BaseModel):
 
 
 class UserLoginResponse(BaseModel):
-    username: str
     email: EmailStr
     token: str
 

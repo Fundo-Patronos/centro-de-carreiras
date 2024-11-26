@@ -3,8 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import Cookies from "js-cookie";
+import React, { useState, useEffect} from "react";
 import type { JSX } from "react";
+import axios from "axios";
+import { useAuthStore } from "@/store/authStore";
 
 interface NavbarProps {
 
@@ -12,13 +15,47 @@ interface NavbarProps {
 
 }
 
+interface AuthStoreState {
+  logout: () => void;
+}
+
+
 export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('');
+  const logout = useAuthStore((state : AuthStoreState) => state.logout); 
+
+  useEffect(() => {
+
+    const fetchApiUrl = async () => {
+      const response = await axios.get('/api');
+      const url = response.data.apiUrl;
+      setApiUrl(url);
+    };
+
+    fetchApiUrl();
+  }, []);
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleLogout = async () => {
+    try {
+      logout();
+
+      await axios.post(`${apiUrl}/logout`, {}, { withCredentials: true });
+  
+      Cookies.remove("auth-storage");
+  
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
 
   return (
     <nav className="bg-white shadow-md">
@@ -31,7 +68,7 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
             alt="Associação Fundo Patrimonial Patronos"
             width={50}
             height={40}
-            style={{ width: "auto", height: "auto" }} 
+            style={{ width: "auto", height: "auto" }}
           />
           {/* Separation Bar */}
           <div className="h-12 border-l-2 border-gray-400"></div>
@@ -100,23 +137,15 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
             >
               Vagas
             </Link>
+
+            <div className="h-6 border-l-2 border-black opacity-50 px-1"></div>
+
             <Link
-              href="/ser-um-mentor"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/ser-um-mentor" ? "font-bold text-red-600" : ""
-              }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
+              href="/"
+              onClick={handleLogout}
+              className="block py-2 text-gray-800 hover:text-red-600"
             >
-              Ser um Mentor
-            </Link>
-            <Link
-              href="/contato"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/contato" ? "font-bold text-red-600" : ""
-              }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
-            >
-              Contato
+              Logout
             </Link>
           </div>
         </div>
@@ -152,23 +181,15 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           >
             Vagas
           </Link>
+
+          <div className="border-t-2 border-black opacity-60 mt-3 mb-1"></div>
+
           <Link
-            href="/ser-um-mentor"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/ser-um-mentor" ? "font-bold text-red-600" : ""
-            }`}
-            onClick={toggleMenu} // Close dropdown after click
+            href="/"
+            onClick={handleLogout}
+            className="block py-2 text-gray-800 hover:text-red-600 "
           >
-            Ser um Mentor
-          </Link>
-          <Link
-            href="/contato"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/contato" ? "font-bold text-red-600" : ""
-            }`}
-            onClick={toggleMenu} // Close dropdown after click
-          >
-            Contato
+            Logout
           </Link>
         </div>
       )}

@@ -14,7 +14,6 @@ import { AxiosError } from "axios";
 
 // Defina os headers globais para Axios
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 
 interface LoginFormValues {
@@ -206,8 +205,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
             <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
                 {/* Background */}
                 <div
-                className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
-                           min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4"
+                className="absolute right-0 top-0 h-full w-[41vh] bg-cover bg-no-repeat transform scale-x-[-1]"
                 style={{
                     backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
                 }}
@@ -435,8 +433,8 @@ const handleSubmit = async (
     const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
-      const { email, username, token, refresh_token } = response.data;
-      login({ email, username }, token, refresh_token); // Store the user data in Zustand
+      const { email, token, refresh_token } = response.data;
+      login({ email }, token, refresh_token); // Store the user data in Zustand
 
       // Save token to cookies instead of localStorage
       Cookies.set(
@@ -463,11 +461,14 @@ const handleSubmit = async (
     const err = error as AxiosError;
     console.log("Error completo:", err); 
     
+    console.log("Error completo:", err); 
+    
     if (err.response) {
         if (err.response.status === 401 || err.response.status === 406) {
-          setLoginError("Usuário ou senha inválido");
+            setLoginError("Usuário ou senha inválido");
         } else {
-          setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+            console.error(err.response.headers);
+            setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
         }
       } else if (err.request) {
         console.error("Erro de rede ou servidor indisponível");

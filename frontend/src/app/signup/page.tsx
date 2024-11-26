@@ -12,7 +12,6 @@ import AuthPopup from '../../components/AuthPopup';
 import axios from 'axios';
 
 interface SignUpFormValues {
-  username: string;
   name: string;
   email: string;
   password: string;
@@ -79,7 +78,6 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
 
       <Formik
         initialValues={{
-          username: "",
           name: "",
           email: "",
           password: "",
@@ -93,28 +91,6 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
       >
         {({ setFieldTouched, isSubmitting, touched, errors }) => (
           <Form className="w-full space-y-6">
-            {/* Username */}
-            <div className="relative flex items-center">
-              <Field
-                name="username"
-                type="text"
-                placeholder="Nome do Usuário"
-                className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                style={{
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  border: "none",
-                }}
-                onBlur={() => {
-                  setFieldTouched("username", true);
-                  setFoundDataWarning("");
-                }}
-              />
-              {touched.username && errors.username && (
-                <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
-                  *
-                </span>
-              )}
-            </div>
 
             {/* Full Name */}
             <div className="relative flex items-center">
@@ -152,7 +128,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                     const isValid = isEmailValid(_e.target.value);
                     if (!isValid) {
                       setEmailWarning(
-                        "Esse e-mail precisará de aprovação manual por não pertencer aos domínios da Unicamp.",
+                        "Utilize o seu e-mail de aluno (@dac.unicamp.br). Caso não possua, seu cadastro será enviado para aprovação do Patronos.",
                       );
                     } else {
                       setEmailWarning("");
@@ -198,7 +174,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                 <Field
                   name="graduation_year"
                   type="number"
-                  placeholder="Ano de Graduação"
+                  placeholder="Ano Previsto de Graduação"
                   className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                   style={{
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
@@ -343,8 +319,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
             <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
                 {/* Background */}
                 <div
-                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
-                                min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4 "
+                    className="absolute right-0 top-0 h-full w-[41vh] bg-cover bg-no-repeat transform scale-x-[-1]"
                     style={{
                         backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
                     }}
@@ -400,7 +375,6 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
 
       <Formik
         initialValues={{
-          username: "",
           name: "",
           email: "",
           password: "",
@@ -414,28 +388,6 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
       >
         {({ setFieldTouched, isSubmitting, touched, errors }) => (
           <Form className="w-full space-y-6">
-            {/* Username */}
-            <div className="relative flex items-center">
-              <Field
-                name="username"
-                type="text"
-                placeholder="Nome do Usuário"
-                className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-                style={{
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-                  border: "none",
-                }}
-                onBlur={() => {
-                  setFieldTouched("username", true);
-                  setFoundDataWarning("");
-                }}
-              />
-              {touched.username && errors.username && (
-                <span className="text-red-500 text-sm absolute right-2 top-1/2 transform -translate-y-1/2">
-                  *
-                </span>
-              )}
-            </div>
 
             {/* Full Name */}
             <div className="relative flex items-center">
@@ -519,7 +471,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 <Field
                   name="graduation_year"
                   type="number"
-                  placeholder="Ano de Graduação"
+                  placeholder="Ano Previsto de Graduação"
                   className="w-full p-2 text-black shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                   style={{
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
@@ -679,15 +631,15 @@ export default function SignUp() {
     values.is_domain_valid = isEmailValid(values.email);
 
     const debugMessage = `
-            Nome de usuário: ${values.username}
             Nome completo: ${values.name}
             E-mail: ${values.email}
-            Ano de graduação: ${values.graduation_year}
+            Ano Previsto de graduação: ${values.graduation_year}
             Curso: ${values.course}
             linkedin: ${values.linkedin ? values.linkedin : "Não fornecido"}
             Validação de domínio: ${values.is_domain_valid}
         `;
     console.log(debugMessage);
+    console.log(values);
 
     try {
       const response = await axios.post(`${apiUrl}/signup`, values, {
@@ -710,16 +662,9 @@ export default function SignUp() {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 409) {
           const result = error.response.data;
-          if (result.email_in_use && result.username_in_use) {
-            setFoundDataWarning("Este e-mail e nome de usuário já estão em uso.");
-            values.email = "";
-            values.username = "";
-          } else if (result.email_in_use) {
+          if (result.email_in_use) {
             setFoundDataWarning("Este e-mail já foi cadastrado.");
             values.email = "";
-          } else if (result.username_in_use) {
-            setFoundDataWarning("Este nome de usuário já está em uso.");
-            values.username = "";
           }
         } else if (error instanceof Error) {
           alert(`Ocorreu um erro. Tente novamente mais tarde. \n ${error.message}`);
