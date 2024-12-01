@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Snackbar, Alert, TextField } from "@mui/material";
 import { AlertCircle, File, Edit , Info, Mail} from "lucide-react";
@@ -26,7 +26,7 @@ const Candidatura = () => {
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [curriculum, setCurriculum] = useState<File | null>(null);
+  //const [curriculum, setCurriculum] = useState<File | null>(null);
   const [coverLetter, setCoverLetter] = useState("");
   const [subject, setSubject] = useState("");
   const [errorMessage, setErrorMessage] = useState("Carregando...");
@@ -62,16 +62,6 @@ const Candidatura = () => {
         const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
         setOpportunity(response.data);
 
-    //     const mockOpportunity = {
-    //         id: '1',
-    //         Name: 'Desenvolvedor Backend',
-    //         Status: 'Aberta',
-    //         Vaga: 'Desenvolvedor Backend Junior',
-    //         Tipo: 'Full-time',
-    //         Contato: 'a246932@dac.unicamp.br',
-    //       };
-    // 
-    //     setOpportunity(mockOpportunity);
         setError(null);
 
       } catch {
@@ -93,26 +83,27 @@ const Candidatura = () => {
     };
 
     fetchOpportunity();
-  }, [vagaId, apiUrl]);
+  }, [vagaId, apiUrl, error]);
 
   useEffect(() => {
     if (opportunity) {
-      const oppName = opportunity.Name;
+      const oppName = opportunity.Vaga;
+      const oppType = opportunity.Tipo;
       setSubject(
-        `[Centro de Carreiras Patronos] ${userName} aplicou para a vaga ${oppName}`
+        `[Centro de Carreiras Patronos] ${userName} aplicou para a vaga de ${oppName}`
       );
       setCoverLetter(
-        `Olá,\nMe chamo ${userName} e gostaria de aplicar para a vaga de ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`
+        `Olá,\nMe chamo ${userName} e gostaria de aplicar para a vaga de ${oppType} como ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`
       );
     }
-  }, [opportunity]);
+  }, [opportunity, userName]);
 
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setCurriculum(file);
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0] || null;
+  //   setCurriculum(file);
+  // };
 
 
   const handleSubmit = async () => {
@@ -122,24 +113,18 @@ const Candidatura = () => {
       return;
     }
 
-    const applicationDataUserEmail = {
-      email: userEmail,
-      subject,
-      body: coverLetter,
-    };
-
     const applicationDataOpportunityEmail = {
         email: opportunity?.Contato,
         subject,
         body: coverLetter,
+        copy_emails: [userEmail]
       };
 
     try {
-      await axios.post(`${apiUrl}/send_email`, applicationDataUserEmail);
       await axios.post(`${apiUrl}/send_email`, applicationDataOpportunityEmail);
 
       setSnackbarMessage("Candidatura enviada com sucesso!");
-    } catch (err) {
+    } catch (_) {
       setSnackbarMessage("Erro ao enviar candidatura. Tente novamente.");
     }
     setShowPopup(false);
