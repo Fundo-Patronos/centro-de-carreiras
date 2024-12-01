@@ -184,6 +184,9 @@ class AirtableDatabase(Database):
             headers=headers,
             json=data,
         )
+        print("Airtable response for creating user:")
+        print("Status:", response.status_code)
+        print(response.json())
         response.raise_for_status()
 
     def update(self, table_id: str, item: Item) -> None:
