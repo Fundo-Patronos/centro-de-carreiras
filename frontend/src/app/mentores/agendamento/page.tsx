@@ -7,6 +7,7 @@ import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import Layout from "@/components/Layout";
 import { Button } from "@mui/material";
 import { Calendar, Clock, User } from 'lucide-react';
+import GradientButton from '@/components/GradientButton';
 
 interface Row {
   day: string;
@@ -61,27 +62,50 @@ const Agendamento = () => {
 
   return (
     <Layout currentPage="mentores">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        {/* Responsive Hero Section */}
-        <section className="relative h-48 md:h-80 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
-            <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')]" />
+      <div className="min-h-screen bg-white">
+        {/* Updated Hero Section */}
+        <section
+          className="relative w-full flex flex-col justify-center items-center text-center bg-white overflow-hidden"
+          style={{
+            height: "30vh",
+          }}
+        >
+          {/* Background Image Container */}
+          <div
+            className="absolute inset-0 w-full h-full"
+            style={{
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              className="absolute top-1/2 left-1/2 w-[170%] h-[170%] bg-cover bg-center origin-center"
+              style={{
+                backgroundImage: "url('/images/background-mentors-opportunities.png')",
+                transform: "translate(-50%, -50%) rotate(-5deg)",
+              }}
+            ></div>
           </div>
-          
-          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-              <User className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
-              <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                Agende uma reunião
-              </h1>
+
+          {/* Opacity Layer */}
+          <div className="absolute inset-0 bg-white opacity-70"></div>
+
+          {/* Content */}
+          <div className="relative z-10 px-4">
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex items-center gap-2 md:gap-3">
+                <User className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+                <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                  Agende uma reunião
+                </h1>
+              </div>
+              <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
+                com <span className="font-semibold text-purple-600">{mentor}</span>
+              </p>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
-              com <span className="font-semibold text-purple-600">{mentor}</span>
-            </p>
           </div>
         </section>
 
-        {/* Responsive Schedule Selection Section */}
+        {/* Schedule Selection Section */}
         <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-8">
           <div className="bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl border border-purple-100 overflow-hidden">
             {/* Schedule Header */}
@@ -121,7 +145,7 @@ const Agendamento = () => {
                 </div>
               )}
 
-              {/* Responsive Action Buttons */}
+              {/* Action Buttons */}
               <div className="mt-4 md:mt-6 flex flex-col md:flex-row gap-3 md:justify-end">
                 <Button
                   variant="outlined"
@@ -130,14 +154,13 @@ const Agendamento = () => {
                 >
                   Ver Outros Mentores
                 </Button>
-                <Button
-                  variant="contained"
+                <GradientButton
                   className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg transition-shadow"
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
                   {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
-                </Button>
+                </GradientButton>
               </div>
             </div>
           </div>
