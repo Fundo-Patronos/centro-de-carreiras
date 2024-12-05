@@ -1,72 +1,67 @@
 "use client";
+
 import { useState } from "react";
 import Layout from "@/components/Layout";
 
 export default function Mentoria() {
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+  const [isLoading, setIsLoading] = useState(true);
 
-  // This function will be triggered when the iframe is fully loaded
   const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
   return (
     <Layout currentPage="mentores">
-      {" "}
-      {/* Pass the currentPage prop */}
-      {/* First Section with Background Image, Opacity Layer, and Rotation */}
+      {/* Hero Section */}
       <section
-        className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
+        className="relative w-full flex flex-col justify-center items-center text-center bg-white overflow-hidden"
         style={{
-          height: "300px", // Adjusted height for a more compact section
+          height: "30vh",
         }}
       >
-        {/* Background Image */}
+        {/* Background Image Container */}
         <div
-          className="absolute bg-cover bg-center"
+          className="absolute inset-0 w-full h-full"
           style={{
-            backgroundImage:
-              "url('/images/background-mentors-opportunities.png')",
-            transform: "rotate(-5deg)", // Rotate the background image only
-            backgroundSize: "cover",
-            width: "170%", // Increase the width slightly
-            height: "170%", // Increase the height slightly
-            top: "-20px", // Adjust the position upwards a bit
-            left: "-500px", // Move the image more to the left
-            zIndex: -1, // Ensure it's behind the content
+            overflow: 'hidden',
           }}
-        ></div>
+        >
+          <div
+            className="absolute top-1/2 left-1/2 w-[170%] h-[170%] bg-cover bg-center origin-center"
+            style={{
+              backgroundImage: "url('/images/background-mentors-opportunities.png')",
+              transform: "translate(-50%, -50%) rotate(-5deg)",
+            }}
+          ></div>
+        </div>
 
-        {/* Layer with opacity for text readability */}
+        {/* Opacity Layer */}
         <div className="absolute inset-0 bg-white opacity-70"></div>
 
         {/* Content */}
-        <div className="relative z-10">
-          <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500">
+        <div className="relative z-10 px-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500">
             Precisa de orientação de carreira?
           </h1>
-          <p className="mt-4 text-2xl text-gray-700">
+          <p className="mt-4 text-xl md:text-2xl text-gray-700">
             Agende uma reunião com um mentor da sua área de interesse
           </p>
         </div>
       </section>
+
       {/* Main Content */}
-      <div className=" flex flex-col items-center justify-center bg-white">
-        {/* Display loading spinner while iframe is loading */}
+      <div className="flex flex-col items-center justify-center bg-white">
         {isLoading && (
           <div className="flex items-center justify-center mt-8">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-red-600"></div>
           </div>
         )}
-
-        {/* Iframe with onLoad event to stop the loading spinner */}
         <iframe
           src="https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
-          frameBorder="0"
           width="100%"
-          height="533"
-          onLoad={handleIframeLoad} // Trigger when iframe finishes loading
-          className={isLoading ? "hidden" : ""} // Hide iframe until it's loaded
+          height="650"
+          onLoad={handleIframeLoad}
+          className={isLoading ? "hidden" : ""}
         ></iframe>
       </div>
     </Layout>
