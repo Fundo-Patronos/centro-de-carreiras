@@ -1,16 +1,13 @@
 // Homepage.tsx
 'use client';
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Testimonials from "../../components/Testimonials";
 import Layout from "@/components/Layout";
 import HeroSection from "@/components/Homepage/Hero";
-import StatsSection from "@/components/Homepage/StatsSection";
 import ExploreSection from "@/components/Homepage/ExploreSection";
 
 export default function Home() {
   const [name, setName] = useState<string>('');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const authData = localStorage.getItem('auth-storage');

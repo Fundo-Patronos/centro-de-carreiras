@@ -1,10 +1,11 @@
 import ExploreCard from "./ExploreCard";
+import React from "react";
 
-interface ExploreSection {
+interface ExploreSectionInterface {
   sectionTitle?: string;
 }
 
-const ExploreSection: React.FC<ExploreSection> = ({ 
+const ExploreSection: React.FC<ExploreSectionInterface> = ({ 
   sectionTitle = "Explore novas oportunidades" 
 }) => {
   const exploreCards = [

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import GradientButton from "@/components/GradientButton";
+import React from "react";
 
 interface HeroSectionProps {
   userName: string;
