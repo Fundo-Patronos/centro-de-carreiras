@@ -5,18 +5,20 @@ import Testimonials from "../../components/Testimonials";
 import Layout from "@/components/Layout";
 import HeroSection from "@/components/Homepage/Hero";
 import ExploreSection from "@/components/Homepage/ExploreSection";
+import { useAuthStore } from '../../store/authStore';
 
 export default function Home() {
   const [name, setName] = useState<string>('');
 
-  useEffect(() => {
-    const authData = localStorage.getItem('auth-storage');
-    const storedName = authData ? JSON.parse(authData).state.user.user_name : null;
-    if (storedName) {
-      const firstName = storedName.split(' ')[0];
-      setName(firstName);
-    }
-  }, []);
+  const username = useAuthStore((state) => state.username);
+
+    useEffect(() => {
+        
+        if (username) {
+            const firstName = username.split(' ')[0];
+            setName(firstName);
+        }
+    }, [username]);
 
   return (
     <Layout currentPage="home">
