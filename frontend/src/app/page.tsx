@@ -8,9 +8,8 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { validationSchemaLogin } from "../hooks/validationSchema";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "@/store/authStore";
-import axios from "axios";
+import axios, { AxiosError} from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
-import { AxiosError } from "axios";
 
 // Defina os headers globais para Axios
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
@@ -433,20 +432,11 @@ const handleSubmit = async (
     const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
-      const { email, token, refresh_token } = response.data;
-      login({ email }, token, refresh_token); // Store the user data in Zustand
+      const { username, email, token} = response.data;
+      const refreshToken = Cookies.get("refresh_token") || '';
 
-      // Save token to cookies instead of localStorage
-      Cookies.set(
-        "auth-storage",
-        JSON.stringify({ accessToken: token, refreshToken: refresh_token }),
-        {
-          expires: 1, // Expires in 1 day (you can customize this)
-          secure: true,
-          sameSite: "none",
-        }
-      );
-
+      login({ username, email }, token, refreshToken); // Store the user data in Zustand
+      
       if (rememberMe) {
             localStorage.setItem('email', values.email);
             localStorage.setItem('password', values.password); 
