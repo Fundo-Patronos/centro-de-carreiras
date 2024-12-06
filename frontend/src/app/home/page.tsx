@@ -28,9 +28,9 @@ export default function Home() {
           <img
             src="/images/identidade-visual/Ativo-9assets.svg"
             alt="Background pattern"
-            className="absolute top-1/2 left-1/3 w-[600px] h-[350px] opacity-80"
+            className="absolute top-1/2 left-1/3 w-[350px] h-[350px] opacity-80"
             style={{
-              transform: 'translate(-60%, -40%) rotate(35deg) scale(4.2)',
+              transform: 'translate(-60%, -40%) rotate(35deg) scale(4.3)',
               pointerEvents: 'none',
             }}
           />
