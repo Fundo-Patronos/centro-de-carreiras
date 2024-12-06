@@ -434,7 +434,6 @@ const handleSubmit = async (
     if (response.status === 200) {
       const { username, email, token} = response.data;
       const refreshToken = Cookies.get("refresh_token") || '';
-      console.log("refreshToken = ", refreshToken);
 
       login({ username, email }, token, refreshToken); // Store the user data in Zustand
       
