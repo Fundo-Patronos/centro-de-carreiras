@@ -36,7 +36,7 @@
     "heroicons": "^2.1.5",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.454.0",
-    "next": "14.2.8",
+    "next": "14.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "yup": "^1.4.0",
