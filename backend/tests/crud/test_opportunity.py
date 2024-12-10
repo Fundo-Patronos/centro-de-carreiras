@@ -14,14 +14,16 @@ def create_test_opportunity() -> OpportunityCreate:
     )
 
 
-
 def test_get_opportunity(test_db):
     opportunity = create_test_opportunity()
     opportunities_table = OpportunitiesTable(db=test_db)
     opportunities_table.create(opportunity)
 
     created_opportunity = opportunities_table.get_all()[0]
-    assert opportunities_table.get(created_opportunity.id).Name == "Test Opportunity"
+    assert (
+        opportunities_table.get(created_opportunity.id).Name
+        == "Test Opportunity"
+    )
 
 
 def test_update_opportunity(test_db):
@@ -57,7 +59,9 @@ def test_get_all_opportunities(test_db):
     }
 
 
-def test_get_opportunity_WHEN_opportunity_does_not_exist_THEN_raises_DataNotFound(test_db):
+def test_get_opportunity_WHEN_opportunity_does_not_exist_THEN_raises_DataNotFound(
+    test_db,
+):
     opportunities_table = OpportunitiesTable(db=test_db)
     with pytest.raises(DataNotFound):
         opportunities_table.get("nonexistent_id")

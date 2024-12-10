@@ -16,6 +16,7 @@ def get_users_table(
 ) -> Generator[UsersTable, None, None]:
     yield UsersTable(db)
 
+
 def get_opportunities_table(
     db: Database = Depends(get_db),
 ) -> Generator[OpportunitiesTable, None, None]:

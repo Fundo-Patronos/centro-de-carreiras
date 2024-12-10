@@ -5,6 +5,7 @@ from app.utils.auth import Auth
 
 router = APIRouter()
 
+
 @router.post(
     "/send_email",
     status_code=status.HTTP_204_NO_CONTENT,

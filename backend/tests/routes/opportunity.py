@@ -6,10 +6,22 @@ def test_get_all_opportunities(client, test_db):
     table = OpportunitiesTable(db=test_db)
 
     table.create(
-        OpportunityCreate(Name="Opportunity 1", Status="Open", Vaga="Dev", Tipo="Full-time", Contato="contact1@example.com")
+        OpportunityCreate(
+            Name="Opportunity 1",
+            Status="Open",
+            Vaga="Dev",
+            Tipo="Full-time",
+            Contato="contact1@example.com",
+        )
     )
     table.create(
-        OpportunityCreate(Name="Opportunity 2", Status="Closed", Vaga="Designer", Tipo="Part-time", Contato="contact2@example.com")
+        OpportunityCreate(
+            Name="Opportunity 2",
+            Status="Closed",
+            Vaga="Designer",
+            Tipo="Part-time",
+            Contato="contact2@example.com",
+        )
     )
 
     response = client.get("/opportunities")
@@ -24,7 +36,13 @@ def test_get_opportunity_by_id(client, test_db):
     table = OpportunitiesTable(db=test_db)
 
     table.create(
-        OpportunityCreate(Name="Opportunity 1", Status="Open", Vaga="Dev", Tipo="Full-time", Contato="contact1@example.com")
+        OpportunityCreate(
+            Name="Opportunity 1",
+            Status="Open",
+            Vaga="Dev",
+            Tipo="Full-time",
+            Contato="contact1@example.com",
+        )
     )
 
     opportunity = table.get_all()[0]
@@ -42,10 +60,13 @@ def test_get_opportunity_not_found(client):
     assert response.json()["detail"] == "Opportunity not found"
 
 
-def test_get_all_opportunities_with_service_unavailable_error(client, monkeypatch):
+def test_get_all_opportunities_with_service_unavailable_error(
+    client, monkeypatch
+):
 
     def mock_get_all():
         raise RuntimeError("Database connection error")
+
     monkeypatch.setattr(OpportunitiesTable, "get_all", mock_get_all)
 
     response = client.get("/opportunities")
