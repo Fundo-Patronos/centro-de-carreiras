@@ -117,7 +117,6 @@ class Auth:
     def decode_jwt_password_reset_token_to_email(
         self, refresh_token: str
     ) -> EmailStr:
-
         payload = self.decode_jwt_token(refresh_token)
         data = payload.get("data")
         if data is None:
@@ -134,8 +133,20 @@ class Auth:
     def decode_jwt_token(self, token: str) -> dict:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
-    def send_email(self, email: EmailStr, subject: str, body: str) -> None:
-        automation_payload = {"email": email, "subject": subject, "body": body}
+    def send_email(
+        self,
+        email: EmailStr,
+        subject: str,
+        body: str,
+        copy_emails: list[EmailStr] = [],
+    ) -> None:
+        copy_emails_str = ",".join(copy_emails)
+        automation_payload = {
+            "email": email,
+            "subject": subject,
+            "body": body,
+            "copy_emails": copy_emails_str,
+        }
 
         response = requests.post(self.webhook_url, json=automation_payload)
 
@@ -147,7 +158,7 @@ class Auth:
     ) -> None:
         user_name = full_name.split()[0]
 
-        verify_url = f"{self.base_url}/verify/{token}"
+        verify_url = f"{self.base_url}/verify/{quote(token)}"
 
         subject = "Verificação de Email"
 
@@ -160,7 +171,6 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
     def send_password_reset_email(
         self, email: EmailStr, user_name: str
     ) -> None:
-
         password_reset_token = self.create_password_reset_token_from_email(
             email
         )
@@ -172,7 +182,7 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
         subject = "Esqueci minha senha"
 
         body = f"""Olá, {user_name}!
-        
+
 Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
 
         self.send_email(email, subject, body)

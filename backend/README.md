@@ -26,8 +26,7 @@ fastapi run app
 
 The following environment variables need to be added into the `.env` file to run the API:
 
-- `NOCODB_API_KEY`: NocoDB API key (deprecated)
-- `USERS_TABLE_ID`: NocoDB users table ID (deprecated)
+- `USERS_TABLE_ID`: Airtable users table ID
 - `JWT_KEY`: Secret used to sign JWT tokens
 - `FRONT_END_BASE_URL`: Base URL of the frontend app
 - `VERIFICATION_EMAIL_WEBHOOK_URL`: Webhook URL for sending verification emails in Airtable automation
@@ -38,8 +37,7 @@ The following environment variables need to be added into the `.env` file to run
 Here's an example `.env` file:
 
 ```sh
-NOCODB_API_KEY=your_nocodb_api_key
-USERS_TABLE_ID=your_nocodb_users_table_id
+USERS_TABLE_ID=your_airtable_users_table_id
 JWT_KEY=your_jwt_key
 FRONT_END_BASE_URL=http://localhost:3000
 VERIFICATION_EMAIL_WEBHOOK_URL=https://email-verification-webhook.com

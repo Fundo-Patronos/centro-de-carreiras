@@ -11,6 +11,7 @@ from app.database.in_memory_db import InMemoryDatabase
 def set_env_vars(monkeypatch):
     monkeypatch.setenv("JWT_KEY", "super-secret-jwt-key")
     monkeypatch.setenv("USERS_TABLE_ID", "users_id")
+    monkeypatch.setenv("OPPORTUNITIES_TABLE_ID", "opportunities_id")
     monkeypatch.setenv("MAIL_USERNAME", "mail_username")
     monkeypatch.setenv("MAIL_PASSWORD", "mail_password")
     monkeypatch.setenv("MAIL_FROM", "mail@from.com")
