@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import GradientButton from "@/components/GradientButton";
+import React from "react";
 
 interface HeroSectionProps {
   userName: string;
@@ -35,7 +36,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userName }) => {
             </Link>
             <Link 
               href="/vagas" 
-              className="w-full sm:w-auto px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors text-center"
+              className="w-full sm:w-auto px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors text-center"
             >
               Ver oportunidades
             </Link>

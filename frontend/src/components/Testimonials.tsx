@@ -42,11 +42,8 @@ const testimonials: Testimonial[] = [
 
 const Testimonials: React.FC = () => {
   return (
-    <section
-      className="my-5 bg-cover bg-center bg-no-repeat py-16 rounded-lg shadow-md"
-      style={{ backgroundImage: "url('/images/identidade-visual/Ativo-9assets.svg')" }} // Coloque o caminho da sua imagem de fundo aqui
-    >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto bg-white bg-opacity-80 p-6 rounded-lg shadow-md">
+    <section className="my-5 py-16 rounded-lg shadow-md">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto bg-white bg-opacity-80 p-6 rounded-lg ">
         {testimonials.map((testimonial, index) => (
           <div
             key={index}
@@ -54,7 +51,7 @@ const Testimonials: React.FC = () => {
               (index === 1 || index === 2) ? "md:col-span-2" : ""
             }`}
           >
-            <p className="text-gray-700 text-lg mb-4">"{testimonial.quote}"</p>
+            <p className="text-gray-700 text-lg mb-4">`{testimonial.quote}`</p>
             <div className="flex items-center">
               <Image
                 src={testimonial.image}

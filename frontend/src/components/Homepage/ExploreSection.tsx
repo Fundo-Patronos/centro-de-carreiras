@@ -1,10 +1,11 @@
 import ExploreCard from "./ExploreCard";
+import React from "react";
 
-interface ExploreSection {
+interface ExploreSectionInterface {
   sectionTitle?: string;
 }
 
-const ExploreSection: React.FC<ExploreSection> = ({ 
+const ExploreSection: React.FC<ExploreSectionInterface> = ({ 
   sectionTitle = "Explore novas oportunidades" 
 }) => {
   const exploreCards = [
@@ -37,7 +38,7 @@ const ExploreSection: React.FC<ExploreSection> = ({
   ];
 
   return (
-    <section id="explore" className="bg-gray-50 px-4 py-12 md:py-16">
+    <section id="explore" className=" px-4 py-12 md:py-16">
       <div className="container mx-auto">
         <div className="mb-8 md:mb-12">
           <h2 className="flex items-center text-xl md:text-2xl font-bold text-gray-800">

@@ -1,10 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import GradientButton from "@/components/GradientButton";
-
-interface Feature {
-  text: string;
-}
+import React from "react";
 
 interface ExploreCardProps {
   title: string;
