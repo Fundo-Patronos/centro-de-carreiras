@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Snackbar, Alert, TextField } from "@mui/material";
 import { AlertCircle, File, Edit , Info, Mail} from "lucide-react";
@@ -346,4 +346,10 @@ const Candidatura = () => {
   );
 };
 
-export default Candidatura;
+export default function candidatura() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <Candidatura />
+    </Suspense>
+  );
+}
