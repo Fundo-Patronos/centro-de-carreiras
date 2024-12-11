@@ -13,11 +13,10 @@ export default function Home() {
   const username = useAuthStore((state) => state.username);
 
     useEffect(() => {
-        
-        if (username) {
-            const firstName = username.split(' ')[0];
-            setName(firstName);
-        }
+      if (username) {
+        const firstName = username.split(' ')[0];
+        setName(firstName);
+      }
     }, [username]);
 
   return (
