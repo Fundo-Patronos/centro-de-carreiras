@@ -28,6 +28,13 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      - name: Fail if package-lock.json exists
+        run: |
+          if [ -f frontend/package-lock.json ]; then
+            echo "Error: package-lock.json is present. Remove it and use pnpm instead.";
+            exit 1;
+          fi
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         working-directory: frontend
