@@ -20,7 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         front_end_url,
-        "https://carreiras.patronos.org/",
+        "https://carreiras.patronos.org",
         "https://frontend-722033123279.us-central1.run.app",
         "http://localhost:3000",
     ],
