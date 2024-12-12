@@ -1,7 +1,7 @@
-from app.models.abstract_item import Item
+from pydantic import BaseModel
 
 
-class Opportunity(Item):
+class OpportunityCreate(BaseModel):
     Name: str
     Status: str
     Vaga: str
