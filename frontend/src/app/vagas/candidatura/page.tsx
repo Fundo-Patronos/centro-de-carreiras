@@ -9,8 +9,6 @@ import Button from "@/components/GradientButton";
 import axios from "axios";
 import { useAuthStore } from '@/store/authStore';
 
-import Image from "next/image";
-
 interface Opportunity {
   id: string;
   Name: string;
