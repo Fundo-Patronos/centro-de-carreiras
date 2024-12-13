@@ -13,9 +13,6 @@ export default function Mentoria() {
 
   return (
     <Layout currentPage="vagas">
-      {" "}
-      {/* Pass the currentPage prop */}
-      {/* First Section with Background Image, Opacity Layer, and Rotation */}
       <Hero /> {/* Hero Section */}
       {/* Main Content */}
       <div className=" flex flex-col items-center justify-center bg-white">
@@ -28,7 +25,7 @@ export default function Mentoria() {
 
         {/* Iframe with onLoad event to stop the loading spinner */}
         <iframe
-          src="https://airtable.com/embed/appCNXz4iZl0J1gfG/shrgA1iPRv3nUcw1v?viewControls=on"
+          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shr7wJKJ7gzgd0K72?viewControls=on"
           width="100%"
           height="533"
           onLoad={handleIframeLoad} // Trigger when iframe finishes loading
