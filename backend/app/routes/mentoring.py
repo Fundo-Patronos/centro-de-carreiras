@@ -60,7 +60,9 @@ async def send_mentoring_email(
     #     )
 
     try:
-        auth.send_email(email.email, email.subject, email.body, email.copy_emails)
+        auth.send_email(
+            email.email, email.subject, email.body, email.copy_emails
+        )
 
     except RuntimeError as e:
         raise HTTPException(
