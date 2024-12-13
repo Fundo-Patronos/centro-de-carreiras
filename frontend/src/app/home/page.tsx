@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 import HeroSection from "@/components/Homepage/Hero";
 import ExploreSection from "@/components/Homepage/ExploreSection";
 import { useAuthStore } from '../../store/authStore';
+import Image from "next/image";
 
 export default function Home() {
   const [name, setName] = useState<string>('');
@@ -24,9 +25,11 @@ export default function Home() {
       <div className="min-h-screen flex flex-col bg-white relative">
         {/* Background image - now with lower z-index */}
         <div className="absolute inset-0" style={{ zIndex: 0 }}>
-          <img
+          <Image
             src="/images/identidade-visual/Ativo-9assets.svg"
             alt="Background pattern"
+            width={350}
+            height={350}
             className="absolute top-1/2 left-1/3 w-[350px] h-[350px] opacity-80"
             style={{
               transform: 'translate(-60%, -40%) rotate(35deg) scale(4.3)',
