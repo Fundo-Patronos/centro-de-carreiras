@@ -17,9 +17,9 @@ export function middleware(request: NextRequest) {
   }
 
   // If the user is not authenticated and trying to access a protected page, redirect to login
-  // if (!token && !isAuthPage) {
-  //   return NextResponse.redirect(new URL("/", request.url));
-  // }
+  if (!token && !isAuthPage) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   return NextResponse.next(); // Allow access to the requested page
 }

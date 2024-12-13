@@ -25,7 +25,7 @@ const Footer = () => {
     {
       title: "SOCIAL",
       links: [
-        { label: "LINKEDIN", href: "#" },
+        { label: "", href: "#" },
       ]
     }
   ];
