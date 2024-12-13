@@ -73,7 +73,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                     </div>
 
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mb-2">Bem-vindo ao Centro de Carreiras</h2>
-                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
+
 
             <Formik
                 initialValues={initialValues} 
