@@ -24,7 +24,7 @@ export default function Home() {
     <Layout currentPage="home">
       <div className="min-h-screen flex flex-col bg-white relative">
         {/* Background image - now with lower z-index */}
-        <div className="absolute inset-0" style={{ zIndex: 0 }}>
+        <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
           <img
             src="/images/identidade-visual/Ativo-9assets.svg"
             alt="Background pattern"
