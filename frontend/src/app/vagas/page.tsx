@@ -18,7 +18,7 @@ export default function Mentoria() {
       <section
         className="relative z-[-2] w-full flex flex-col justify-center items-center text-center bg-white bg-cover bg-center"
         style={{
-          height: "300px", // Adjusted height for a more compact section
+          height: "30vh", // Adjusted height for a more compact section
         }}
       >
         {/* Background Image */}
@@ -46,7 +46,7 @@ export default function Mentoria() {
             Seu próximo passo começa aqui
           </h1>
           <p className="mt-4 text-2xl text-gray-700">
-            Explore vagas e oportunidades dos nossos parceiros
+            Explore vagas e oportunidades dos nossos parceiros, em aplicações exclusivas para alunos da Unicamp
           </p>
         </div>
       </section>
@@ -61,7 +61,7 @@ export default function Mentoria() {
 
         {/* Iframe with onLoad event to stop the loading spinner */}
         <iframe
-          src="https://airtable.com/embed/appCNXz4iZl0J1gfG/shrgA1iPRv3nUcw1v?viewControls=on"
+          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shr7wJKJ7gzgd0K72?viewControls=on"
           width="100%"
           height="533"
           onLoad={handleIframeLoad} // Trigger when iframe finishes loading
