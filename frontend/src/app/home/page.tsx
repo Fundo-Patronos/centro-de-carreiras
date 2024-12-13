@@ -6,7 +6,7 @@ import Layout from "@/components/Layout";
 import HeroSection from "@/components/Homepage/Hero";
 import ExploreSection from "@/components/Homepage/ExploreSection";
 import { useAuthStore } from '../../store/authStore';
-import Image from "next/image";
+
 
 export default function Home() {
   const [name, setName] = useState<string>('');
