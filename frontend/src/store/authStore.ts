@@ -14,87 +14,31 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()(
-    (set, get) => ({
-        username: null,
-        email: null,
-        accessToken: null,
-        refreshToken: null,
-        
-        // Função para fazer login e armazenar tokens
-        login: (user, accessToken, refreshToken) => {
+    (set, get) => {
+        // Tenta carregar o estado inicial do cookie
+        const authData = Cookies.get("auth-storage");
+        const initialState = authData ? JSON.parse(authData) : {};
 
-            set({
-                username: user.username,
-                email: user.email ,
-                accessToken,
-                refreshToken,
-            });
-            
-            // Armazena os tokens nos cookies
-            Cookies.set(
-                "auth-storage",
-                JSON.stringify({
-                    ...get(),
-                }),
-                {
-                    expires: 1, // Expira em 1 dia
-                    secure: true,
-                    sameSite: "none",
-                }
-            );
-        },
+        return {
+            username: initialState.username || null,
+            email: initialState.email || null,
+            accessToken: initialState.accessToken || null,
+            refreshToken: initialState.refreshToken || null,
 
-        // Função para logout
-        logout: () => {
-            set({
-                email: null,
-                accessToken: null,
-                refreshToken: null,
-            });
-
-            // Remove os cookies
-            Cookies.remove("auth-storage");
-        },
-
-        // Atualiza o token de acesso
-        setAccessToken: (accessToken) => {
-            set((state) => ({
-                ...state,
-                accessToken,
-            }));
-
-            // Atualiza o token de acesso no cookie
-            const currentState = get();
-            Cookies.set(
-                "auth-storage",
-                JSON.stringify({
-                    ...currentState,
+            // Função para fazer login e armazenar tokens
+            login: (user, accessToken, refreshToken) => {
+                set({
+                    username: user.username,
+                    email: user.email,
                     accessToken,
-                }),
-                {
-                    expires: 1, // Expira em 1 dia
-                    secure: true,
-                    sameSite: "none",
-                }
-            );
-        },
+                    refreshToken,
+                });
 
-        // Lógica de renovação de token utilizando o refresh token
-        refreshAccessToken: async () => {
-            const { refreshToken } = get();
-            try {
-                const response = await axios.post('/api/refresh-token', { refreshToken }, { withCredentials: true });
-                const newAccessToken = response.data.accessToken;
-
-                // Atualiza o estado global com o novo token de acesso
-                set({ accessToken: newAccessToken });
-
-                // Atualiza o token de acesso também no cookie
+                // Armazena os tokens nos cookies
                 Cookies.set(
                     "auth-storage",
                     JSON.stringify({
-                        ...get(), // Mantém o estado atual (user, refreshToken)
-                        accessToken: newAccessToken, // Atualiza apenas o accessToken
+                        ...get(),
                     }),
                     {
                         expires: 1, // Expira em 1 dia
@@ -102,15 +46,78 @@ export const useAuthStore = create<AuthState>()(
                         sameSite: "none",
                     }
                 );
-                
-            } catch (error) {
-                console.error('Failed to refresh access token', error);
-                set({ email: null, accessToken: null, refreshToken: null });
+            },
+
+            // Função para logout
+            logout: () => {
+                set({
+                    username: null,
+                    email: null,
+                    accessToken: null,
+                    refreshToken: null,
+                });
+
+                // Remove os cookies
                 Cookies.remove("auth-storage");
-            }
-        },
-    })
+            },
+
+            // Atualiza o token de acesso
+            setAccessToken: (accessToken) => {
+                set((state) => ({
+                    ...state,
+                    accessToken,
+                }));
+
+                // Atualiza o token de acesso no cookie
+                const currentState = get();
+                Cookies.set(
+                    "auth-storage",
+                    JSON.stringify({
+                        ...currentState,
+                        accessToken,
+                    }),
+                    {
+                        expires: 1, // Expira em 1 dia
+                        secure: true,
+                        sameSite: "none",
+                    }
+                );
+            },
+
+            // Lógica de renovação de token utilizando o refresh token
+            refreshAccessToken: async () => {
+                const { refreshToken } = get();
+                try {
+                    const response = await axios.post('/api/refresh-token', { refreshToken }, { withCredentials: true });
+                    const newAccessToken = response.data.accessToken;
+
+                    // Atualiza o estado global com o novo token de acesso
+                    set({ accessToken: newAccessToken });
+
+                    // Atualiza o token de acesso também no cookie
+                    Cookies.set(
+                        "auth-storage",
+                        JSON.stringify({
+                            ...get(), // Mantém o estado atual (user, refreshToken)
+                            accessToken: newAccessToken, // Atualiza apenas o accessToken
+                        }),
+                        {
+                            expires: 1, // Expira em 1 dia
+                            secure: true,
+                            sameSite: "none",
+                        }
+                    );
+
+                } catch (error) {
+                    console.error('Failed to refresh access token', error);
+                    set({ username: null, email: null, accessToken: null, refreshToken: null });
+                    Cookies.remove("auth-storage");
+                }
+            },
+        };
+    }
 );
+
 
 // Interceptor do Axios para renovação automática do token
 axios.interceptors.response.use(

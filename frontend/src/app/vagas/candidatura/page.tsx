@@ -7,6 +7,8 @@ import { Snackbar, Alert, TextField } from "@mui/material";
 import { AlertCircle, File, Edit , Info, Mail} from "lucide-react";
 import Button from "@/components/GradientButton";
 import axios from "axios";
+import { useAuthStore } from '@/store/authStore';
+
 
 interface Opportunity {
   id: string;
@@ -34,10 +36,9 @@ const Candidatura = () => {
 
 
   const [apiUrl, setApiUrl] = useState<string | null>(null);
-
-  const authData = localStorage.getItem("auth-storage");
-  const userName = authData ? JSON.parse(authData).state.user.user_name : "Visitante";
-  const userEmail = authData ? JSON.parse(authData).state.user.email : "email@dominio.com";
+  
+  const userName = useAuthStore((state) => state.username) || "Visitante";
+  const userEmail = useAuthStore((state) => state.email) || "email@dominio.com";
 
   useEffect(() => {
     const fetchApiUrl = async () => {
