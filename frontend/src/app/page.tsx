@@ -16,6 +16,10 @@ import Image from "next/image";
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
 
 
+// Defina os headers globais para Axios
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+
+
 interface LoginFormValues {
   email: string;
   password: string;

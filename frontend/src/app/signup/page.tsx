@@ -132,7 +132,7 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
                     const isValid = isEmailValid(_e.target.value);
                     if (!isValid) {
                       setEmailWarning(
-                        "Esse e-mail precisará de aprovação manual por não pertencer aos domínios da Unicamp.",
+                        "Utilize o seu e-mail de aluno (@dac.unicamp.br). Caso não possua, seu cadastro será enviado para aprovação do Patronos.",
                       );
                     } else {
                       setEmailWarning("");
@@ -323,8 +323,7 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
             <div className="relative w-full h-full rounded-3xl flex-grow bg-[rgb(0,0,0,5%)] flex items-center justify-center p-8 shadow-2xl">
                 {/* Background */}
                 <div
-                    className="absolute right-0 top-0 h-full bg-cover bg-no-repeat transform scale-x-[-1] 
-                                min-w-[375px] w-full max-w-[700px]  lg:w-2/3 xl:w-1/4 "
+                    className="absolute right-0 top-0 h-full w-[41vh] bg-cover bg-no-repeat transform scale-x-[-1]"
                     style={{
                         backgroundImage: "url('/images/identidade-visual/Ativo-11linhas.png')",
                     }}
