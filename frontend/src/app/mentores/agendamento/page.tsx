@@ -126,7 +126,7 @@ const Agendamento = () => {
               </div>
 
               {rowsAvailable ? (
-                <div className="bg-white p-2 md:p-6 overflow-x-auto">
+                <div className="bg-white p-2 md:p-2 overflow-x-auto">
                   <TimeIntervalsTable 
                     mentor={mentor ?? ""} 
                     onSelectionChange={handleSelectionChange} 
@@ -159,7 +159,7 @@ const Agendamento = () => {
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
-                  {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
+                  {rowsAvailable ? "CONFIRMAR HORÁRIOS" : "PEDIR DISPONIBILIDADE"}
                 </GradientButton>
               </div>
             </div>

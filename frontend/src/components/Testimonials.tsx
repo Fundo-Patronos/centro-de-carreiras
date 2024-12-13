@@ -42,7 +42,7 @@ const testimonials: Testimonial[] = [
 
 const Testimonials: React.FC = () => {
   return (
-    <section className="my-5 py-16 rounded-lg shadow-md">
+    <section className="my-5 rounded-lg">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto bg-white bg-opacity-80 p-6 rounded-lg ">
         {testimonials.map((testimonial, index) => (
           <div

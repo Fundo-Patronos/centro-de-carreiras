@@ -21,7 +21,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userName }) => {
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/50 z-[-1]"></div>
 
       <div className="relative z-10 w-full px-4 md:container md:mx-auto">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white mb-4 md:mb-6">
             Olá, {userName}!
           </h1>
