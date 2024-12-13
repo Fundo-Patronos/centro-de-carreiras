@@ -112,28 +112,28 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           <div className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 lg:items-center lg:justify-center">
             <Link
               href="/home"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/home" ? "font-bold text-red-600" : ""
+              className={`block text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+                pathname === "/home" ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
               }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
+              onClick={() => setIsOpen(false)} 
             >
               Home
             </Link>
             <Link
               href="/mentores"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/mentores" ? "font-bold text-red-600" : ""
+              className={`block text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+                pathname.startsWith("/mentores") ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
               }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
+              onClick={() => setIsOpen(false)} 
             >
               Mentores
             </Link>
             <Link
               href="/vagas"
-              className={`block text-gray-800 hover:text-red-600 ${
-                pathname === "/vagas" ? "font-bold text-red-600" : ""
+              className={`block text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+                pathname.startsWith("/vagas") ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
               }`}
-              onClick={() => setIsOpen(false)} // Close dropdown after click
+              onClick={() => setIsOpen(false)}
             >
               Vagas
             </Link>
@@ -143,7 +143,7 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
             <Link
               href="/"
               onClick={handleLogout}
-              className="block py-2 text-gray-800 hover:text-red-600"
+              className="block py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent"
             >
               Logout
             </Link>
@@ -156,8 +156,8 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
         <div className="lg:hidden px-6 py-2 bg-white shadow-md">
           <Link
             href="/home"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/home" ? "font-bold text-red-600" : ""
+            className={`block py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+              pathname === "/home" ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
             }`}
             onClick={toggleMenu} // Close dropdown after click
           >
@@ -165,8 +165,8 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           </Link>
           <Link
             href="/mentores"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/mentores" ? "font-bold text-red-600" : ""
+            className={`block py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+              pathname === "/mentores" ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
             }`}
             onClick={toggleMenu} // Close dropdown after click
           >
@@ -174,8 +174,8 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           </Link>
           <Link
             href="/vagas"
-            className={`block py-2 text-gray-800 hover:text-red-600 ${
-              pathname === "/vagas" ? "font-bold text-red-600" : ""
+            className={`block py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent ${
+              pathname === "/vagas" ? "font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent" : ""
             }`}
             onClick={toggleMenu} // Close dropdown after click
           >
@@ -187,7 +187,7 @@ export default function Navbar({ _currentPage }: NavbarProps): JSX.Element {
           <Link
             href="/"
             onClick={handleLogout}
-            className="block py-2 text-gray-800 hover:text-red-600 "
+            className="block py-2 text-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:bg-clip-text hover:text-transparent "
           >
             Logout
           </Link>

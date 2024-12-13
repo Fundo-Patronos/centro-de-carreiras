@@ -7,6 +7,8 @@ import ConfirmationDialog from '../../../components/ConfirmationDialog';
 import Layout from "@/components/Layout";
 import { Button } from "@mui/material";
 import { Calendar, Clock, User } from 'lucide-react';
+import GradientButton from '@/components/GradientButton';
+import Image from 'next/image';
 
 interface Row {
   day: string;
@@ -61,31 +63,45 @@ const Agendamento = () => {
 
   return (
     <Layout currentPage="mentores">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-        {/* Responsive Hero Section */}
-        <section className="relative h-48 md:h-80 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
-            <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')]" />
-          </div>
-          
-          <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-              <User className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
-              <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                Agende uma reunião
-              </h1>
+      <div className="min-h-screen bg-white relative">
+        {/* Add background image container */}
+        <div className="absolute left-0 right-0 top-[30vh] bottom-0 z-0 pointer-events-none opacity-20">
+          <Image
+            src="/images/identidade-visual/Ativo-9assets.svg"
+            alt="Background Pattern"
+            fill
+            style={{ objectFit: 'cover' }}
+            priority={false}
+          />
+        </div>
+
+        <section
+          className="relative z-10 w-full flex flex-col justify-center items-center text-center bg-white overflow-hidden bg-gradient-to-r from-[#C964E2]/30 via-[#FF6666]/20 to-[#FF9700]/30 shadow-md"
+          style={{
+            height: "30vh",
+          }}
+        >
+          {/* Content */}
+          <div className="relative z-10 px-4">
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex items-center gap-2 md:gap-3">
+                <User className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+                <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                  Agende uma reunião
+                </h1>
+              </div>
+              <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
+                com <span className="font-semibold text-purple-600">{mentor}</span>
+              </p>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
-              com <span className="font-semibold text-purple-600">{mentor}</span>
-            </p>
           </div>
         </section>
 
-        {/* Responsive Schedule Selection Section */}
-        <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-8">
-          <div className="bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-xl border border-purple-100 overflow-hidden">
+        {/* Schedule Selection Section */}
+        <div className="relative z-10 max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-8">
+          <div className="bg-white/90 rounded-xl md:rounded-2xl shadow-sm md:shadow-xl border border-purple-100 overflow-hidden">
             {/* Schedule Header */}
-            <div className="p-4 md:p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+            <div className="p-4 md:p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50/90 to-pink-50/90">
               <div className="flex items-center gap-2 md:gap-3">
                 <Calendar className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
                 <h2 className="text-lg md:text-xl font-semibold text-gray-800">Horários Disponíveis</h2>
@@ -102,7 +118,7 @@ const Agendamento = () => {
               </div>
 
               {rowsAvailable ? (
-                <div className="bg-white p-2 md:p-6 overflow-x-auto">
+                <div className="bg-white/90 p-2 md:p-2 overflow-x-auto">
                   <TimeIntervalsTable 
                     mentor={mentor ?? ""} 
                     onSelectionChange={handleSelectionChange} 
@@ -121,7 +137,7 @@ const Agendamento = () => {
                 </div>
               )}
 
-              {/* Responsive Action Buttons */}
+              {/* Action Buttons */}
               <div className="mt-4 md:mt-6 flex flex-col md:flex-row gap-3 md:justify-end">
                 <Button
                   variant="outlined"
@@ -130,14 +146,13 @@ const Agendamento = () => {
                 >
                   Ver Outros Mentores
                 </Button>
-                <Button
-                  variant="contained"
-                  className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg transition-shadow"
+                <GradientButton
+                  className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
-                  {rowsAvailable ? "Confirmar Horários" : "Pedir disponibilidade"}
-                </Button>
+                  {rowsAvailable ? "CONFIRMAR HORÁRIOS" : "PEDIR DISPONIBILIDADE"}
+                </GradientButton>
               </div>
             </div>
           </div>

@@ -8,9 +8,13 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { validationSchemaLogin } from "../hooks/validationSchema";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "@/store/authStore";
-import axios from "axios";
+import axios, { AxiosError} from "axios";
 import Cookies from 'js-cookie'; // Import js-cookie to work with cookies
-import { AxiosError } from "axios";
+import Image from "next/image";
+
+// Defina os headers globais para Axios
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+
 
 // Defina os headers globais para Axios
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
@@ -56,10 +60,13 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
         <div className="relative z-10 flex flex-col items-center justify-center">
             {/* Logo */}
             <div className="flex items-center justify-center p-5 mb-5 mt-5">
-            <img 
+            <Image 
                 src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
                 alt="Logo" 
-                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+                width={500}
+                height={100}
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto"
+                priority
             />
             </div>
 
@@ -74,7 +81,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
                     </div>
 
                 <h2 className="text-2xl text-[#2F2B3D]/[90%] text-center mb-2">Bem-vindo ao Centro de Carreiras</h2>
-                <p className="text-md text-[#2F2B3D]/[70%] text-center mb-6">Por favor, entre com sua conta para iniciar a sessão</p>
+
 
             <Formik
                 initialValues={initialValues} 
@@ -215,10 +222,13 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
                 <div className="w-full h-full flex flex-col justify-between items-start text-left">
                     {/* Logo */}
                     <div className="flex items-center justify-start p-5">
-                    <img 
+                    <Image 
                         src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
                         alt="Logo" 
-                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                        width={260}
+                        height={65}
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto"
+                        priority
                     />
                     </div>
 
@@ -433,20 +443,11 @@ const handleSubmit = async (
     const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
-      const { email, token, refresh_token } = response.data;
-      login({ email }, token, refresh_token); // Store the user data in Zustand
+      const { username, email, token} = response.data;
+      const refreshToken = Cookies.get("refresh_token") || '';
 
-      // Save token to cookies instead of localStorage
-      Cookies.set(
-        "auth-storage",
-        JSON.stringify({ accessToken: token, refreshToken: refresh_token }),
-        {
-          expires: 1, // Expires in 1 day (you can customize this)
-          secure: true,
-          sameSite: "none",
-        }
-      );
-
+      login({ username, email }, token, refreshToken); // Store the user data in Zustand
+      
       if (rememberMe) {
             localStorage.setItem('email', values.email);
             localStorage.setItem('password', values.password); 

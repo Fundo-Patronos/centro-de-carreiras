@@ -10,6 +10,7 @@ import { validationSchemaSignUp , isEmailValid} from '../../hooks/validationSche
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import AuthPopup from '../../components/AuthPopup';
 import axios from 'axios';
+import Image from "next/image";
 
 interface SignUpFormValues {
   name: string;
@@ -54,10 +55,13 @@ const MobileLayout: React.FC<LayoutProps> = ({  handleSubmit, showPassword, setS
         <div className="relative z-10 flex flex-col items-center justify-center">
             {/* Logo */}
             <div className="flex items-center justify-center p-5 mb-5 mt-5">
-            <img 
+            <Image 
                 src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
                 alt="Logo" 
-                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto" 
+                width={500}
+                height={100}
+                className="sm:w-[60vw] md:w-[50vw] w-[50vw] lg:w-[40vw] xl:w-[40vw] h-auto"
+                priority
             />
             </div>
 
@@ -330,10 +334,13 @@ const DesktopLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setS
                 <div className="w-full h-full flex flex-col justify-between items-start">
                     {/* Logo */}
                     <div className="flex items-center justify-start p-5">
-                    <img 
+                    <Image 
                         src="/images/logos/0.Principal/Logo-Patronos-Principal.png" 
                         alt="Logo" 
-                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto" 
+                        width={260}
+                        height={65}
+                        className="w-32 sm:w-40 md:w-50 lg:w-60 xl:w-65 h-auto"
+                        priority
                     />
                     </div>
 
