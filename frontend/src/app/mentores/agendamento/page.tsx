@@ -147,6 +147,7 @@ const Agendamento = () => {
                   Ver Outros Mentores
                 </Button>
                 <GradientButton
+                  style={{ borderRadius: 4 }}
                   className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
