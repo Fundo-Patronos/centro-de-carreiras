@@ -104,8 +104,12 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
             MuiTablePagination: {
               labelRowsPerPage: `Linhas por página`,
               labelDisplayedRows: ({from, to, count }) => `${from} - ${to} de ${count === -1 ? `mais que ${to}` : `${count}` }`
+            },
+            footerRowSelected: (count) =>
+              count === 1 ? `${count} linha selecionada` : `${count} linhas selecionadas`,
+          
+            noRowsLabel: "Nenhum horário disponível"
             }
-          }
         }
         sx={{
           boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0.1)',
