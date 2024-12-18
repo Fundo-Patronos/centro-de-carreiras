@@ -11,6 +11,11 @@ export default function Mentoria() {
     setIsLoading(false);
   };
 
+  const iframeUrl =
+    process.env.NEXT_PUBLIC_STAGING === "true"
+      ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?"
+      : "https://airtable.com/embed/app4uSEqO2S03EO5X/shrTvk6RhRHzmVYhj?";
+
   return (
     <Layout currentPage="mentores">
       {/* Hero Section */}
@@ -24,7 +29,7 @@ export default function Mentoria() {
           </div>
         )}
         <iframe
-          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
+          src={iframeUrl}
           width="100%"
           height="650"
           onLoad={handleIframeLoad}
