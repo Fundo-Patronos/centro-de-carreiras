@@ -6,7 +6,7 @@ import Layout from "@/components/Layout";
 import HeroSection from "@/components/Homepage/Hero";
 import ExploreSection from "@/components/Homepage/ExploreSection";
 import { useAuthStore } from '../../store/authStore';
-
+import BackgroundPattern from "@/components/Homepage/BackgroundPattern"
 
 export default function Home() {
   const [name, setName] = useState<string>('');
@@ -23,24 +23,8 @@ export default function Home() {
   return (
     <Layout currentPage="home">
       <div className="min-h-screen flex flex-col bg-white relative">
-        {/* Background image - now with lower z-index */}
-        <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 0 }}>
-          <img
-            src="/images/identidade-visual/Ativo-9assets.svg"
-            alt="Background pattern"
-            width={350}
-            height={350}
-            className="absolute top-1/2 left-1/3 w-[350px] h-[350px] opacity-80"
-            style={{
-              transform: 'translate(-60%, -40%) rotate(35deg) scale(4.3)',
-              pointerEvents: 'none',
-            }}
-          />
-        </div>
-
-        {/* Content container - higher z-index */}
+        <BackgroundPattern/>
         <div className="relative" style={{ zIndex: 0 }}>
-          {/* Hero section - make sure its internal z-index doesn't interfere */}
           <div className="relative">
             <HeroSection userName={name || 'Visitante'} />
           </div>
@@ -54,11 +38,15 @@ export default function Home() {
           <section className="relative px-4 py-12 md:py-16  bg-opacity-90">
             <div className="container mx-auto">
               <div className="mb-8 md:mb-12">
-                <h2 className="flex items-center text-xl md:text-2xl font-bold text-gray-800">
-                  <span className="hidden md:inline-block w-12 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 mr-4"></span>
-                  O que dizem sobre nós
+                <h2 className="flex items-center gap-3 text-xl md:text-2xl font-bold text-gray-800">
+                  <span 
+                    className="inline-block h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 
+                              w-6 md:w-12 
+                              transform origin-left scale-x-100"
+                   />
+                    O que dizem sobre nós
                 </h2>
-              </div>
+               </div>
               <Testimonials />
             </div>
           </section>
