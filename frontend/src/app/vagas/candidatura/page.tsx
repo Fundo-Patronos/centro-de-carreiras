@@ -16,6 +16,7 @@ interface Opportunity {
   Vaga: string;
   Tipo: string;
   Contato: string;
+  Descricao: string;
 }
 
 const Candidatura = () => {
@@ -180,19 +181,22 @@ const Candidatura = () => {
               ) : opportunity ? (
                 <div className="space-y-4 text-black">
                   <p>
-                    <strong>Nome:</strong> {opportunity.Name}
+                    <strong>Empresa:</strong> {opportunity.Name}
                   </p>
                   <p>
                     <strong>Status:</strong> {opportunity.Status}
                   </p>
                   <p>
-                    <strong>Vaga:</strong> {opportunity.Vaga}
+                    <strong>Título:</strong> {opportunity.Vaga}
                   </p>
                   <p>
                     <strong>Tipo:</strong> {opportunity.Tipo}
                   </p>
                   <p>
                     <strong>Contato:</strong> {opportunity.Contato}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong> <span dangerouslySetInnerHTML={{ __html: opportunity.Descricao.replace(/\n/g, '<br />') }} />
                   </p>
                 </div>
               ) : (
