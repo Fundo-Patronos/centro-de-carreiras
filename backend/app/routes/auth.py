@@ -491,9 +491,9 @@ async def logout(response: Response):
 )
 async def verify_token(token: str, users_table: UsersTable = Depends(get_users_table)):
     auth = Auth()
-    email = auth.decode_jwt_token_to_email(token)
-
+    
     try:
+        email = auth.decode_jwt_token_to_email(token)
         users_table.get_user(email)
     except:
         raise HTTPException(
@@ -501,5 +501,5 @@ async def verify_token(token: str, users_table: UsersTable = Depends(get_users_t
             detail="User not found",
         )
     
-    return {"email": email}
+    return
 
