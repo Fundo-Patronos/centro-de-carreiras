@@ -3,16 +3,13 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 import GradientButton from '@/components/GradientButton';
-
 
 interface ConfirmationDialogProps {
   email: string;
@@ -23,42 +20,37 @@ interface ConfirmationDialogProps {
 }
 
 export default function ConfirmationDialog({ email: mentorEmail, open, onClose, onConfirm, message }: ConfirmationDialogProps) {
-    const [apiUrl, setApiUrl] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchApiUrl = async () => {
-        try {
-            const response = await axios.get("/api");
-            const url = response.data.apiUrl;
-            setApiUrl(url);
-        } catch {
-            console.error("Erro ao carregar a URL da API.");
-        }
-        };
-
-        fetchApiUrl();
-    }, []);
-      
-  const username = useAuthStore((state) => state.username) || 'Visitante';
+  const [apiUrl, setApiUrl] = useState<string | null>(null);
+  const [subject, setSubject] = useState<string>(`[Centro de Carreiras Patronos] Agendamento de Mentoria com ${useAuthStore((state) => state.username)}`);
+  const [body, setBody] = useState<string>(message); // Usando o `message` vindo das props como valor inicial
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const userEmail = useAuthStore((state) => state.email) || 'user@domain.com';
   const accessToken = useAuthStore((state) => state.accessToken);
 
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  useEffect(() => {
+    const fetchApiUrl = async () => {
+      try {
+        const response = await axios.get("/api");
+        setApiUrl(response.data.apiUrl);
+      } catch {
+        console.error("Erro ao carregar a URL da API.");
+      }
+    };
+    fetchApiUrl();
+  }, []);
 
   const handleSendEmail = async () => {
     try {
       const emailData = {
-        email: mentorEmail, // Mentor email
-        subject: `Agendamento de Mentoria com ${username}`,
-        body: message,
-        copy_emails: [userEmail], 
+        email: mentorEmail,
+        subject,
+        body, // Agora usamos o valor editado do corpo da mensagem
+        copy_emails: [userEmail],
       };
 
       await axios.post(`${apiUrl}/mentoring/send_mentoring_email`, emailData, {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
+        headers: { authorization: `Bearer ${accessToken}` },
       });
 
       setSnackbarMessage('Email enviado com sucesso!');
@@ -70,9 +62,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
     }
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  const handleSnackbarClose = () => setSnackbarOpen(false);
 
   return (
     <>
@@ -80,42 +70,65 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
         open={open}
         onClose={onClose}
         aria-labelledby="confirmation-dialog-title"
-        aria-describedby="confirmation-dialog-description"
         fullWidth
-        maxWidth="md"
+        maxWidth="sm"
       >
         <DialogTitle id="confirmation-dialog-title">
-          Confirmar email a ser enviado para {mentorEmail}:
+          Editar e Enviar E-mail
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            <strong>Email:</strong>
-          </Typography>
-          <Paper variant="outlined" sx={{ padding: '8px', marginBottom: '16px', position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{mentorEmail}</span>
-          </Paper>
+          {/* Destinatário */}
+          <TextField
+            fullWidth
+            disabled
+            label="Destinatário"
+            value={mentorEmail}
+            margin="dense"
+            variant="outlined"
+          />
 
-          <Typography variant="body1" gutterBottom>
-            <strong>Mensagem:</strong>
-          </Typography>
-          {/* Box around message */}
-          <Paper variant="outlined" sx={{ padding: '8px', marginBottom: '16px', position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <DialogContentText id="confirmation-dialog-description">
-              {message}
-            </DialogContentText>
-          </Paper>
+          {/* Assunto */}
+          <TextField
+            fullWidth
+            label="Assunto"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            margin="dense"
+            variant="outlined"
+          />
+
+          {/* Corpo do E-mail */}
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            label="Corpo do E-mail"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            margin="dense"
+            variant="outlined"
+          />
         </DialogContent>
-        <DialogActions className="flex gap-6 w-full justify-end">
-            <GradientButton onClick={handleSendEmail} className="flex-1 text-center px-4 py-2 max-w-[200px]">
-                Enviar Email
-            </GradientButton>
-            <Button onClick={onConfirm} color="primary" variant="contained" className="flex-1 text-center px-4 py-2 max-w-[200px]">
+        <DialogActions className="flex gap-3 w-full pr-4">
+            <Button
+                onClick={onConfirm}
+                color="primary"
+                variant="outlined"
+                className="text-center px-6 py-2 w-[150px] text-purple-600 hover:bg-purple-50"
+            >
                 Fechar
             </Button>
+            <GradientButton
+                onClick={handleSendEmail}
+                style={{}}
+                className="text-center px-6 py-2 w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
+            >
+                Enviar Email
+            </GradientButton>
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for copy feedback */}
+      {/* Snackbar para feedback */}
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
           {snackbarMessage}
