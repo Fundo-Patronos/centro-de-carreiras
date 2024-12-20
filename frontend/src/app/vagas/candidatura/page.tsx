@@ -1,12 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Snackbar, Alert, TextField } from "@mui/material";
 import { AlertCircle, File, Edit , Info, Mail} from "lucide-react";
 import Button from "@/components/GradientButton";
 import axios from "axios";
+import { useAuthStore } from '@/store/authStore';
 
 interface Opportunity {
   id: string;
@@ -15,6 +16,7 @@ interface Opportunity {
   Vaga: string;
   Tipo: string;
   Contato: string;
+  Descricao: string;
 }
 
 const Candidatura = () => {
@@ -34,10 +36,9 @@ const Candidatura = () => {
 
 
   const [apiUrl, setApiUrl] = useState<string | null>(null);
-
-  const authData = localStorage.getItem("auth-storage");
-  const userName = authData ? JSON.parse(authData).state.user.user_name : "Visitante";
-  const userEmail = authData ? JSON.parse(authData).state.user.email : "email@dominio.com";
+  
+  const userName = useAuthStore((state) => state.username) || "Visitante";
+  const userEmail = useAuthStore((state) => state.email) || "email@dominio.com";
 
   useEffect(() => {
     const fetchApiUrl = async () => {
@@ -135,32 +136,35 @@ const Candidatura = () => {
     <Layout currentPage="candidaturas">
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
 
-        <section className="relative h-48 md:h-80 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
-            <div className="absolute inset-0 opacity-10 bg-[url('/images/grid-pattern.svg')]" />
-          </div>
-            {opportunity ? (
-                <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
 
-                    <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-                    <File className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
-                    <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+        <section
+          className="relative z-10 w-full flex flex-col justify-center items-center text-center bg-white overflow-hidden bg-gradient-to-r from-[#C964E2]/30 via-[#FF6666]/20 to-[#FF9700]/30 shadow-md"
+          style={{
+            height: "30vh",
+          }}
+        >
+          {/* Content */}
+          <div className="relative z-10 px-4">
+            {opportunity ? (
+              <div className="flex flex-col items-center justify-center gap-2">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <File className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
+                  <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
                     Candidate-se para a vaga
-                    </h1>
+                  </h1>
                 </div>
-                    <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
-                        de <span className="font-semibold text-purple-600">{opportunity.Name}</span>
-                    </p>
-                </div>
-            ): error && (
-                <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
-                    <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
-                        <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                        {errorMessage}
-                        </h1>
-                    </div>
-                </div>
-            )}            
+                <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
+                  de <span className="font-semibold text-purple-600">{opportunity.Name}</span>
+                </p>
+              </div>
+            ) : error && (
+              <div className="flex flex-col items-center justify-center gap-2">
+                <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                  {errorMessage}
+                </h1>
+              </div>
+            )}
+          </div>
         </section>
 
         <div className="max-w-4xl mx-auto px-3 md:px-4 py-4 md:py-8">
@@ -177,19 +181,22 @@ const Candidatura = () => {
               ) : opportunity ? (
                 <div className="space-y-4 text-black">
                   <p>
-                    <strong>Nome:</strong> {opportunity.Name}
+                    <strong>Empresa:</strong> {opportunity.Name}
                   </p>
                   <p>
                     <strong>Status:</strong> {opportunity.Status}
                   </p>
                   <p>
-                    <strong>Vaga:</strong> {opportunity.Vaga}
+                    <strong>Título:</strong> {opportunity.Vaga}
                   </p>
                   <p>
                     <strong>Tipo:</strong> {opportunity.Tipo}
                   </p>
                   <p>
                     <strong>Contato:</strong> {opportunity.Contato}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong> <span dangerouslySetInnerHTML={{ __html: opportunity.Descricao.replace(/\n/g, '<br />') }} />
                   </p>
                 </div>
               ) : (
@@ -346,4 +353,10 @@ const Candidatura = () => {
   );
 };
 
-export default Candidatura;
+export default function candidatura() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <Candidatura />
+    </Suspense>
+  );
+}

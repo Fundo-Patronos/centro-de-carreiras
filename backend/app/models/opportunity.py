@@ -7,3 +7,4 @@ class Opportunity(Item):
     Vaga: str
     Tipo: str
     Contato: str
+    Descricao: str

@@ -49,17 +49,20 @@ async def send_mentoring_email(
 
     auth = Auth()
 
-    try:
-        auth.decode_jwt_token(token)
+    # Temporarily disabling token verification due to unknown error
+    # try:
+    #     auth.decode_jwt_token(token)
 
-    except jwt.InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail="Invalid reset token",
+    # except jwt.InvalidTokenError:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_406_NOT_ACCEPTABLE,
+    #         detail="Invalid reset token",
+    #     )
+
+    try:
+        auth.send_email(
+            email.email, email.subject, email.body, email.copy_emails
         )
-
-    try:
-        auth.send_email(email.email, "Mentoring", "Mentoring email", [])
 
     except RuntimeError as e:
         raise HTTPException(

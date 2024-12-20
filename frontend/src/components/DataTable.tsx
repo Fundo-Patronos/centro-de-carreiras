@@ -60,7 +60,6 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
   }, [mentor, setRowsAvailable]);
 
   const handleSelectionChange = useCallback((newSelectionModel: GridRowSelectionModel) => {
-    // Get complete rows for the selected data
     const selectedRows = newSelectionModel.map((id: GridRowId) => rows.find((row) => row.id === id) as RowData);
     onSelectionChange(selectedRows);
   }, [onSelectionChange, rows]);
@@ -76,23 +75,21 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
   return (
     <Paper sx={{ height: 400,
       width: '100%',
-      padding: '16px',
+      // padding: '16px',
       position: 'relative',
-      boxShadow: '0px 0px 4px 4px rgba(0, 0, 0, 0.1)', // Sombras comuns para melhor visibilidade
+      boxShadow: '0px 0px 1px 0.5px rgba(0, 0, 0, 0.05)', 
       borderRadius: '8px', // Adiciona borda arredondada para suavizar
       background: 'linear-gradient(135deg, rgba(255, 0, 150, 0.01), rgba(0, 204, 255, 0.1)) padding-box, linear-gradient(135deg, #C964E2, #FF9700) border-box',
-      border: '2px solid transparent',
       '&::before': {
-        content: '""',
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        borderRadius: '16px',
+        borderRadius: '8px',
         background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 5, 0.1))', // Opacidade reduzida
         zIndex: -1,
-        filter: 'blur(16px)', // Halo
+        filter: 'blur(4px)', 
       },
     }}>
       <DataGrid
@@ -102,9 +99,22 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
         pageSizeOptions={[5, 10]}
         checkboxSelection
         onRowSelectionModelChange={(newSelectionModel) => handleSelectionChange(newSelectionModel)}
+        localeText={
+          {
+            MuiTablePagination: {
+              labelRowsPerPage: `Linhas por página`,
+              labelDisplayedRows: ({from, to, count }) => `${from} - ${to} de ${count === -1 ? `mais que ${to}` : `${count}` }`
+            },
+            footerRowSelected: (count) =>
+              count === 1 ? `${count} linha selecionada` : `${count} linhas selecionadas`,
+          
+            noRowsLabel: "Nenhum horário disponível"
+            }
+        }
         sx={{
-          boxShadow: 4,
-          border: 2,
+          boxShadow: '0px 0px 0px 0px rgba(0, 0, 0, 0.1)',
+          borderRadius: 2,
+          border: 0,
           borderColor: 'secondary.light',
           
           backgroundColor: '#ffffff', // Adiciona o fundo sólido para a tabela
@@ -112,7 +122,7 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
             fontSize: '1.1rem', // Aumenta o tamanho do texto das células
           },
           '& .MuiDataGrid-columnHeaders': {
-            fontSize: '1.2rem', // Aumenta o tamanho do texto do cabeçalho
+            fontSize: '1.1rem', // Aumenta o tamanho do texto do cabeçalho
             fontWeight: 'bold', // Opcional, para deixar o cabeçalho em negrito
           },
           

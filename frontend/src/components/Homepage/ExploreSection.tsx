@@ -1,5 +1,6 @@
 import ExploreCard from "./ExploreCard";
 import React from "react";
+import SectionTitle from "./SectionTitle";
 
 interface ExploreSectionInterface {
   sectionTitle?: string;
@@ -38,15 +39,9 @@ const ExploreSection: React.FC<ExploreSectionInterface> = ({
   ];
 
   return (
-    <section id="explore" className=" px-4 py-12 md:py-16">
+    <section id="explore" className="px-4 py-12 md:py-16">
       <div className="container mx-auto">
-        <div className="mb-8 md:mb-12">
-          <h2 className="flex items-center text-xl md:text-2xl font-bold text-gray-800">
-            <span className="hidden md:inline-block w-12 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 mr-4"></span>
-            {sectionTitle}
-          </h2>
-        </div>
-
+        <SectionTitle>{sectionTitle}</SectionTitle>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
           {exploreCards.map((card, index) => (
             <ExploreCard key={index} {...card} />
