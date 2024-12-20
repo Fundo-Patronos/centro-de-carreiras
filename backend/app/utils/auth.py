@@ -164,7 +164,7 @@ class Auth:
 
         body = f"""Olá, {user_name}!
 
-Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{quote(verify_url)}">Verificar Email</a>."""
 
         self.send_email(email, subject, body)
 
@@ -183,6 +183,6 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
 
         body = f"""Olá, {user_name}!
 
-Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
+Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{quote(reset_password_url)}">aqui</a> para criar uma nova senha."""
 
         self.send_email(email, subject, body)
