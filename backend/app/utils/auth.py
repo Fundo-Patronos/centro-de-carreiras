@@ -158,7 +158,7 @@ class Auth:
     ) -> None:
         user_name = full_name.split()[0]
 
-        verify_url = f"{self.base_url}/verify/{quote(token)}"
+        verify_url = f"{self.base_url}/verify/{token}"
 
         subject = "Verificação de Email"
 
