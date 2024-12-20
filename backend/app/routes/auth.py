@@ -269,6 +269,7 @@ async def signin(
     return {
         "username": existing_user.name,
         "email": existing_user.email,
+        "user_name": existing_user.name,
         "token": token,
     }
 
@@ -470,3 +471,35 @@ async def logout(response: Response):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}",
         )
+    
+@router.get(
+    "/verify-token/{token}",
+    response_model=dict,
+    responses={
+        401: {
+            "model": DefaultErrorResponse,
+            "description": "Unauthorized - User not found",
+        }
+    },
+    summary="Verify JWT Token",
+    description=(
+        "Verifies a JWT token and returns the associated email if valid. This endpoint "
+        "checks if the token is valid and if the user associated with the token exists "
+        "in the database. Returns the email if successful, or appropriate error responses "
+        "for invalid/expired tokens or non-existent users."
+    ),
+)
+async def verify_token(token: str, users_table: UsersTable = Depends(get_users_table)):
+    auth = Auth()
+    email = auth.decode_jwt_token_to_email(token)
+
+    try:
+        users_table.get_user(email)
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+        )
+    
+    return {"email": email}
+
