@@ -162,17 +162,9 @@ class Auth:
 
         subject = "Verificação de Email"
 
-        body = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-    <p>Olá, {user_name}!</p>
-    <p>Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, <a href="{verify_url}">clique aqui</a>.</p>
-</body>
-</html>"""
+        body = f"""Olá, {user_name}!
 
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
 
         self.send_email(email, subject, body)
 
@@ -189,15 +181,8 @@ class Auth:
 
         subject = "Esqueci minha senha"
 
-        body = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-    <p>Olá, {user_name}!</p>
-    <p>Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha.</p>
-</body>
-</html>"""
+        body = f"""Olá, {user_name}!
+
+Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
 
         self.send_email(email, subject, body)
