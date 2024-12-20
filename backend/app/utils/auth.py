@@ -175,7 +175,7 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
             email
         )
 
-        encoded_token = quote(password_reset_token)
+        encoded_token = password_reset_token
 
         reset_password_url = f"{self.base_url}/reset-password/{encoded_token}"
 
