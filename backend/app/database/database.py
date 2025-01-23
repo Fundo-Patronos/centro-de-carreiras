@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Any, Optional
 
-from pydantic import BaseModel
+from app.models.abstract_item import Item
 
 
 class Database:
@@ -45,7 +45,7 @@ class Database:
         """
 
     @abstractmethod
-    def create(self, table_id: str, items: list[Item]) -> None:
+    def create(self, table_id: str, items: list[Item]) -> list[dict]:
         """Creates a new record in the database.
 
         Args:
