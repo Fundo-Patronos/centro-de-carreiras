@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import quote
 import jwt
 import pytest
 import requests
@@ -162,12 +163,13 @@ def test_send_verification_email(response_code, monkeypatch):
     # Assert
     body = f"""Olá, Test!
 
-Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{auth.base_url}/verify/{token}">Verificar Email</a>."""
+Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{auth.base_url}/verify/{quote(token)}">Verificar Email</a>."""
     mock_post.assert_called_once_with(
         auth.webhook_url,
         json={
             "email": email,
             "subject": "Verificação de Email",
             "body": body,
+            "copy_emails": "",
         },
     )
