@@ -19,12 +19,14 @@ print(f"Front End URL Cloud: {front_end_url}")
 
 app = FastAPI()
 
+
 @app.middleware("http")
 async def redirect_to_https(request: Request, call_next):
     if request.url.scheme == "http":
         url = request.url.replace(scheme="https")
         return RedirectResponse(url)
     return await call_next(request)
+
 
 app.add_middleware(
     CORSMiddleware,
