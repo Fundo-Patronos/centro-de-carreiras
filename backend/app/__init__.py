@@ -21,11 +21,13 @@ app = FastAPI()
 
 
 @app.middleware("http")
-async def redirect_to_https(request: Request, call_next):
-    if request.url.scheme == "http":
+async def redirect_http_to_https(request: Request, call_next):
+    x_forwarded_proto = request.headers.get("x-forwarded-proto")
+    if x_forwarded_proto == "http":
         url = request.url.replace(scheme="https")
-        return RedirectResponse(url)
-    return await call_next(request)
+        return RedirectResponse(url, status_code=307)
+    response = await call_next(request)
+    return response
 
 
 app.add_middleware(
