@@ -126,7 +126,7 @@ async def signup(
 
 
 @router.post(
-    "/verify/",
+    "/verify",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         408: {
