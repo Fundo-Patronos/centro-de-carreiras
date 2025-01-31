@@ -11,7 +11,8 @@ export async function fetchIframeUrl() {
 
 // Componente principal
 export default async function Mentoria() {
-  const iframeUrl = await fetchIframeUrl();
+  const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
+  const iframeUrl = isStaging  ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?" : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
 
   return (
     <Layout currentPage="mentores">
