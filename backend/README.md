@@ -31,6 +31,7 @@ The following environment variables need to be added into the `.env` file to run
 - `FRONT_END_BASE_URL`: Base URL of the frontend app
 - `VERIFICATION_EMAIL_WEBHOOK_URL`: Webhook URL for sending verification emails in Airtable automation
 - `SCHEDULES_TABLE_ID`: Airtable schedules table ID
+- `OPPORTUNITIES_TABLE_ID`: Airtable opportunities table ID
 - `WORKSPACE_ID`: Airtable workspace ID
 - `AIRTABLE_API_KEY`: Airtable API key
 
@@ -44,6 +45,7 @@ VERIFICATION_EMAIL_WEBHOOK_URL=https://email-verification-webhook.com
 SCHEDULES_TABLE_ID=your_airtable_schedules_table_id
 WORKSPACE_ID=your_airtable_workspace_id
 AIRTABLE_API_KEY=your_airtable_api_key
+OPPORTUNITIES_TABLE_ID=your_opportunities_page_id
 ```
 
 ## How to run test and get coverage artifacts?

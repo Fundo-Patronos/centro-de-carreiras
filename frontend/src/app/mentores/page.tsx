@@ -6,7 +6,7 @@ export async function fetchIframeUrl() {
   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
   return isStaging
     ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?"
-    : "https://airtable.com/embed/app4uSEqO2S03EO5X/shrTvk6RhRHzmVYhj?";
+    : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
 }
 
 // Componente principal
