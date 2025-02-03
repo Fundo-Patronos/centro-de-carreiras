@@ -238,13 +238,13 @@ const Candidatura = () => {
                       />
                     </div>
                     <div className="w-full">
-                      <div className="w-full text-right pr-32 pl-32">
+                      <div className="w-full flex justify-center">
                         <Button
-                          onClick={() => setShowPopup(true)}
-                          className="w-auto px-6 py-3 text-lg font-semibold"
-                        >
-                          Enviar Candidatura
-                        </Button>
+                            onClick={() => setShowPopup(true)}
+                            className="w-full sm:w-auto min-w-[150px] px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-semibold"
+                          >
+                            Enviar Candidatura
+                          </Button>
                       </div>
                     </div>
                   </div>
