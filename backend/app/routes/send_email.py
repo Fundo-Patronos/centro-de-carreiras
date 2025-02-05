@@ -8,7 +8,7 @@ from app.schemas.send_email import (
     SendEmailRequest,
     SendOpportunityEmailRequest,
 )
-from app.utils.CVBucketManager import CVBucketManager
+from app.utils.cv_bucket_manager import CVBucketManager
 from app.utils.email_sender import EmailSender
 
 router = APIRouter()
