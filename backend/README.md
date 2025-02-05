@@ -46,6 +46,10 @@ SCHEDULES_TABLE_ID=your_airtable_schedules_table_id
 WORKSPACE_ID=your_airtable_workspace_id
 AIRTABLE_API_KEY=your_airtable_api_key
 OPPORTUNITIES_TABLE_ID=your_opportunities_page_id
+GOOGLE_APPLICATION_CREDENTIALS="./credentials.json" # Only for development
+CV_BUCKET_NAME=carreiras-users-cv
+ATTACHMENTS_TABLE_ID=your_attachments_table_id
+OPPORTUNITY_EMAIL_WEBHOOK_URL=https://send_opportunity_email_url.com
 ```
 
 ## How to run test and get coverage artifacts?
