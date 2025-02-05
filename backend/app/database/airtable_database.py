@@ -1,4 +1,5 @@
 import os
+from pydantic import BaseModel
 import requests
 from typing import Any, Optional
 
@@ -169,7 +170,7 @@ class AirtableDatabase(Database):
             for record in all_records
         ]
 
-    def create(self, table_id: str, items: list[Item]) -> list[dict]:
+    def create(self, table_id: str, items: list[BaseModel]) -> list[dict]:
         """
         Creates records in the Airtable database.
 
