@@ -3,7 +3,6 @@ from typing import Optional
 import jwt
 import os
 import datetime
-import requests
 from urllib.parse import quote
 
 import bcrypt

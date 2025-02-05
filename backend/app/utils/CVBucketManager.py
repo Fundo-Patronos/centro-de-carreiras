@@ -1,18 +1,34 @@
+from __future__ import annotations
+import os
+from typing import Optional
 from google.cloud import storage
 from datetime import datetime, timedelta, timezone
 import hashlib
 import base64
 
 class CVBucketManager:
-    def __init__(self, bucket_name: str, expiration_minutes: int = 10):
+    # Make it a singleton
+    _instance: Optional[CVBucketManager] = None
+
+    def __new__(cls: type[CVBucketManager]) -> CVBucketManager:
+        if cls._instance is None:
+            cls._instance = super(CVBucketManager, cls).__new__(cls)
+
+        return cls._instance
+
+    def __init__(self):
         """
         Initializes the CVBucketManager.
 
         :param bucket_name: Name of the Google Cloud Storage bucket.
         :param expiration_minutes: Link expiration time in minutes.
         """
+        bucket_name = os.getenv("CV_BUCKET_NAME", None)
+        if bucket_name is None:
+            raise ValueError("CV_BUCKET_NAME environment variable is not set.")
+
         self.bucket_name = bucket_name
-        self.expiration_minutes = expiration_minutes
+        self.expiration_minutes = 5
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
 
