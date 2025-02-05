@@ -28,6 +28,7 @@ const ExploreCard: React.FC<ExploreCardProps> = ({
         <Image
           src={imageSrc}
           alt={imageAlt}
+          sizes="100%"
           fill
           className="object-cover transform group-hover:scale-105 transition-transform duration-300"
         />

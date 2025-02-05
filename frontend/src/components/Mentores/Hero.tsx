@@ -5,10 +5,11 @@ const HeroSection: React.FC = () => {
   return (
     <section className="relative w-full h-[60vh] md:h-[50vh] flex items-center overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="block md:hidden">
+        <div className="relative block w-full h-full md:hidden">
           <Image
             src="/images/entrada-unicamp-mobile.png"
             alt="Background Image for Mobile"
+            sizes="100%"
             fill
             style={{
               objectFit: "cover",
@@ -18,10 +19,11 @@ const HeroSection: React.FC = () => {
           />
         </div>
         {/* Desktop Image */}
-        <div className="hidden md:block">
+        <div className="relative w-full h-full hidden md:block">
           <Image
             src="/images/entrada-unicamp.png"
             alt="Background Image for Desktop"
+            sizes="100%"
             fill
             style={{
               objectFit: "cover",

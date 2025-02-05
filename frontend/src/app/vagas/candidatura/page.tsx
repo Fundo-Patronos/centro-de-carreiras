@@ -189,7 +189,7 @@ const Candidatura = () => {
                 alt="Background Pattern"
                 fill
                 style={{ objectFit: 'cover' }}
-                priority={false}
+                priority={true}
               />
             </div>
 

@@ -79,7 +79,6 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
       position: 'relative',
       boxShadow: '0px 0px 1px 0.5px rgba(0, 0, 0, 0.05)', 
       borderRadius: '8px', // Adiciona borda arredondada para suavizar
-      background: 'linear-gradient(135deg, rgba(255, 0, 150, 0.01), rgba(0, 204, 255, 0.1)) padding-box, linear-gradient(135deg, #C964E2, #FF9700) border-box',
       '&::before': {
         position: 'absolute',
         top: 0,
@@ -87,7 +86,6 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
         right: 0,
         bottom: 0,
         borderRadius: '8px',
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 5, 0.1))', // Opacidade reduzida
         zIndex: -1,
         filter: 'blur(4px)', 
       },
