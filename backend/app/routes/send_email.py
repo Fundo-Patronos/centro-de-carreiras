@@ -78,7 +78,7 @@ async def send_opportunity_email(
     )
     try:
         attachments_table.delete_attachment(
-            attachments_table.get_attachment(unique_attachment_id).id
+            attachments_table.get_attachment_real_id(unique_attachment_id)
         )
     except DataNotFound:
         pass

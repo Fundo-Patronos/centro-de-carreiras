@@ -12,11 +12,9 @@ class AttachmentsTable:
         self.table_id = optional_table_id
         self.db = db
 
-    def get_attachment(self, unique_id: str) -> Attachment:
+    def get_attachment_real_id(self, unique_id: str) -> str:
         params = {"unique_id": unique_id}
-        return Attachment(
-            **self.db.read_one(table_id=self.table_id, params=params)
-        )
+        return self.db.read_one(table_id=self.table_id, params=params)["id"]
 
     def create_attachment(self, attachment: AttachmentCreate) -> Attachment:
         return Attachment(
