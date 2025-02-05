@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from starlette.status import HTTP_503_SERVICE_UNAVAILABLE
-from app.schemas.send_email import SendEmailRequest
-from app.utils.auth import Auth
+from app.schemas.send_email import SendEmailRequest, SendOpportunityEmailRequest
+from app.utils.email_sender import EmailSender
 
 router = APIRouter()
 
@@ -23,9 +23,9 @@ router = APIRouter()
 async def send_email(
     send_email_request: SendEmailRequest,
 ):
-    auth = Auth()
+    email_sender = EmailSender()
     try:
-        auth.send_email(**send_email_request.model_dump())
+        email_sender.send_email(**send_email_request.model_dump())
 
     except RuntimeError:
         raise HTTPException(
