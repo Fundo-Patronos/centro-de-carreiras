@@ -158,7 +158,7 @@ class Auth:
     ) -> None:
         user_name = full_name.split()[0]
 
-        safe_token = quote(token, safe='')
+        safe_token = quote(token, safe="")
 
         verify_url = f"{self.base_url}/verify/{safe_token}"
 
@@ -177,7 +177,7 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
             email
         )
 
-        encoded_token = quote(password_reset_token, safe='')
+        encoded_token = quote(password_reset_token, safe="")
 
         reset_password_url = f"{self.base_url}/reset-password/{encoded_token}"
 
