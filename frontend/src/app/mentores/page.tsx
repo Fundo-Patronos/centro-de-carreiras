@@ -1,34 +1,31 @@
-"use client";
-
-import { useState } from "react";
 import Layout from "@/components/Layout";
 import Hero from "@/components/Mentores/Hero";
 
-export default function Mentoria() {
-  const [isLoading, setIsLoading] = useState(true);
+// Função para buscar a URL do iframe no servidor
+// export async function fetchIframeUrl() {
+//   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
+//   return isStaging
+//     ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?"
+//     : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
+// }
 
-  const handleIframeLoad = () => {
-    setIsLoading(false);
-  };
+// Componente principal
+export default async function Mentoria() {
+  const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
+  const iframeUrl = isStaging  ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?" : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
 
   return (
     <Layout currentPage="mentores">
       {/* Hero Section */}
-      <Hero/>
+      <Hero />
 
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center bg-white">
-        {isLoading && (
-          <div className="flex items-center justify-center mt-8">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-red-600"></div>
-          </div>
-        )}
         <iframe
-          src="https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
+          src={iframeUrl}
           width="100%"
           height="650"
-          onLoad={handleIframeLoad}
-          className={isLoading ? "hidden" : ""}
+          className=""
         ></iframe>
       </div>
     </Layout>

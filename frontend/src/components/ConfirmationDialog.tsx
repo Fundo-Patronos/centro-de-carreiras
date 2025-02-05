@@ -1,17 +1,15 @@
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
-import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'; // Import copy icon
-import Snackbar from '@mui/material/Snackbar'; // Import Snackbar
-import Alert from '@mui/material/Alert'; // Import Alert for Snackbar
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
+import GradientButton from '@/components/GradientButton';
 
 interface ConfirmationDialogProps {
   email: string;
@@ -21,25 +19,50 @@ interface ConfirmationDialogProps {
   message: string;
 }
 
-export default function ConfirmationDialog({ email, open, onClose, onConfirm, message }: ConfirmationDialogProps) {
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+export default function ConfirmationDialog({ email: mentorEmail, open, onClose, onConfirm, message }: ConfirmationDialogProps) {
+  const [apiUrl, setApiUrl] = useState<string | null>(null);
+  const [subject, setSubject] = useState<string>(`[Centro de Carreiras Patronos] Agendamento de Mentoria com ${useAuthStore((state) => state.username)}`);
+  const [body, setBody] = useState<string>(message); // Usando o `message` vindo das props como valor inicial
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const userEmail = useAuthStore((state) => state.email) || 'user@domain.com';
+  const accessToken = useAuthStore((state) => state.accessToken);
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setSnackbarMessage('Email copiado para a área de transferência');
-    setSnackbarOpen(true);
+  useEffect(() => {
+    const fetchApiUrl = async () => {
+      try {
+        const response = await axios.get("/api");
+        setApiUrl(response.data.apiUrl);
+      } catch {
+        console.error("Erro ao carregar a URL da API.");
+      }
+    };
+    fetchApiUrl();
+  }, []);
+
+  const handleSendEmail = async () => {
+    try {
+      const emailData = {
+        email: mentorEmail,
+        subject,
+        body, // Agora usamos o valor editado do corpo da mensagem
+        copy_emails: [userEmail],
+      };
+
+      await axios.post(`${apiUrl}/mentoring/send_mentoring_email`, emailData, {
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
+
+      setSnackbarMessage('Email enviado com sucesso!');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Erro ao enviar o email:', error);
+      setSnackbarMessage('Erro ao enviar o email. Tente novamente mais tarde.');
+      setSnackbarOpen(true);
+    }
   };
 
-  const handleCopyMessage = () => {
-    navigator.clipboard.writeText(message);
-    setSnackbarMessage('Mensagem copiada para a área de transferência');
-    setSnackbarOpen(true);
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  const handleSnackbarClose = () => setSnackbarOpen(false);
 
   return (
     <>
@@ -47,57 +70,65 @@ export default function ConfirmationDialog({ email, open, onClose, onConfirm, me
         open={open}
         onClose={onClose}
         aria-labelledby="confirmation-dialog-title"
-        aria-describedby="confirmation-dialog-description"
         fullWidth
-        maxWidth="md"
+        maxWidth="sm"
       >
         <DialogTitle id="confirmation-dialog-title">
-          Confirmar email a ser enviado para {email}:
+          Editar e Enviar E-mail
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            <strong>Email:</strong>
-          </Typography>
-          <Paper variant="outlined" sx={{ padding: '8px', marginBottom: '16px', position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{email}</span>
-            <Tooltip title="Copiar email">
-              <IconButton
-                onClick={handleCopyEmail}
-                sx={{ color: 'blue' }} // Change icon color
-                size="small"
-              >
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
-          </Paper>
+          {/* Destinatário */}
+          <TextField
+            fullWidth
+            disabled
+            label="Destinatário"
+            value={mentorEmail}
+            margin="dense"
+            variant="outlined"
+          />
 
-          <Typography variant="body1" gutterBottom>
-            <strong>Mensagem:</strong>
-          </Typography>
-          {/* Box around message */}
-          <Paper variant="outlined" sx={{ padding: '8px', marginBottom: '16px', position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <DialogContentText id="confirmation-dialog-description">
-              {message}
-            </DialogContentText>
-            <Tooltip title="Copiar mensagem">
-              <IconButton
-                onClick={handleCopyMessage}
-                sx={{ color: 'blue' }} // Change icon color
-                size="small"
-              >
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
-          </Paper>
+          {/* Assunto */}
+          <TextField
+            fullWidth
+            label="Assunto"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            margin="dense"
+            variant="outlined"
+          />
+
+          {/* Corpo do E-mail */}
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            label="Corpo do E-mail"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            margin="dense"
+            variant="outlined"
+          />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={onConfirm} color="primary" variant="contained">
-            Fechar
-          </Button>
+        <DialogActions className="flex gap-3 w-full pr-4">
+            <Button
+                onClick={onConfirm}
+                color="primary"
+                variant="outlined"
+                className="text-center px-6 py-2 w-[150px] text-purple-600 hover:bg-purple-50"
+            >
+                Fechar
+            </Button>
+            <GradientButton
+                onClick={handleSendEmail}
+                style={{}}
+                className="text-center px-6 py-2 w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
+            >
+                Enviar Email
+            </GradientButton>
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for copy feedback */}
+      {/* Snackbar para feedback */}
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
           {snackbarMessage}

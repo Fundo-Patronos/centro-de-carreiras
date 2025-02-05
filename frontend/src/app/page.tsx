@@ -16,6 +16,10 @@ import Image from "next/image";
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
 
 
+// Defina os headers globais para Axios
+axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+
+
 interface LoginFormValues {
   email: string;
   password: string;
@@ -439,7 +443,7 @@ const handleSubmit = async (
     const response = await axios.post(`${apiUrl}/signin`, values, { withCredentials: true });
 
     if (response.status === 200) {
-      const { username, email, token} = response.data;
+    const { user_name: username, email, token } = response.data;
       const refreshToken = Cookies.get("refresh_token") || '';
 
       login({ username, email }, token, refreshToken); // Store the user data in Zustand
@@ -456,10 +460,8 @@ const handleSubmit = async (
     } 
   } catch (error) {
     const err = error as AxiosError;
-    console.log("Error completo:", err); 
-    
-    console.log("Error completo:", err); 
-    
+    console.error("Error completo:", err); 
+        
     if (err.response) {
         if (err.response.status === 401 || err.response.status === 406) {
             setLoginError("Usuário ou senha inválido");

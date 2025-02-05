@@ -126,7 +126,7 @@ async def signup(
 
 
 @router.post(
-    "/verify/",
+    "/verify",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         408: {
@@ -267,9 +267,8 @@ async def signin(
     )
 
     return {
-        "username": existing_user.name,
-        "email": existing_user.email,
         "user_name": existing_user.name,
+        "email": existing_user.email,
         "token": token,
     }
 

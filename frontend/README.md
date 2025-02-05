@@ -40,9 +40,7 @@ bun dev
 
 ### Step 4: Set up environment variables
 
-Make sure your environment has the following variables set:
-
-- `NEXT_PUBLIC_API_URL` : backend application URL
+For testing purposes, our database in Airtable has a staging version in which you can create fictional entries and validate your features. It is recommended that local executions are made using these tables. For that, you'll need to set the `NEXT_PUBLIC_STAGING` variable to `true`. The absence of this variable will make your execution use the production airtable iframes for mentors and opportunities.
 
 ### Step 5: Access the Application
 

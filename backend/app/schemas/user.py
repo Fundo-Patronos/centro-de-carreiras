@@ -30,9 +30,8 @@ class UserLogin(BaseModel):
 
 
 class UserLoginResponse(BaseModel):
-    username: str
-    email: EmailStr
     user_name: str
+    email: EmailStr
     token: str
 
 

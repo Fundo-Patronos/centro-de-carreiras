@@ -26,3 +26,11 @@ The project is divided into two main applications:
 
 - [Read the Back-end README](backend/README.md)
 - [Read the Front-end README](frontend/README.md)
+
+## Database
+
+For storing data, we use [Airtable](https://www.airtable.com/). It is a no-code data platform that enables non-technical volunteers from Patronos to visualize and manage the data. Airtable is also the responsible for the platform's e-mail automations and the embedded iframes for visualizing the available mentors and opportunities. For accessing our Airtable project, please get in contact with Patronos. 
+
+## Infrastructure
+
+For deploying our application, we use GCP's Cloud Run. If you need to work on the deployments, get in contact with Patronos to request access to our GCP organization.
