@@ -22,7 +22,7 @@ class SchedulesTable:
     def get_schedules(mentor_name: str) -> list[Schedule]:
         """Gets all schedules for a mentor"""
 
-        formula = match({"name": mentor_name})
+        formula = match({"Mentor": mentor_name})
         data = SchedulesTable.table.all(formula=formula)
         schedules = []
         for schedule in data:
