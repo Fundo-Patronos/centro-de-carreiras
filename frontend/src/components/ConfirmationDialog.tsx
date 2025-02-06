@@ -74,7 +74,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
         maxWidth="sm"
       >
         <DialogTitle id="confirmation-dialog-title">
-          Editar e Enviar E-mail
+          Editar e Enviar e-mail
         </DialogTitle>
         <DialogContent>
           {/* Destinatário */}
@@ -97,12 +97,12 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
             variant="outlined"
           />
 
-          {/* Corpo do E-mail */}
+          {/* Corpo do e-mail */}
           <TextField
             fullWidth
             multiline
             rows={4}
-            label="Corpo do E-mail"
+            label="Corpo do e-mail"
             value={body}
             onChange={(e) => setBody(e.target.value)}
             margin="dense"
@@ -123,7 +123,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
                 style={{}}
                 className="text-center px-6 py-2 w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
             >
-                Enviar Email
+                Enviar e-mail
             </GradientButton>
         </DialogActions>
       </Dialog>
