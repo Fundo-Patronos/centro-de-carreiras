@@ -22,6 +22,14 @@ interface RowData {
   endTime: string;
 }
 
+const add30Minutes = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0); 
+  date.setMinutes(date.getMinutes() + 30); 
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+};
+
 export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsAvailable }: TimeIntervalsTableProps) {
   const [rows, setRows] = useState<RowData[]>([]);
 
@@ -44,7 +52,7 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
             id: index, 
             day: schedule.day_of_the_week,
             startTime: schedule.start_time,
-            endTime: schedule.end_time,
+            endTime: add30Minutes(schedule.start_time)
           }));
           setRows(formattedRows);
         } else {
