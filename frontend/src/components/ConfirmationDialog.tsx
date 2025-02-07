@@ -74,7 +74,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
         maxWidth="sm"
       >
         <DialogTitle id="confirmation-dialog-title">
-          Editar e Enviar E-mail
+          Editar e enviar e-mail
         </DialogTitle>
         <DialogContent>
           {/* Destinatário */}
@@ -97,35 +97,35 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
             variant="outlined"
           />
 
-          {/* Corpo do E-mail */}
+          {/* Corpo do e-mail */}
           <TextField
             fullWidth
             multiline
             rows={4}
-            label="Corpo do E-mail"
+            label="Corpo do e-mail"
             value={body}
             onChange={(e) => setBody(e.target.value)}
             margin="dense"
             variant="outlined"
           />
         </DialogContent>
-        <DialogActions className="flex gap-3 w-full pr-4">
-            <Button
-                onClick={onConfirm}
-                color="primary"
-                variant="outlined"
-                className="text-center px-6 py-2 w-[150px] text-purple-600 hover:bg-purple-50"
-            >
-                Fechar
-            </Button>
-            <GradientButton
-                onClick={handleSendEmail}
-                style={{}}
-                className="text-center px-6 py-2 w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
-            >
-                Enviar Email
-            </GradientButton>
+        <DialogActions className="flex justify-end gap-3 w-full pr-4">
+          <Button
+              onClick={onConfirm}
+              color="primary"
+              variant="outlined"
+              className="flex-1 text-center px-6 py-2 max-w-[150px] text-purple-600 hover:bg-purple-50"
+          >
+              Fechar
+          </Button>
+          <GradientButton
+              onClick={handleSendEmail}
+              className="flex-1 text-center px-6 py-2 max-w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
+          >
+              Enviar e-mail
+          </GradientButton>
         </DialogActions>
+
       </Dialog>
 
       {/* Snackbar para feedback */}

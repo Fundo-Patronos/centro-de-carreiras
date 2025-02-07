@@ -30,7 +30,6 @@ class SchedulesTable:
             schedule_params = {
                 "day_of_the_week": fields["Dia"],
                 "start_time": fields["Horário Início"],
-                "end_time": fields["Horário Fim"],
             }
             schedules.append(Schedule(**schedule_params))
         return schedules
