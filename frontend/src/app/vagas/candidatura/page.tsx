@@ -103,8 +103,10 @@ const Candidatura = () => {
     if (file) {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => setCurriculum(reader.result as string);
-
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(",")[1];
+        setCurriculum(base64String);
+      }
     }
     else {
       setCurriculum(file);
