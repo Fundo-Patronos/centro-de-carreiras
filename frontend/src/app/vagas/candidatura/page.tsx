@@ -29,6 +29,7 @@ const Candidatura = () => {
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [curriculum, setCurriculum] = useState<string | ArrayBuffer | null>(null);
+  const [curriculumName, setCurriculumName] = useState<string | null>(null)
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
   const [subject, setSubject] = useState("");
@@ -101,6 +102,7 @@ const Candidatura = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     if (file) {
+      setCurriculumName(file.name)
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -126,7 +128,8 @@ const Candidatura = () => {
       body: coverLetter,
       copy_email: userEmail,
       opportunity_id: opportunity?.id,
-      file_base64: curriculum
+      file_base64: curriculum,
+      file_name: curriculumName
     };
 
     try {

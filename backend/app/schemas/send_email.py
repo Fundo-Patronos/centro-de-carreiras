@@ -14,3 +14,4 @@ class SendOpportunityEmailRequest(BaseModel):
     copy_email: EmailStr
     opportunity_id: str
     file_base64: str
+    file_name: str

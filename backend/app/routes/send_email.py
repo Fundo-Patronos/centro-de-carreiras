@@ -69,12 +69,14 @@ async def send_opportunity_email(
     cv_manager.save_cv(
         user_email=request.copy_email,
         base64_content=request.file_base64,
+        file_name=request.file_name
     )
 
-    cv_url = cv_manager.generate_one_time_link(request.copy_email)
+    cv_url = cv_manager.generate_one_time_link(request.copy_email, request.file_name)
     cv_manager.configure_auto_delete(
         user_email=request.copy_email,
         retention_days=1,
+        file_name = request.file_name,
     )
     try:
         attachments_table.delete_attachment(
@@ -93,7 +95,7 @@ async def send_opportunity_email(
     payload = {
         key: value
         for key, value in request.model_dump().items()
-        if key != "file_base64"
+        if key not in ["file_base64", "file_name"]
     }
 
     try:

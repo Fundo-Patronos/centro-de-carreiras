@@ -32,14 +32,14 @@ class CVBucketManager:
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
 
-    def save_cv(self, user_email: str, base64_content: str) -> None:
+    def save_cv(self, user_email: str, base64_content: str, file_name: str) -> None:
         """
         Saves a CV to the bucket, overriding any existing CV for the user.
 
         :param user_email: Unique identifier for the user.
         :param base64_content: Base64-encoded content of the CV file.
         """
-        blob_name = self._generate_blob_name(user_email)
+        blob_name = self._generate_blob_name(user_email, file_name)
         blob = self.bucket.blob(blob_name)
         
         # Decode the Base64 content
@@ -47,14 +47,14 @@ class CVBucketManager:
         blob.upload_from_string(file_content, content_type="application/pdf")
         print(f"Uploaded CV for user {user_email} to {blob_name}")
 
-    def generate_one_time_link(self, user_email: str) -> str:
+    def generate_one_time_link(self, user_email: str, file_name: str) -> str:
         """
         Generates a one-time-access link for the user's CV.
 
         :param user_email: Unique identifier for the user.
         :return: Signed URL for one-time access.
         """
-        blob_name = self._generate_blob_name(user_email)
+        blob_name = self._generate_blob_name(user_email, file_name)
         blob = self.bucket.blob(blob_name)
 
         if not blob.exists():
@@ -65,14 +65,14 @@ class CVBucketManager:
 
         return url
 
-    def configure_auto_delete(self, user_email: str, retention_days: int) -> None:
+    def configure_auto_delete(self, user_email: str, retention_days: int, file_name: str) -> None:
         """
         Configures auto-deletion of the CV after a certain retention period.
 
         :param user_email: Unique identifier for the user.
         :param retention_days: Number of days to retain the CV before automatic deletion.
         """
-        blob_name = self._generate_blob_name(user_email)
+        blob_name = self._generate_blob_name(user_email, file_name)
         blob = self.bucket.blob(blob_name)
 
         if not blob.exists():
@@ -87,11 +87,11 @@ class CVBucketManager:
         self.bucket.patch()
         print(f"Configured auto-delete for CV of user {user_email} after {retention_days} days.")
 
-    def _generate_blob_name(self, user_email: str) -> str:
+    def _generate_blob_name(self, user_email: str, file_name: str) -> str:
         """
         Generates a unique blob name for the user's CV.
 
         :param user_email: Unique identifier for the user.
         :return: A hashed blob name.
         """
-        return hashlib.sha256(user_email.encode()).hexdigest() + "/cv.pdf"
+        return hashlib.sha256(user_email.encode()).hexdigest() + "/" + file_name
