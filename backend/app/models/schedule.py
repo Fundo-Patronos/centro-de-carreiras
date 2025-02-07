@@ -8,4 +8,3 @@ class Schedule(BaseModel):
         "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"
     ]
     start_time: str
-
