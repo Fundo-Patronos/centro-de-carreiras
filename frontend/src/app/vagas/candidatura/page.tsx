@@ -28,6 +28,7 @@ const Candidatura = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [curriculum, setCurriculum] = useState<string | ArrayBuffer | null>(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
   const [subject, setSubject] = useState("");
@@ -97,6 +98,19 @@ const Candidatura = () => {
 
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => setCurriculum(reader.result as string);
+
+    }
+    else {
+      setCurriculum(file);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!coverLetter.trim()) {
       setSnackbarMessage("Por favor, preencha a mensagem para o recrutador.");
@@ -108,11 +122,13 @@ const Candidatura = () => {
       email: opportunity?.Contato,
       subject,
       body: coverLetter,
-      copy_emails: [userEmail]
+      copy_email: userEmail,
+      opportunity_id: opportunity?.id,
+      file_base64: curriculum
     };
 
     try {
-      await axios.post(`${apiUrl}/send_email`, applicationDataOpportunityEmail);
+      await axios.post(`${apiUrl}/send_opportunity_email`, applicationDataOpportunityEmail);
       setSnackbarMessage("Candidatura enviada com sucesso!");
     } catch (_) {
       setSnackbarMessage("Erro ao enviar candidatura. Tente novamente.");
@@ -212,6 +228,16 @@ const Candidatura = () => {
                     <div className="space-y-2">
                       <p><strong>Nome:</strong> {userName}</p>
                       <p><strong>Email:</strong> {userEmail}</p>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="block font-medium">Envie seu currículo (.pdf):</label>
+                        <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileChange}
+                        className="block w-full px-4 py-2 border rounded-lg"
+                        />
                     </div>
 
                     <div className="space-y-2">
