@@ -28,7 +28,7 @@ const Candidatura = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [curriculum, setCurriculum] = useState<string | ArrayBuffer | null>(null);
+  const [curriculum, setCurriculum] = useState<string | null>(null);
   const [curriculumName, setCurriculumName] = useState<string | null>(null)
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
@@ -88,11 +88,12 @@ const Candidatura = () => {
     if (opportunity) {
       const oppName = opportunity.Vaga;
       const oppType = opportunity.Tipo;
+      const userFirstName = userName.split(" ")[0]
       setSubject(
         `[Centro de Carreiras Patronos] ${userName} aplicou para a vaga de ${oppName}`
       );
       setCoverLetter(
-        `Olá,\nMe chamo ${userName} e gostaria de aplicar para a vaga de ${oppType} como ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`
+        `Olá,\nMe chamo ${userFirstName} e gostaria de aplicar para a vaga de ${oppType} como ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`
       );
     }
   }, [opportunity, userName]);
@@ -109,9 +110,6 @@ const Candidatura = () => {
         const base64String = (reader.result as string).split(",")[1];
         setCurriculum(base64String);
       }
-    }
-    else {
-      setCurriculum(file);
     }
   };
 
