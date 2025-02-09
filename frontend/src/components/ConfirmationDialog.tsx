@@ -40,6 +40,11 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
     fetchApiUrl();
   }, []);
 
+  useEffect(() => {
+    setBody(message);
+  }, [message]);
+
+
   const handleSendEmail = async () => {
     try {
       const emailData = {
