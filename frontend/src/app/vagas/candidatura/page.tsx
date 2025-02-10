@@ -35,6 +35,7 @@ const Candidatura = () => {
   const [subject, setSubject] = useState("");
   const [errorMessage, setErrorMessage] = useState("Carregando...");
   const [showPopup, setShowPopup] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState<boolean>(false);
   const [apiUrl, setApiUrl] = useState<string | null>(null);
 
   const userName = useAuthStore((state) => state.username) || "Visitante";
@@ -124,17 +125,20 @@ const Candidatura = () => {
   };
 
   const handleSubmit = async () => {
+    setSendingEmail(true);
     if (!coverLetter.trim()) {
       setSnackbarMessage(
         "Erro: Por favor, preencha a mensagem para o recrutador.",
       );
       setSnackbarOpen(true);
+      setSendingEmail(false);
       return;
     }
 
     if (!curriculumName) {
       setSnackbarMessage("Erro: Por favor, selecione um currículo.");
       setSnackbarOpen(true);
+      setSendingEmail(false);
       return;
     }
 
@@ -159,6 +163,7 @@ const Candidatura = () => {
     }
     setShowPopup(false);
     setSnackbarOpen(true);
+    setSendingEmail(false);
   };
 
   return (
@@ -320,17 +325,19 @@ const Candidatura = () => {
 
                       <div className="w-full px-4 py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
                         <label
-                          className="flex items-center px-4 py-2 cursor-pointer text-xs sm:text-sm md:text-md text-black rounded-lg hover:bg-purple-50 transition duration-300 ease-in-out border border-purple-200 bg-purple-100"
+                          htmlFor="fileInput"
+                          className="flex items-center px-4 py-2 cursor-pointer text-xs sm:text-sm md:text-md text-black rounded-lg hover:bg-purple-50 active:bg-purple-200 transition duration-300 ease-in-out border border-purple-200 bg-purple-100"
                           style={{ color: "#A855F7" }}
                         >
                           Escolher arquivo
-                          <input
-                            type="file"
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                            className="hidden"
-                          />
                         </label>
+                        <input
+                          id="fileInput"
+                          type="file"
+                          accept=".pdf"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
 
                         <p className="text-gray-600 text-xs sm:text-sm truncate w-full sm:max-w-xs text-center sm:text-left">
                           {curriculumName
@@ -403,7 +410,11 @@ const Candidatura = () => {
                   >
                     Cancelar
                   </button>
-                  <Button className="w-auto px-4 py-2" onClick={handleSubmit}>
+                  <Button
+                    className="w-auto px-4 py-2"
+                    onClick={handleSubmit}
+                    disabled={sendingEmail}
+                  >
                     Enviar Email
                   </Button>
                 </div>
