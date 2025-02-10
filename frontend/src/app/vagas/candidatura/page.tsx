@@ -108,7 +108,7 @@ const Candidatura = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    if (file == null) {
+    if (!file) {
       setCurriculum(null);
       setCurriculumName(null);
       return;
@@ -125,7 +125,15 @@ const Candidatura = () => {
 
   const handleSubmit = async () => {
     if (!coverLetter.trim()) {
-      setSnackbarMessage("Por favor, preencha a mensagem para o recrutador.");
+      setSnackbarMessage(
+        "Erro: Por favor, preencha a mensagem para o recrutador.",
+      );
+      setSnackbarOpen(true);
+      return;
+    }
+
+    if (!curriculumName) {
+      setSnackbarMessage("Erro: Por favor, selecione um currículo.");
       setSnackbarOpen(true);
       return;
     }
@@ -311,7 +319,10 @@ const Candidatura = () => {
                       </label>
 
                       <div className="w-full px-4 py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-                        <label className="flex items-center px-4 py-2 cursor-pointer text-xs sm:text-sm md:text-md text-black rounded-lg hover:opacity-90 transition duration-300 ease-in-out border border-purple-300 bg-purple-200">
+                        <label
+                          className="flex items-center px-4 py-2 cursor-pointer text-xs sm:text-sm md:text-md text-black rounded-lg hover:bg-purple-50 transition duration-300 ease-in-out border border-purple-200 bg-purple-100"
+                          style={{ color: "#A855F7" }}
+                        >
                           Escolher arquivo
                           <input
                             type="file"
@@ -375,6 +386,13 @@ const Candidatura = () => {
                     <strong>Email:</strong>
                     <br />
                     {coverLetter}
+                  </p>
+                  <p>
+                    <strong>Currículo:</strong>
+                    <br />
+                    {curriculumName
+                      ? curriculumName
+                      : "Nenhum currículo selecionado"}
                   </p>
                 </div>
 
