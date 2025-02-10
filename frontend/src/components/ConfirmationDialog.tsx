@@ -40,6 +40,11 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
     fetchApiUrl();
   }, []);
 
+  useEffect(() => {
+    setBody(message);
+  }, [message]);
+
+
   const handleSendEmail = async () => {
     try {
       const emailData = {
@@ -74,7 +79,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
         maxWidth="sm"
       >
         <DialogTitle id="confirmation-dialog-title">
-          Editar e Enviar e-mail
+          Editar e enviar e-mail
         </DialogTitle>
         <DialogContent>
           {/* Destinatário */}
@@ -109,23 +114,23 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
             variant="outlined"
           />
         </DialogContent>
-        <DialogActions className="flex gap-3 w-full pr-4">
-            <Button
-                onClick={onConfirm}
-                color="primary"
-                variant="outlined"
-                className="text-center px-6 py-2 w-[150px] text-purple-600 hover:bg-purple-50"
-            >
-                Fechar
-            </Button>
-            <GradientButton
-                onClick={handleSendEmail}
-                style={{}}
-                className="text-center px-6 py-2 w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
-            >
-                Enviar e-mail
-            </GradientButton>
+        <DialogActions className="flex justify-end gap-3 w-full pr-4">
+          <Button
+              onClick={onConfirm}
+              color="primary"
+              variant="outlined"
+              className="flex-1 text-center px-6 py-2 max-w-[150px] text-purple-600 hover:bg-purple-50"
+          >
+              Fechar
+          </Button>
+          <GradientButton
+              onClick={handleSendEmail}
+              className="flex-1 text-center px-6 py-2 max-w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
+          >
+              Enviar e-mail
+          </GradientButton>
         </DialogActions>
+
       </Dialog>
 
       {/* Snackbar para feedback */}
