@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Snackbar, Alert, TextField } from "@mui/material";
-import { AlertCircle, File, Edit, Info, Mail } from "lucide-react";
+import { AlertCircle, File, Edit, Info, Mail, Loader2 } from "lucide-react";
 import Button from "@/components/GradientButton";
 import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
@@ -411,11 +411,18 @@ const Candidatura = () => {
                     Cancelar
                   </button>
                   <Button
-                    className="w-auto px-4 py-2"
+                    className="w-auto px-4 py-2 flex items-center justify-center gap-2"
                     onClick={handleSubmit}
                     disabled={sendingEmail}
                   >
-                    Enviar Email
+                    {sendingEmail ? (
+                      <>
+                        <Loader2 className="animate-spin w-4 h-4" />
+                        <span>Enviando...</span>
+                      </>
+                    ) : (
+                      "Enviar Email"
+                    )}
                   </Button>
                 </div>
               </div>
