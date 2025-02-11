@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import base64
 
+
 class CVBucketManager:
     # Make it a singleton
     _instance: Optional[CVBucketManager] = None
@@ -32,7 +33,9 @@ class CVBucketManager:
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
 
-    def save_cv(self, user_email: str, base64_content: str, file_name: str) -> None:
+    def save_cv(
+        self, user_email: str, base64_content: str, file_name: str
+    ) -> None:
         """
         Saves a CV to the bucket, overriding any existing CV for the user.
 
@@ -41,7 +44,7 @@ class CVBucketManager:
         """
         blob_name = self._generate_blob_name(user_email, file_name)
         blob = self.bucket.blob(blob_name)
-        
+
         # Decode the Base64 content
         file_content = base64.b64decode(base64_content)
         blob.upload_from_string(file_content, content_type="application/pdf")
@@ -58,14 +61,20 @@ class CVBucketManager:
         blob = self.bucket.blob(blob_name)
 
         if not blob.exists():
-            raise FileNotFoundError(f"CV for user {user_email} does not exist.")
+            raise FileNotFoundError(
+                f"CV for user {user_email} does not exist."
+            )
 
-        expiration_time = datetime.now(timezone.utc) + timedelta(minutes=self.expiration_minutes)
+        expiration_time = datetime.now(timezone.utc) + timedelta(
+            minutes=self.expiration_minutes
+        )
         url = blob.generate_signed_url(expiration=expiration_time)
 
         return url
 
-    def configure_auto_delete(self, user_email: str, retention_days: int, file_name: str) -> None:
+    def configure_auto_delete(
+        self, user_email: str, retention_days: int, file_name: str
+    ) -> None:
         """
         Configures auto-deletion of the CV after a certain retention period.
 
@@ -76,16 +85,20 @@ class CVBucketManager:
         blob = self.bucket.blob(blob_name)
 
         if not blob.exists():
-            raise FileNotFoundError(f"CV for user {user_email} does not exist.")
+            raise FileNotFoundError(
+                f"CV for user {user_email} does not exist."
+            )
 
         self.bucket.lifecycle_rules = [
             {
                 "action": {"type": "Delete"},
-                "condition": {"age": retention_days}
+                "condition": {"age": retention_days},
             }
         ]
         self.bucket.patch()
-        print(f"Configured auto-delete for CV of user {user_email} after {retention_days} days.")
+        print(
+            f"Configured auto-delete for CV of user {user_email} after {retention_days} days."
+        )
 
     def _generate_blob_name(self, user_email: str, file_name: str) -> str:
         """
@@ -94,4 +107,6 @@ class CVBucketManager:
         :param user_email: Unique identifier for the user.
         :return: A hashed blob name.
         """
-        return hashlib.sha256(user_email.encode()).hexdigest() + "/" + file_name
+        return (
+            hashlib.sha256(user_email.encode()).hexdigest() + "/" + file_name
+        )

@@ -16,7 +16,9 @@ class EmailSender:
         return cls._instance
 
     def __init__(self):
-        send_email_webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
+        send_email_webhook_url = os.getenv(
+            "VERIFICATION_EMAIL_WEBHOOK_URL", None
+        )
 
         if send_email_webhook_url is None:
             raise ValueError(
@@ -78,4 +80,3 @@ class EmailSender:
 
         if response.status_code != 200:
             raise RuntimeError("Failed to send opportunity email")
-

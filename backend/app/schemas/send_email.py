@@ -7,6 +7,7 @@ class SendEmailRequest(BaseModel):
     body: str
     copy_emails: list[EmailStr] = []
 
+
 class SendOpportunityEmailRequest(BaseModel):
     email: EmailStr
     subject: str

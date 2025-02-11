@@ -8,7 +8,9 @@ class AttachmentsTable:
     def __init__(self, db: Database):
         optional_table_id = os.getenv("ATTACHMENTS_TABLE_ID")
         if optional_table_id is None:
-            raise ValueError("ATTACHMENTS_TABLE_ID environment variable is not set.")
+            raise ValueError(
+                "ATTACHMENTS_TABLE_ID environment variable is not set."
+            )
         self.table_id = optional_table_id
         self.db = db
 
@@ -18,9 +20,7 @@ class AttachmentsTable:
 
     def create_attachment(self, attachment: AttachmentCreate) -> Attachment:
         return Attachment(
-            **self.db.create(
-                table_id=self.table_id, items=[attachment]
-            )[0]
+            **self.db.create(table_id=self.table_id, items=[attachment])[0]
         )
 
     def delete_attachment(self, auto_generated_id: str) -> None:
