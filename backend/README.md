@@ -29,11 +29,15 @@ The following environment variables need to be added into the `.env` file to run
 - `USERS_TABLE_ID`: Airtable users table ID
 - `JWT_KEY`: Secret used to sign JWT tokens
 - `FRONT_END_BASE_URL`: Base URL of the frontend app
-- `VERIFICATION_EMAIL_WEBHOOK_URL`: Webhook URL for sending verification emails in Airtable automation
+- `VERIFICATION_EMAIL_WEBHOOK_URL`: Webhook URL for sending emails in Airtable automation
 - `SCHEDULES_TABLE_ID`: Airtable schedules table ID
 - `OPPORTUNITIES_TABLE_ID`: Airtable opportunities table ID
 - `WORKSPACE_ID`: Airtable workspace ID
 - `AIRTABLE_API_KEY`: Airtable API key
+- `GOOGLE_APPLICATION_CREDENTIALS`: Credentials to access google cloud storage. *Only for development*
+- `CV_BUCKET_NAME`: Name of the bucket that stores CVs
+- `ATTACHMENTS_TABLE_ID`: Airtable attachments table ID
+- `OPPORTUNITY_EMAIL_WEBHOOK_URL`: Webhook URL for sending opportunity email with attachment.
 
 Here's an example `.env` file:
 
@@ -46,6 +50,10 @@ SCHEDULES_TABLE_ID=your_airtable_schedules_table_id
 WORKSPACE_ID=your_airtable_workspace_id
 AIRTABLE_API_KEY=your_airtable_api_key
 OPPORTUNITIES_TABLE_ID=your_opportunities_page_id
+GOOGLE_APPLICATION_CREDENTIALS="./credentials.json" # Only for development
+CV_BUCKET_NAME=carreiras-users-cv
+ATTACHMENTS_TABLE_ID=your_attachments_table_id
+OPPORTUNITY_EMAIL_WEBHOOK_URL=https://send_opportunity_email_url.com
 ```
 
 ## How to run test and get coverage artifacts?

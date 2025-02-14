@@ -21,7 +21,7 @@ Before starting, you need to have Node.js and npm installed. If you don't have t
 After cloning the repository, navigate to the project folder and run the following command to install the necessary dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Step 3: Run the Development Server
