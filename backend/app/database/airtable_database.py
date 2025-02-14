@@ -1,4 +1,5 @@
 import os
+from pydantic import BaseModel
 import requests
 from typing import Any, Optional
 
@@ -169,7 +170,17 @@ class AirtableDatabase(Database):
             for record in all_records
         ]
 
-    def create(self, table_id: str, items: list[Item]) -> None:
+    def create(self, table_id: str, items: list[BaseModel]) -> list[dict]:
+        """
+        Creates records in the Airtable database.
+
+        Args:
+            table_id (str): The table name or ID to create records in.
+            items (list[Item]): A list of items to create.
+
+        Returns:
+            list[dict]: A list of dictionaries representing the created records.
+        """
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
@@ -184,10 +195,22 @@ class AirtableDatabase(Database):
             headers=headers,
             json=data,
         )
-        print("Airtable response for creating user:")
+
+        print("Airtable response for creating record:")
         print("Status:", response.status_code)
         print(response.json())
+
+        # Raise an exception for failed requests
         response.raise_for_status()
+
+        # Extract created records
+        created_records = response.json().get("records", [])
+
+        # Return parsed created records
+        return [
+            AirtableDatabase._get_parsed_response(record)
+            for record in created_records
+        ]
 
     def update(self, table_id: str, item: Item) -> None:
         headers = {
@@ -218,3 +241,47 @@ class AirtableDatabase(Database):
         elif response.status_code == 404:
             raise DataNotFound(f"Record with ID {item.id} not found.")
         response.raise_for_status()
+
+    def delete(self, table_id: str, item_id: str) -> None:
+        """
+        Deletes a record from the Airtable database using its ID.
+
+        Args:
+            table_id (str): The table name or ID to delete the record from.
+            item_id (str): The ID of the record to be deleted.
+
+        Raises:
+            DataNotFound: If the record with the given ID does not exist.
+            PermissionError: If the API key or permissions are invalid.
+            RuntimeError: If the deletion fails for other reasons.
+        """
+        # Construct the URL for the specific record
+        url = f"{self._url.format(base_id=self._base_id, table_id=table_id)}/{item_id}"
+
+        # Set up headers
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+        }
+
+        # Make the DELETE request
+        response = requests.delete(url, headers=headers)
+
+        print("Response from Airtable for deleting record:")
+        print("Status:", response.status_code)
+        print(response.json())
+
+        # Handle response status codes
+        if response.status_code == 403:
+            raise PermissionError(
+                "Access forbidden: check your API key and permissions."
+            )
+        elif response.status_code == 404:
+            raise DataNotFound(f"Record with ID {item_id} not found.")
+        elif response.status_code != 200:
+            raise RuntimeError(
+                f"Failed to delete record from Airtable. Status code: {response.status_code}"
+            )
+
+        print(
+            f"Record with ID {item_id} deleted successfully from table {table_id}."
+        )
