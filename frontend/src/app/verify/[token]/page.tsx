@@ -32,7 +32,7 @@ const VerifyEmail = () => {
 
         const result = await verifyEmail(apiUrl, token);
         setStatus(result);
-      } catch (error) {
+      } catch (_) {
         setStatus({
           loading: false,
           emailValidated: false,
