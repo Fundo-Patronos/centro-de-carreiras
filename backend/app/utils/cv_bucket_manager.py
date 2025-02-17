@@ -2,6 +2,9 @@ from __future__ import annotations
 import os
 from typing import Optional
 from google.cloud import storage
+from google.oauth2.service_account import Credentials
+import google.auth
+from google.auth.transport import requests
 from datetime import datetime, timedelta, timezone
 import hashlib
 import base64
@@ -30,7 +33,15 @@ class CVBucketManager:
 
         self.bucket_name = bucket_name
         self.expiration_minutes = 5
-        self.client = storage.Client()
+
+        self.credentials, project = google.auth.default()
+        print(f"Project ID: {project}")
+        print(f"Credentials type: {type(self.credentials)}")
+
+        if not isinstance(self.credentials, Credentials):
+            self.credentials.refresh(requests.Request())
+
+        self.client = storage.Client(credentials=self.credentials)
         self.bucket = self.client.get_bucket(bucket_name)
 
     def save_cv(
@@ -68,7 +79,18 @@ class CVBucketManager:
         expiration_time = datetime.now(timezone.utc) + timedelta(
             minutes=self.expiration_minutes
         )
-        url = blob.generate_signed_url(expiration=expiration_time)
+
+        service_account_email = (
+            "722033123279-compute@developer.gserviceaccount.com"
+        )
+        # If you use a service account credential, you can use the embedded email
+        if hasattr(self.credentials, "service_account_email"):
+            service_account_email = self.credentials.service_account_email
+        url = blob.generate_signed_url(
+            expiration=expiration_time,
+            service_account_email=service_account_email,
+            access_token=self.credentials.token,
+        )
 
         return url
 
