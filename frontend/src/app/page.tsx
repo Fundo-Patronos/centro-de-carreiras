@@ -40,9 +40,10 @@ interface LayoutProps {
   password: string;
   setPassword: (_password: string) => void;
   initialValues: LoginFormValues;
+  resendEmail: boolean;
 }
 
-const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, setEmail, setPassword, initialValues}) => (
+const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, setEmail, setPassword, initialValues, resendEmail}) => (
     <div className="min-h-screen md:h-screen max-h-full flex items-center justify-center">
         <div className="relative w-full min-h-screen h-full flex flex-col items-center justify-center bg-white px-[10vw] sd:px-[15vw] md:px-[20vw] overflow-hidden">
         
@@ -175,6 +176,16 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
               <p className="text-red-500 text-sm mb-4">{loginError}</p>
             )}
 
+            {resendEmail && (
+              <div className="mt-2 mb-4 text-[#2F2B3D]/[90%] text-sm">
+                Caso precise reenviar o e-mail de verificação, clique{" "}
+                <Link href="/resend-verification-email" className="underline cursor-pointer text-[#103768]">
+                  aqui
+                </Link>{" "}
+                !
+              </div>
+            )}
+
             {/* Login Button */}
             <Button type="submit" disabled={isSubmitting} className="mb-4">
               {isSubmitting ? "Enviando..." : "Login"}
@@ -205,7 +216,7 @@ const MobileLayout: React.FC<LayoutProps> = ({ handleSubmit, showPassword, setSh
     </div>
 );
 
-const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail,password,setPassword, initialValues}) => (
+const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setShowPassword, loginError, rememberMe, setRememberMe, email, setEmail,password,setPassword, initialValues, resendEmail}) => (
     <div className="min-h-screen flex">
         {/* HERO*/}
         <div className="flex-grow bg-white flex items-center justify-center p-[20px]">
@@ -365,6 +376,16 @@ const DesktopLayout: React.FC<LayoutProps> = ({handleSubmit, showPassword, setSh
               <p className="text-red-500 text-sm mb-4">{loginError}</p>
             )}
 
+            {resendEmail && (
+              <div className="mt-2 mb-4 text-[#2F2B3D]/[90%] text-sm">
+                Caso precise reenviar o e-mail de verificação, clique{" "}
+                <Link href="/resend-verification-email" className="underline cursor-pointer text-[#103768]">
+                  aqui
+                </Link>{" "}
+                !
+              </div>
+            )}
+
             {/* Login Button */}
             <Button type="submit" disabled={isSubmitting} className="mb-4">
               {isSubmitting ? "Enviando..." : "Login"}
@@ -401,6 +422,7 @@ export default function Login() {
   const [loading, setLoading] = useState(true);
   const [apiUrl, setApiUrl] = useState('');
   const router = useRouter();
+  const [resendEmail, setResendEmail] = useState(false);
   
   useEffect(() => {
 
@@ -435,6 +457,10 @@ export default function Login() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleResendEmailPageRedirect = () => {
+    router.push("/resend-verification-email");
+  };
+
 const handleSubmit = async (
   values: LoginFormValues,
   { setSubmitting }: FormikHelpers<LoginFormValues>
@@ -464,11 +490,14 @@ const handleSubmit = async (
         
     if (err.response) {
         if (err.response.status === 401 || err.response.status === 406) {
-            setLoginError("Usuário ou senha inválido");
+          setLoginError("Usuário ou senha inválido");
+        } else if(err.response.status === 425) {
+          setLoginError("Verificação de e-mail pendente. Verifique seu e-mail e tente novamente.");
+          setResendEmail(true);
         } else {
-            console.error(err.response.headers);
-            setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
-        }
+          console.error(err.response.headers);
+          setLoginError("Ocorreu um erro. Tente novamente mais tarde.");
+      }
       } else if (err.request) {
         console.error("Erro de rede ou servidor indisponível");
         setLoginError("Servidor indisponível. Tente novamente mais tarde.");
@@ -503,6 +532,7 @@ const handleSubmit = async (
           password={password}
           setPassword={setPassword}
           initialValues={initialValues}
+          resendEmail={resendEmail}
         />
       ) : (
         <DesktopLayout
@@ -517,6 +547,7 @@ const handleSubmit = async (
           password={password}
           setPassword={setPassword}
           initialValues={initialValues}
+          resendEmail={resendEmail}
         />
       )}
     </>
