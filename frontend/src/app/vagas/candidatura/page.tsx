@@ -126,6 +126,13 @@ const Candidatura = () => {
 
   const handleSubmit = async () => {
     setSendingEmail(true);
+    if (!subject.trim()) {
+      setSnackbarMessage("Erro: Por favor, preencha o assunto do email.");
+      setSnackbarOpen(true);
+      setSendingEmail(false);
+      return;
+    }
+
     if (!coverLetter.trim()) {
       setSnackbarMessage(
         "Erro: Por favor, preencha a mensagem para o recrutador.",
