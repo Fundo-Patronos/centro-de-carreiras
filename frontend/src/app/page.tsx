@@ -457,10 +457,6 @@ export default function Login() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleResendEmailPageRedirect = () => {
-    router.push("/resend-verification-email");
-  };
-
 const handleSubmit = async (
   values: LoginFormValues,
   { setSubmitting }: FormikHelpers<LoginFormValues>
