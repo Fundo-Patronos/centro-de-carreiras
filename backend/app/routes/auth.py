@@ -360,26 +360,27 @@ async def resend_verification_email(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(e),
         )
-    
+
     if user.is_verified:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Email already verified. ",
         )
-    
+
     try:
         token = auth.create_jwt_token_from_email(user.email)
         auth.send_verification_email(user.email, user.name, token)
     except Exception as e:
         print("Failed to send email. Message:", str(e))
-           
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to send verification email. ",
         )
 
-    return {"message": "Email verification token sent successfully to your email."}
-
+    return {
+        "message": "Email verification token sent successfully to your email."
+    }
 
 
 @router.post(
