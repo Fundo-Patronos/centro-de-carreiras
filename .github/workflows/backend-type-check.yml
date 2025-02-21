@@ -5,12 +5,15 @@ on:
     branches:
       - main
       - staging
+  paths:
+      - 'backend/app/**'
+      - 'backend/requirements.txt'
 
 jobs:
   type-check:
     name: Check Python Types with Pyright
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
