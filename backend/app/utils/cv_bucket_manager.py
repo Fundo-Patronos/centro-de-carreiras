@@ -31,7 +31,7 @@ class CVBucketManager:
         self.bucket_name = bucket_name
         self.expiration_minutes = 5
         self.client = storage.Client()
-        self.bucket = self.client.get_bucket(bucket_name)
+        self.bucket = self.client.get_bucket(bucket_name)  # type: ignore
 
     def save_cv(
         self, user_email: str, base64_content: str, file_name: str

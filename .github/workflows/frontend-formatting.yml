@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - staging
+    paths:
+      - "frontend/**"
 
 jobs:
   lint:
