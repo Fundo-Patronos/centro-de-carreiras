@@ -4,3 +4,4 @@ requests==2.32.3
 bcrypt==4.2.0
 fastapi_mail==1.4.1
 pyairtable==2.3.3
+google_cloud_storage==2.19.0

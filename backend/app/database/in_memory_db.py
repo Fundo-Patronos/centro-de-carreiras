@@ -2,6 +2,7 @@ from typing import Any, Optional
 from pydantic import BaseModel
 from app.database.database import Database
 from app.exceptions import DataNotFound
+from app.models.abstract_item import Item
 
 
 class InMemoryDatabase(Database):
@@ -13,16 +14,17 @@ class InMemoryDatabase(Database):
         InMemoryDatabase.data = {}
         InMemoryDatabase.current_id = 0
 
-    def create(self, table_id: str, items: list[BaseModel]):
+    def create(self, table_id: str, items: list[Item]) -> list[dict]:
         if table_id not in self.data:
             self.data[table_id] = []
-        self.data[table_id].extend(
-            [
-                item.model_dump() | {"id": str(self.current_id)}
-                for item in items
-            ]
-        )
+
+        created_items = [
+            item.model_dump() | {"id": str(self.current_id)} for item in items
+        ]
+        self.data[table_id].extend(created_items)
         self.current_id += 1
+
+        return created_items
 
     def read_all(
         self, table_id: str, params: Optional[dict[str, Any]] = None

@@ -4,11 +4,11 @@ import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Snackbar, Alert, TextField } from "@mui/material";
-import { AlertCircle, File, Edit , Info, Mail} from "lucide-react";
+import { AlertCircle, File, Edit, Info, Mail, Loader2 } from "lucide-react";
 import Button from "@/components/GradientButton";
 import axios from "axios";
-import { useAuthStore } from '@/store/authStore';
-import Image from 'next/image';
+import { useAuthStore } from "@/store/authStore";
+import Image from "next/image";
 
 interface Opportunity {
   id: string;
@@ -28,13 +28,16 @@ const Candidatura = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [curriculum, setCurriculum] = useState<string | null>(null);
+  const [curriculumName, setCurriculumName] = useState<string | null>(null);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
   const [subject, setSubject] = useState("");
   const [errorMessage, setErrorMessage] = useState("Carregando...");
   const [showPopup, setShowPopup] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState<boolean>(false);
   const [apiUrl, setApiUrl] = useState<string | null>(null);
-  
+
   const userName = useAuthStore((state) => state.username) || "Visitante";
   const userEmail = useAuthStore((state) => state.email) || "email@dominio.com";
 
@@ -58,22 +61,28 @@ const Candidatura = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get<Opportunity>(`${apiUrl}/opportunities/${vagaId}`);
+        const response = await axios.get<Opportunity>(
+          `${apiUrl}/opportunities/${vagaId}`,
+        );
         setOpportunity(response.data);
         setError(null);
       } catch {
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 400) {
             setError("Sentimos muito! Esta vaga não existe no nosso sistema.");
-            setErrorMessage("Sentimos muito! Esta vaga não existe no nosso sistema.");
+            setErrorMessage(
+              "Sentimos muito! Esta vaga não existe no nosso sistema.",
+            );
           } else {
             setError("Erro ao carregar a vaga. Tente novamente mais tarde.");
-            setErrorMessage("Erro ao carregar a vaga. Tente novamente mais tarde.");
+            setErrorMessage(
+              "Erro ao carregar a vaga. Tente novamente mais tarde.",
+            );
           }
         } else {
           setError("Ocorreu um erro inesperado. Tente novamente mais tarde.");
           setErrorMessage("Ocorreu um erro.Tente novamente mais tarde.");
-        }      
+        }
       } finally {
         setLoading(false);
       }
@@ -86,21 +95,50 @@ const Candidatura = () => {
     if (opportunity) {
       const oppName = opportunity.Vaga;
       const oppType = opportunity.Tipo;
+      const userFirstName = userName.split(" ")[0];
       setSubject(
-        `[Centro de Carreiras Patronos] ${userName} aplicou para a vaga de ${oppName}`
+        `[Centro de Carreiras Patronos] ${userName} aplicou para a vaga de ${oppName}`,
       );
       setCoverLetter(
-        `Olá,\nMe chamo ${userName} e gostaria de aplicar para a vaga de ${oppType} como ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`
+        `Olá,\nMe chamo ${userFirstName} e gostaria de aplicar para a vaga de ${oppType} como ${oppName}.\nEstou entusiasmado com a oportunidade de trabalhar nesta posição e contribuir com minhas habilidades para o sucesso da equipe.`,
       );
     }
   }, [opportunity, userName]);
 
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (!file) {
+      setCurriculum(null);
+      setCurriculumName(null);
+      return;
+    }
+
+    setCurriculumName(file.name);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64String = (reader.result as string).split(",")[1];
+      setCurriculum(base64String);
+    };
+  };
+
   const handleSubmit = async () => {
+    setSendingEmail(true);
     if (!coverLetter.trim()) {
-      setSnackbarMessage("Por favor, preencha a mensagem para o recrutador.");
+      setSnackbarMessage(
+        "Erro: Por favor, preencha a mensagem para o recrutador.",
+      );
       setSnackbarOpen(true);
+      setSendingEmail(false);
+      return;
+    }
+
+    if (!curriculumName) {
+      setSnackbarMessage("Erro: Por favor, selecione um currículo.");
+      setSnackbarOpen(true);
+      setSendingEmail(false);
       return;
     }
 
@@ -108,17 +146,24 @@ const Candidatura = () => {
       email: opportunity?.Contato,
       subject,
       body: coverLetter,
-      copy_emails: [userEmail]
+      copy_email: userEmail,
+      opportunity_id: opportunity?.id,
+      file_base64: curriculum,
+      file_name: curriculumName,
     };
 
     try {
-      await axios.post(`${apiUrl}/send_email`, applicationDataOpportunityEmail);
+      await axios.post(
+        `${apiUrl}/send_opportunity_email`,
+        applicationDataOpportunityEmail,
+      );
       setSnackbarMessage("Candidatura enviada com sucesso!");
     } catch (_) {
       setSnackbarMessage("Erro ao enviar candidatura. Tente novamente.");
     }
     setShowPopup(false);
     setSnackbarOpen(true);
+    setSendingEmail(false);
   };
 
   return (
@@ -140,15 +185,20 @@ const Candidatura = () => {
                   </h1>
                 </div>
                 <p className="text-lg md:text-xl text-gray-600 flex items-center gap-2">
-                  de <span className="font-semibold text-purple-600">{opportunity.Name}</span>
+                  de{" "}
+                  <span className="font-semibold text-purple-600">
+                    {opportunity.Name}
+                  </span>
                 </p>
               </div>
-            ) : error && (
-              <div className="flex flex-col items-center justify-center gap-2">
-                <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-                  {errorMessage}
-                </h1>
-              </div>
+            ) : (
+              error && (
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <h1 className="text-2xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                    {errorMessage}
+                  </h1>
+                </div>
+              )
             )}
           </div>
         </section>
@@ -158,7 +208,9 @@ const Candidatura = () => {
             <div className="p-4 md:p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
               <div className="flex items-center gap-2 md:gap-3">
                 <Info className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
-                <h2 className="text-lg md:text-xl font-semibold text-gray-800">Informações</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+                  Informações
+                </h2>
               </div>
             </div>
             <div className="p-6">
@@ -166,12 +218,29 @@ const Candidatura = () => {
                 <p className="text-gray-500">Carregando...</p>
               ) : opportunity ? (
                 <div className="space-y-4 text-black">
-                  <p><strong>Empresa:</strong> {opportunity.Name}</p>
-                  <p><strong>Status:</strong> {opportunity.Status}</p>
-                  <p><strong>Título:</strong> {opportunity.Vaga}</p>
-                  <p><strong>Tipo:</strong> {opportunity.Tipo}</p>
-                  <p><strong>Contato:</strong> {opportunity.Contato}</p>
-                  <p><strong>Descrição:</strong> <span dangerouslySetInnerHTML={{ __html: opportunity.Descricao.replace(/\n/g, '<br />') }} /></p>
+                  <p>
+                    <strong>Empresa:</strong> {opportunity.Name}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {opportunity.Status}
+                  </p>
+                  <p>
+                    <strong>Título:</strong> {opportunity.Vaga}
+                  </p>
+                  <p>
+                    <strong>Tipo:</strong> {opportunity.Tipo}
+                  </p>
+                  <p>
+                    <strong>Contato:</strong> {opportunity.Contato}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong>{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: opportunity.Descricao.replace(/\n/g, "<br />"),
+                      }}
+                    />
+                  </p>
                 </div>
               ) : (
                 <p className="text-gray-500">Nenhuma informação disponível.</p>
@@ -188,7 +257,7 @@ const Candidatura = () => {
                 src="/images/identidade-visual/Ativo-9assets.svg"
                 alt="Background Pattern"
                 fill
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: "cover" }}
                 priority={false}
               />
             </div>
@@ -198,20 +267,29 @@ const Candidatura = () => {
                 <div className="p-4 md:p-6 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
                   <div className="flex items-center gap-2 md:gap-3">
                     <Edit className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
-                    <h2 className="text-lg md:text-xl font-semibold text-gray-800">Aplique</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+                      Aplique
+                    </h2>
                   </div>
                 </div>
 
                 <div className="p-4">
                   <div className="flex items-center gap-2 text-xs md:text-sm text-gray-500 p-2">
                     <AlertCircle className="w-4 h-4" />
-                    <span>Preencha os campos para enviarmos um e-mail para o recrutador</span>
+                    <span>
+                      Preencha os campos para enviarmos um e-mail para o
+                      recrutador
+                    </span>
                   </div>
 
                   <div className="p-4 space-y-6">
                     <div className="space-y-2">
-                      <p><strong>Nome:</strong> {userName}</p>
-                      <p><strong>Email:</strong> {userEmail}</p>
+                      <p>
+                        <strong>Nome:</strong> {userName}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {userEmail}
+                      </p>
                     </div>
 
                     <div className="space-y-2">
@@ -225,7 +303,9 @@ const Candidatura = () => {
                         placeholder="Escreva um assunto..."
                       />
 
-                      <label className="block font-medium">Envie uma mensagem para o recrutador:</label>
+                      <label className="block font-medium">
+                        Envie uma mensagem para o recrutador:
+                      </label>
                       <TextField
                         fullWidth
                         multiline
@@ -237,14 +317,44 @@ const Candidatura = () => {
                         placeholder="Escreva aqui sua mensagem..."
                       />
                     </div>
+
+                    <div className="space-y-2">
+                      <label className="block font-medium">
+                        Envie seu currículo (.pdf):
+                      </label>
+
+                      <div className="w-full px-4 py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                        <label
+                          htmlFor="fileInput"
+                          className="flex items-center px-4 py-2 cursor-pointer text-xs sm:text-sm md:text-md text-black rounded-lg hover:bg-purple-50 active:bg-purple-200 transition duration-300 ease-in-out border border-purple-200 bg-purple-100"
+                          style={{ color: "#A855F7" }}
+                        >
+                          Escolher arquivo
+                        </label>
+                        <input
+                          id="fileInput"
+                          type="file"
+                          accept=".pdf"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+
+                        <p className="text-gray-600 text-xs sm:text-sm truncate w-full sm:max-w-xs text-center sm:text-left">
+                          {curriculumName
+                            ? `Arquivo selecionado: ${curriculumName}`
+                            : "Nenhum arquivo selecionado"}
+                        </p>
+                      </div>
+                    </div>
+
                     <div className="w-full">
                       <div className="w-full flex justify-center">
                         <Button
-                            onClick={() => setShowPopup(true)}
-                            className="w-full sm:w-auto min-w-[150px] px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-semibold"
-                          >
-                            Enviar Candidatura
-                          </Button>
+                          onClick={() => setShowPopup(true)}
+                          className="w-full sm:w-auto min-w-[150px] px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg font-semibold"
+                        >
+                          Enviar Candidatura
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -268,15 +378,28 @@ const Candidatura = () => {
 
               <div className="p-4 md:p-6">
                 <div className="space-y-2">
-                  <p><strong>Seu Email:</strong> {userEmail}</p>
-                  <p><strong>Email do recrutador:</strong> {opportunity?.Contato}</p>
                   <p>
-                    <strong>Assunto:</strong><br />
+                    <strong>Seu Email:</strong> {userEmail}
+                  </p>
+                  <p>
+                    <strong>Email do recrutador:</strong> {opportunity?.Contato}
+                  </p>
+                  <p>
+                    <strong>Assunto:</strong>
+                    <br />
                     {subject}
                   </p>
                   <p>
-                    <strong>Email:</strong><br />
+                    <strong>Email:</strong>
+                    <br />
                     {coverLetter}
+                  </p>
+                  <p>
+                    <strong>Currículo:</strong>
+                    <br />
+                    {curriculumName
+                      ? curriculumName
+                      : "Nenhum currículo selecionado"}
                   </p>
                 </div>
 
@@ -288,10 +411,18 @@ const Candidatura = () => {
                     Cancelar
                   </button>
                   <Button
-                    className="w-auto px-4 py-2"
+                    className="w-auto px-4 py-2 flex items-center justify-center gap-2"
                     onClick={handleSubmit}
+                    disabled={sendingEmail}
                   >
-                    Enviar Email
+                    {sendingEmail ? (
+                      <>
+                        <Loader2 className="animate-spin w-4 h-4" />
+                        <span>Enviando...</span>
+                      </>
+                    ) : (
+                      "Enviar Email"
+                    )}
                   </Button>
                 </div>
               </div>
@@ -305,7 +436,10 @@ const Candidatura = () => {
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarMessage.includes("Erro") ? "error" : "success"}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarMessage.includes("Erro") ? "error" : "success"}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
