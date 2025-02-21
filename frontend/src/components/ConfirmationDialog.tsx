@@ -76,7 +76,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
         onClose={onClose}
         aria-labelledby="confirmation-dialog-title"
         fullWidth
-        maxWidth="sm"
+        maxWidth="md" // Changed from "sm" to "md" for a larger size
       >
         <DialogTitle id="confirmation-dialog-title">
           Editar e enviar e-mail
@@ -106,7 +106,7 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
           <TextField
             fullWidth
             multiline
-            rows={4}
+            rows={8} // Increased the number of rows for the email body
             label="Corpo do e-mail"
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -115,22 +115,23 @@ export default function ConfirmationDialog({ email: mentorEmail, open, onClose, 
           />
         </DialogContent>
         <DialogActions className="flex justify-end gap-3 w-full pr-4">
-          <Button
-              onClick={onConfirm}
-              color="primary"
-              variant="outlined"
-              className="flex-1 text-center px-6 py-2 max-w-[150px] text-purple-600 hover:bg-purple-50"
-          >
-              Fechar
-          </Button>
-          <GradientButton
-              onClick={handleSendEmail}
-              className="flex-1 text-center px-6 py-2 max-w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow"
-          >
-              Enviar e-mail
-          </GradientButton>
-        </DialogActions>
+        <Button
+          onClick={onConfirm}
+          color="primary"
+          variant="outlined"
+          sx={{ textTransform: 'none' }} 
+          className="flex-1 text-center px-6 py-2 max-w-[150px] text-purple-600 hover:bg-purple-50 sm:text-sm md:text-md h-12" // Added consistent styles
+        >
+          Fechar
+        </Button>
 
+        <GradientButton
+          onClick={handleSendEmail}
+          className="flex-1 text-center px-6 py-2 max-w-[150px] bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm hover:shadow-lg transition-shadow sm:text-sm md:text-md h-12" // Added consistent styles
+        >
+          Enviar e-mail
+        </GradientButton>
+        </DialogActions>
       </Dialog>
 
       {/* Snackbar para feedback */}
