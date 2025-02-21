@@ -139,12 +139,13 @@ const Agendamento = () => {
 
               {/* Action Buttons */}
               <div className="mt-4 md:mt-6 flex flex-col md:flex-row gap-3 md:justify-end">
-                <Button
+              <Button
                   variant="outlined"
-                  className="w-full md:w-auto text-purple-600 hover:bg-purple-50"
+                  className="w-full md:w-auto text-purple-600 hover:bg-purple-50 sm:text-sm md:text-md p-2 lg:p-3" // Added padding and font size
                   onClick={handleRedirectToMentors}
+                  style={{ textTransform: 'none' }}
                 >
-                  Ver Outros Mentores
+                  Ver outros mentores
                 </Button>
                 <GradientButton
                   style={{ borderRadius: 4 }}
@@ -152,7 +153,7 @@ const Agendamento = () => {
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
-                  {rowsAvailable ? "CONFIRMAR HORÁRIOS" : "PEDIR DISPONIBILIDADE"}
+                  {rowsAvailable ? "Confirmar horários" : "Pedir Disponibilidade"}
                 </GradientButton>
               </div>
             </div>
