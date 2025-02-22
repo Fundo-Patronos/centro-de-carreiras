@@ -12,7 +12,7 @@ import Hero from "@/components/Mentores/Hero";
 // Componente principal
 export default async function Mentoria() {
   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
-  const iframeUrl = isStaging  ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?" : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
+  const iframeUrl = isStaging  ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on" : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?viewControls=on";
 
   return (
     <Layout currentPage="mentores">
