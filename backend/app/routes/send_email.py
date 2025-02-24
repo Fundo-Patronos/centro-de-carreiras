@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from starlette.status import HTTP_503_SERVICE_UNAVAILABLE
 from app.crud.attachments_table import AttachmentsTable
-from app.dependencies import get_attachments_table
+from app.crud.users_table import UsersTable
+from app.dependencies import get_attachments_table, get_users_table
 from app.exceptions import DataNotFound
 from app.schemas.attachment import AttachmentCreate
 from app.schemas.send_email import (
@@ -59,6 +60,7 @@ async def send_email(
 async def send_opportunity_email(
     request: SendOpportunityEmailRequest,
     attachments_table: AttachmentsTable = Depends(get_attachments_table),
+    users_table: UsersTable = Depends(get_users_table),
 ):
     email_sender = EmailSender()
 
@@ -104,6 +106,13 @@ async def send_opportunity_email(
         email_sender.send_opportunity_email(
             **payload,
         )
+
+        # Update the number of opportunities the user has applied to:
+        user_email = request.copy_email
+        user = users_table.get_user(user_email)
+        user.total_opportunities_applied += 1
+        users_table.update_user(user)
+
     except RuntimeError:
         raise HTTPException(
             status_code=HTTP_503_SERVICE_UNAVAILABLE,
