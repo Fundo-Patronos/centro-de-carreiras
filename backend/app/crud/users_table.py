@@ -6,7 +6,7 @@ from app.schemas.user import DefaultValuesUserCreate, UserCreate
 
 
 class UsersTable:
-    """Static class to handle all database operations for users"""
+    """Class to handle all database operations for users"""
 
     def __init__(self, db: Database):
         optional_table_id = os.getenv("USERS_TABLE_ID")

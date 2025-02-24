@@ -19,3 +19,6 @@ class User(Item, ABC):
     description: str = ""
     role: str = "STUDENT"
     is_verified: bool = False
+    total_sign_ins: int
+    total_opportunities_applied: int
+    total_mentorships_requested: int

@@ -266,6 +266,10 @@ async def signin(
         max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24,
     )
 
+    # Track how many times the user is accessing the platform:
+    existing_user.total_sign_ins += 1
+    users_table.update_user(existing_user)
+
     return {
         "user_name": existing_user.name,
         "email": existing_user.email,
