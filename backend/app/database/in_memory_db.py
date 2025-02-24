@@ -2,7 +2,6 @@ from typing import Any, Optional
 from pydantic import BaseModel
 from app.database.database import Database
 from app.exceptions import DataNotFound
-from app.models.abstract_item import Item
 
 
 class InMemoryDatabase(Database):
@@ -14,7 +13,7 @@ class InMemoryDatabase(Database):
         InMemoryDatabase.data = {}
         InMemoryDatabase.current_id = 0
 
-    def create(self, table_id: str, items: list[Item]) -> list[dict]:
+    def create(self, table_id: str, items: list[BaseModel]) -> list[dict]:
         if table_id not in self.data:
             self.data[table_id] = []
 
@@ -49,9 +48,9 @@ class InMemoryDatabase(Database):
             if table_item["id"] == item.model_dump()["id"]:
                 table_item.update(item.model_dump())
 
-    def delete(self, table_id: str, item: BaseModel):
+    def delete(self, table_id: str, item_id: str):
         self.data[table_id] = [
             table_item
             for table_item in self.data.get(table_id, [])
-            if not table_item["id"] == item.model_dump()["id"]
+            if not table_item["id"] == item_id
         ]

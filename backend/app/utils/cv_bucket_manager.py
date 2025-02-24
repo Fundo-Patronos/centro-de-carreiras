@@ -39,10 +39,10 @@ class CVBucketManager:
         print(f"Credentials type: {type(self.credentials)}")
 
         if not isinstance(self.credentials, Credentials):
-            self.credentials.refresh(requests.Request())
+            self.credentials.refresh(requests.Request())  # type: ignore
 
         self.client = storage.Client(credentials=self.credentials)
-        self.bucket = self.client.get_bucket(bucket_name)
+        self.bucket = self.client.get_bucket(bucket_name)  # type: ignore
 
     def save_cv(
         self, user_email: str, base64_content: str, file_name: str
@@ -85,11 +85,11 @@ class CVBucketManager:
         )
         # If you use a service account credential, you can use the embedded email
         if hasattr(self.credentials, "service_account_email"):
-            service_account_email = self.credentials.service_account_email
+            service_account_email = self.credentials.service_account_email  # type: ignore
         url = blob.generate_signed_url(
             expiration=expiration_time,
             service_account_email=service_account_email,
-            access_token=self.credentials.token,
+            access_token=self.credentials.token,  # type: ignore
         )
 
         return url

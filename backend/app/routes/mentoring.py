@@ -1,13 +1,11 @@
 from app.dependencies import get_users_table
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Header
 from app.schemas.error import DefaultErrorResponse
 from app.crud.schedules_table import SchedulesTable
 from app.models.schedule import Schedule
 from app.schemas.send_email import SendEmailRequest
-from app.utils.auth import Auth
-from fastapi import Header
-import jwt
 from app.crud.users_table import UsersTable
+from app.utils.email_sender import EmailSender
 
 router = APIRouter()
 
@@ -46,10 +44,7 @@ async def send_mentoring_email(
     authorization: str = Header(None),
     users_table: UsersTable = Depends(get_users_table)
 ):
-
     token = authorization.split(" ")[1]
-
-    auth = Auth()
 
     # Temporarily disabling token verification due to unknown error
     # try:
@@ -62,7 +57,7 @@ async def send_mentoring_email(
     #     )
 
     try:
-        auth.email_sender.send_email(
+        EmailSender().send_email(
             email.email, email.subject, email.body, email.copy_emails
         )
 

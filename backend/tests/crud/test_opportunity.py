@@ -11,6 +11,7 @@ def create_test_opportunity() -> OpportunityCreate:
         Vaga="Developer",
         Tipo="Full-time",
         Contato="test@example.com",
+        Descricao="Test description",
     )
 
 
@@ -48,6 +49,7 @@ def test_get_all_opportunities(test_db):
             Vaga="Tester",
             Tipo="Part-time",
             Contato="another@example.com",
+            Descricao="Another description",
         )
     )
 
