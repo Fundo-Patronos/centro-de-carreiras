@@ -9,6 +9,7 @@ from app.utils.email_sender import EmailSender
 
 router = APIRouter()
 
+
 @router.get(
     "/mentoring/schedules/",
     response_model=list[Schedule],
@@ -42,7 +43,7 @@ async def get_endpoint(mentor_name: str):
 async def send_mentoring_email(
     email: SendEmailRequest,
     authorization: str = Header(None),
-    users_table: UsersTable = Depends(get_users_table)
+    users_table: UsersTable = Depends(get_users_table),
 ):
     token = authorization.split(" ")[1]
 
