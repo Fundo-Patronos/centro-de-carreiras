@@ -136,6 +136,7 @@ const Candidatura = () => {
     if (!subject.trim()) {
       setSnackbarMessage("Erro: Por favor, preencha o assunto do email.");
       setSnackbarOpen(true);
+      setShowPopup(false);
       setSendingEmail(false);
       return;
     }
@@ -145,6 +146,7 @@ const Candidatura = () => {
         "Erro: Por favor, preencha a mensagem para o recrutador.",
       );
       setSnackbarOpen(true);
+      setShowPopup(false);
       setSendingEmail(false);
       return;
     }
@@ -152,6 +154,7 @@ const Candidatura = () => {
     if (!curriculumName) {
       setSnackbarMessage("Erro: Por favor, selecione um currículo.");
       setSnackbarOpen(true);
+      setShowPopup(false);
       setSendingEmail(false);
       return;
     }
