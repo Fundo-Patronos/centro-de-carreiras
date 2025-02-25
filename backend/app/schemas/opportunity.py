@@ -7,3 +7,4 @@ class OpportunityCreate(BaseModel):
     Vaga: str
     Tipo: str
     Contato: str
+    Descricao: str

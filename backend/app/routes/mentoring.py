@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from app.dependencies import get_users_table
+from fastapi import APIRouter, HTTPException, Depends, status, Header
 from app.schemas.error import DefaultErrorResponse
 from app.crud.schedules_table import SchedulesTable
 from app.models.schedule import Schedule
 from app.schemas.send_email import SendEmailRequest
-from app.utils.auth import Auth
-from fastapi import Header
-import jwt
+from app.crud.users_table import UsersTable
+from app.utils.email_sender import EmailSender
 
 router = APIRouter()
 
@@ -43,11 +43,9 @@ async def get_endpoint(mentor_name: str):
 async def send_mentoring_email(
     email: SendEmailRequest,
     authorization: str = Header(None),
+    users_table: UsersTable = Depends(get_users_table),
 ):
-
     token = authorization.split(" ")[1]
-
-    auth = Auth()
 
     # Temporarily disabling token verification due to unknown error
     # try:
@@ -60,9 +58,15 @@ async def send_mentoring_email(
     #     )
 
     try:
-        auth.send_email(
+        EmailSender().send_email(
             email.email, email.subject, email.body, email.copy_emails
         )
+
+        # Update number of requested mentorships for the user:
+        user_email = email.copy_emails[0]
+        user = users_table.get_user(user_email)
+        user.total_mentorships_requested += 1
+        users_table.update_user(user)
 
     except RuntimeError as e:
         raise HTTPException(

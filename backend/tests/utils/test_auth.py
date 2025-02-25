@@ -1,4 +1,5 @@
 import datetime
+import os
 from urllib.parse import quote
 import jwt
 import pytest
@@ -165,7 +166,7 @@ def test_send_verification_email(response_code, monkeypatch):
 
 Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{auth.base_url}/verify/{quote(token)}">Verificar Email</a>."""
     mock_post.assert_called_once_with(
-        auth.webhook_url,
+        os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None),
         json={
             "email": email,
             "subject": "Verificação de Email",
