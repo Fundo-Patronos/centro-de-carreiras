@@ -117,7 +117,7 @@ const Candidatura = () => {
 
     // Don't allow files with more than 5 megabytes
     if (file.size > 5 * 1024 * 1024) {
-      setSnackbarMessage("Erro: O tamanho máximo para o currículo é 5MB")
+      setSnackbarMessage("Erro: O tamanho máximo para o currículo é 5MB");
       setSnackbarOpen(true);
       return;
     }
@@ -403,11 +403,27 @@ const Candidatura = () => {
                     <br />
                     {subject}
                   </p>
-                  <p>
+                  <div>
                     <strong>Email:</strong>
                     <br />
-                    {coverLetter}
-                  </p>
+                    <textarea
+                      style={{
+                        width: "100%",
+                        minHeight: "120px",
+                        padding: "8px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        resize: "none", // Prevents resizing
+                        fontFamily: "inherit",
+                        lineHeight: "1.5",
+                        boxSizing: "border-box",
+                        overflowY: "auto",
+                        boxShadow: "inset 0 1px 2px rgba(0,0,0,0.05)",
+                      }}
+                      value={coverLetter}
+                      readOnly
+                    />
+                  </div>
                   <p>
                     <strong>Currículo:</strong>
                     <br />
