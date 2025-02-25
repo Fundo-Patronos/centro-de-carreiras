@@ -88,8 +88,8 @@ const VerifyEmail = () => {
     router.push("/");
   };
 
-  const handleSignUpRedirect = () => {
-    router.push("/signup");
+  const handleResendEmailPageRedirect = () => {
+    router.push("/resend-verification-email");
   };
 
   return (
@@ -140,10 +140,10 @@ const VerifyEmail = () => {
                     Pedimos desculpa, infelizmente ocorreu um erro e seu cadastro não foi validado.
                   </p>
                   <p className="text-[16px] sm:text-[18px] text-[#2F2B3D]/[70%] mb-8 text-justify">
-                    Clique no botão para tentarmos enviar outro e-mail de verificação.
+                    Clique no botão para redirecionar para a página de reenviar o e-mail.
                   </p>
-                  <Button onClick={handleSignUpRedirect} className="mb-4 p-2">
-                    Enviar e-mail
+                  <Button onClick={handleResendEmailPageRedirect} className="mb-4 p-2">
+                    Reenvio de e-mail
                   </Button>
                 </div>
               )}
