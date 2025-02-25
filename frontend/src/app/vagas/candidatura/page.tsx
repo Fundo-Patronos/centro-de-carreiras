@@ -115,6 +115,13 @@ const Candidatura = () => {
       return;
     }
 
+    // Don't allow files with more than 5 megabytes
+    if (file.size > 5 * 1024 * 1024) {
+      setSnackbarMessage("Erro: O tamanho máximo para o currículo é 5MB")
+      setSnackbarOpen(true);
+      return;
+    }
+
     setCurriculumName(file.name);
     const reader = new FileReader();
     reader.readAsDataURL(file);
