@@ -1,7 +1,6 @@
 from __future__ import annotations
 import os
 from typing import Optional
-from urllib.parse import quote
 from pydantic import EmailStr
 import requests
 
@@ -71,17 +70,11 @@ class EmailSender:
     def send_manual_verification_email(
         self, user_url: str, user_name: str, user_email: str
     ) -> None:
-        automation_payload = {
-            "email": self.manual_verification_email,
-            "subject": "Verificação manual necessária no Centro de Carreiras",
-            "body": f"""{user_name} ({user_email}) precisa de verificação manual. \n\nAcesse <a href="{user_url}">aqui</a> para aceitá-lo. Basta checar a opção 'is_verified'.""",
-            "copy_emails": "",
-        }
-
-        response = requests.post(self.webhook_url, json=automation_payload)
-
-        if response.status_code != 200:
-            raise RuntimeError("Failed to send verification email")
+        self.send_email(
+            self.manual_verification_email,
+            "Verificação manual necessária no Centro de Carreiras",
+            f"""{user_name} ({user_email}) precisa de verificação manual. \n\nAcesse <a href="{user_url}">aqui</a> para aceitá-lo. Basta checar a opção 'is_verified'.""",
+        )
 
     def send_opportunity_email(
         self,
