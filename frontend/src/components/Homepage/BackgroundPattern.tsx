@@ -19,7 +19,7 @@ const BackgroundPattern = () => {
         <div 
           className="absolute top-1/2 left-1/3 w-[800px] h-[500px] transform-gpu"
           style={{
-            width: '800px',
+            width: '880px',
             height: '500px',
             transform: 'translate(-65%, -80%) rotate(60deg) scale(1.3)',
             opacity: 0.8,
