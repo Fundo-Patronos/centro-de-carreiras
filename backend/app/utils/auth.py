@@ -40,7 +40,7 @@ class Auth:
 
         self.jwt_key = optional_jwt_key
         self.base_url = base_url
-        self.email_sender = EmailSender()
+        self._email_sender = EmailSender()
 
     def get_password_hash(self, password: str) -> str:
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -143,7 +143,7 @@ class Auth:
 
 Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
 
-        self.email_sender.send_email(email, subject, body)
+        self._email_sender.send_email(email, subject, body)
 
     def send_password_reset_email(
         self, email: EmailStr, user_name: str
@@ -162,4 +162,4 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
 
 Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
 
-        self.email_sender.send_email(email, subject, body)
+        self._email_sender.send_email(email, subject, body)

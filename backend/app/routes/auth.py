@@ -15,6 +15,7 @@ from app.schemas.user import (
 )
 from app.schemas.error import DefaultErrorResponse, SignUpConflictErrorResponse
 from app.utils.auth import Auth
+from app.utils.email_sender import EmailSender
 from app.exceptions import DataNotFound
 from fastapi import Response
 from fastapi import Header
@@ -48,15 +49,16 @@ router = APIRouter()
     ),
 )
 async def signup(
-    user: UserCreateRequest, users_table: UsersTable = Depends(get_users_table)
+    create_user_request: UserCreateRequest, users_table: UsersTable = Depends(get_users_table)
 ):
     auth = Auth()
+    email_sender = EmailSender()
 
     email_in_use = False
 
     # Check if user already exists
     try:
-        users_table.get_user(user.email)
+        users_table.get_user(create_user_request.email)
         email_in_use = True
     except DataNotFound:
         pass
@@ -76,29 +78,44 @@ async def signup(
         )
 
     # Generate a token for email verification
-    token = auth.create_jwt_token_from_email(user.email)
+    token = auth.create_jwt_token_from_email(create_user_request.email)
 
-    user.password = auth.get_password_hash(user.password)
+    create_user_request.password = auth.get_password_hash(create_user_request.password)
 
-    users_table.create_user(
+    new_user = users_table.create_user(
         UserCreate(
             **{
                 key: value
-                for key, value in user.model_dump().items()
+                for key, value in create_user_request.model_dump().items()
                 if key != "is_domain_valid"
             }
         )
     )
 
-    if not user.is_domain_valid:
+    if not create_user_request.is_domain_valid:
+        print("User email domain is not valid. Sending manual verification email...")
+        user_airtable_url = users_table.get_airtable_link(new_user.id)
+        print("User Airtable URL:", user_airtable_url)
+        try:
+            email_sender.send_manual_verification_email(
+                user_url=user_airtable_url,
+                user_name=new_user.name,
+                user_email=new_user.email,
+            )
+        except RuntimeError as e:
+            print("Failed to send manual verification email. Message:", str(e))
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send manual verification email. ",
+            )
         return {
-            "email": user.email,
+            "email": create_user_request.email,
             "email_sent": False,
         }
 
     # Send email verification
     try:
-        auth.send_verification_email(user.email, user.name, token)
+        auth.send_verification_email(create_user_request.email, create_user_request.name, token)
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         raise HTTPException(
@@ -107,7 +124,7 @@ async def signup(
         )
 
     return {
-        "email": user.email,
+        "email": create_user_request.email,
         "email_sent": True,
     }
 

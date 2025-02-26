@@ -17,11 +17,16 @@ class AirtableDatabase(Database):
             )
         self._url = "https://api.airtable.com/v0/{base_id}/{table_id}"
         self._api_key = optional_api_key
-        self._base_id = os.getenv("WORKSPACE_ID")
-        if self._base_id is None:
+        self._optional_base_id = os.getenv("WORKSPACE_ID")
+        if self._optional_base_id is None:
             raise ValueError(
                 "AIRTABLE_BASE_ID environment variable is not set."
             )
+
+    @property
+    def _base_id(self) -> str:
+        assert isinstance(self._optional_base_id, str)
+        return self._optional_base_id
 
     @staticmethod
     def _get_parsed_response(response: dict[str, Any]) -> dict:
@@ -102,6 +107,8 @@ class AirtableDatabase(Database):
                 "Access forbidden: check your API key and permissions."
             )
         elif response.status_code != 200:
+            print(self._base_id)
+            print("response", response.json())
             raise RuntimeError(
                 f"Failed to retrieve data from Airtable. Status code: {response.status_code}"
             )
