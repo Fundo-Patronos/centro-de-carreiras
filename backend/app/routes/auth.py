@@ -49,7 +49,8 @@ router = APIRouter()
     ),
 )
 async def signup(
-    create_user_request: UserCreateRequest, users_table: UsersTable = Depends(get_users_table)
+    create_user_request: UserCreateRequest,
+    users_table: UsersTable = Depends(get_users_table),
 ):
     auth = Auth()
     email_sender = EmailSender()
@@ -80,7 +81,9 @@ async def signup(
     # Generate a token for email verification
     token = auth.create_jwt_token_from_email(create_user_request.email)
 
-    create_user_request.password = auth.get_password_hash(create_user_request.password)
+    create_user_request.password = auth.get_password_hash(
+        create_user_request.password
+    )
 
     new_user = users_table.create_user(
         UserCreate(
@@ -93,7 +96,9 @@ async def signup(
     )
 
     if not create_user_request.is_domain_valid:
-        print("User email domain is not valid. Sending manual verification email...")
+        print(
+            "User email domain is not valid. Sending manual verification email..."
+        )
         user_airtable_url = users_table.get_airtable_link(new_user.id)
         print("User Airtable URL:", user_airtable_url)
         try:
@@ -115,7 +120,9 @@ async def signup(
 
     # Send email verification
     try:
-        auth.send_verification_email(create_user_request.email, create_user_request.name, token)
+        auth.send_verification_email(
+            create_user_request.email, create_user_request.name, token
+        )
     except Exception as e:
         print("Failed to send email. Message:", str(e))
         raise HTTPException(
