@@ -22,9 +22,9 @@ export default function Home() {
 
   return (
     <Layout currentPage="home">
-      <div className="min-h-screen flex flex-col bg-white relative">
+      <div className="min-h-screen flex flex-col bg-white relative" >
         <BackgroundPattern/>
-        <div className="relative" style={{ zIndex: 0 }}>
+        <div className="relative" style={{ zIndex: 10 }}>
           <div className="relative">
             <HeroSection userName={name || 'Visitante'} />
           </div>

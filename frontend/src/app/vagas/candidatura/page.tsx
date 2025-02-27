@@ -115,6 +115,13 @@ const Candidatura = () => {
       return;
     }
 
+    // Don't allow files with more than 5 megabytes
+    if (file.size > 5 * 1024 * 1024) {
+      setSnackbarMessage("Erro: O tamanho máximo para o currículo é 5MB");
+      setSnackbarOpen(true);
+      return;
+    }
+
     setCurriculumName(file.name);
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -126,11 +133,20 @@ const Candidatura = () => {
 
   const handleSubmit = async () => {
     setSendingEmail(true);
+    if (!subject.trim()) {
+      setSnackbarMessage("Erro: Por favor, preencha o assunto do email.");
+      setSnackbarOpen(true);
+      setShowPopup(false);
+      setSendingEmail(false);
+      return;
+    }
+
     if (!coverLetter.trim()) {
       setSnackbarMessage(
         "Erro: Por favor, preencha a mensagem para o recrutador.",
       );
       setSnackbarOpen(true);
+      setShowPopup(false);
       setSendingEmail(false);
       return;
     }
@@ -138,6 +154,7 @@ const Candidatura = () => {
     if (!curriculumName) {
       setSnackbarMessage("Erro: Por favor, selecione um currículo.");
       setSnackbarOpen(true);
+      setShowPopup(false);
       setSendingEmail(false);
       return;
     }
@@ -389,11 +406,27 @@ const Candidatura = () => {
                     <br />
                     {subject}
                   </p>
-                  <p>
+                  <div>
                     <strong>Email:</strong>
                     <br />
-                    {coverLetter}
-                  </p>
+                    <textarea
+                      style={{
+                        width: "100%",
+                        minHeight: "120px",
+                        padding: "8px",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        resize: "none", // Prevents resizing
+                        fontFamily: "inherit",
+                        lineHeight: "1.5",
+                        boxSizing: "border-box",
+                        overflowY: "auto",
+                        boxShadow: "inset 0 1px 2px rgba(0,0,0,0.05)",
+                      }}
+                      value={coverLetter}
+                      readOnly
+                    />
+                  </div>
                   <p>
                     <strong>Currículo:</strong>
                     <br />
@@ -407,6 +440,7 @@ const Candidatura = () => {
                   <button
                     className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-200"
                     onClick={() => setShowPopup(false)}
+                    disabled={sendingEmail}
                   >
                     Cancelar
                   </button>
