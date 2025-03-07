@@ -1,16 +1,20 @@
 import React from 'react';
 
 const BackgroundPattern = () => {
-  const [screenSize, setScreenSize] = React.useState(window.innerWidth);
+  const [screenSize, setScreenSize] = React.useState(0); // Start with 0, update later
 
   React.useEffect(() => {
-    const updateSize = () => setScreenSize(window.innerWidth);
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    if (typeof window !== "undefined") { // Ensure window is defined
+      setScreenSize(window.innerWidth);
+
+      const updateSize = () => setScreenSize(window.innerWidth);
+      window.addEventListener("resize", updateSize);
+      return () => window.removeEventListener("resize", updateSize);
+    }
   }, []);
 
   const isMobile = screenSize < 768;
-  
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
