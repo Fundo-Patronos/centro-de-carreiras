@@ -15,6 +15,14 @@ class UsersTable:
         self.table_id = optional_table_id
         self.db = db
 
+    def get_airtable_link(self, user_id: str) -> str:
+        """Gets the link to the Airtable table.
+
+        Returns:
+            str: The link to the Airtable table.
+        """
+        return f"https://airtable.com/{self.db.get_base_id()}/{self.table_id}/{user_id}"
+
     def get_all_users(self) -> list[User]:
         """Gets all users from the database.
 
@@ -40,16 +48,18 @@ class UsersTable:
         user = self.db.read_one(table_id=self.table_id, params=params)
         return User(**user)
 
-    def create_user(self, user: UserCreate) -> None:
+    def create_user(self, user: UserCreate) -> User:
         """Creates a new user in the database.
 
         Args:
             user (User): The user to be created.
         """
 
-        self.db.create(
-            table_id=self.table_id,
-            items=[DefaultValuesUserCreate(**user.model_dump())],
+        return User(
+            **self.db.create(
+                table_id=self.table_id,
+                items=[DefaultValuesUserCreate(**user.model_dump())],
+            )[0]
         )
 
     def update_user(self, user: User) -> None:
