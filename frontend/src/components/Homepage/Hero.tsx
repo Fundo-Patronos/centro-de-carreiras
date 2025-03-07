@@ -18,18 +18,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ userName }) => {
             Descubra mentores experientes e oportunidades exclusivas para impulsionar sua carreira
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/mentores" className="w-full sm:w-auto">
-              <GradientButton className="w-full text-center">
-                Encontrar mentor
-              </GradientButton>
-            </Link>
-            <Link 
-              href="/vagas" 
-              className="w-full sm:w-auto px-4 py-2 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900/10 transition-colors text-center"
-            >
-              Ver oportunidades
-            </Link>
-          </div>
+          <Link href="/mentores" className="w-full sm:w-auto">
+            <GradientButton className="w-full text-center">
+              Encontrar mentor
+            </GradientButton>
+          </Link>
+          <Link 
+            href="/vagas" 
+            className="w-full sm:w-auto px-4 py-2 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900/10 transition-colors text-center sm:text-sm md:text-md"
+          >
+            Ver oportunidades
+          </Link>
+        </div>
         </div>
       </div>
     </section>
