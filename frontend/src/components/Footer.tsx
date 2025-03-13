@@ -55,7 +55,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-black text-white py-12">
+    <footer className="bg-[#f2f2f2] text-black py-12">
       <div className="container mx-auto px-6">
         <div className="flex flex-col space-y-8">
           <div className="flex flex-col md:flex-row justify-between">
@@ -63,7 +63,7 @@ const Footer = () => {
               <div>
                 <div className="flex items-center space-x-3 mb-4">
                   <Image
-                    src="/images/logos/2.Branco/Simbolo-Patronos-Branco.png"
+                    src="/images/logos/1.Preto/Simbolo-Patronos-Preto.png"
                     alt="Associação Fundo Patrimonial Patronos"
                     width={50}
                     height={40}
@@ -72,15 +72,15 @@ const Footer = () => {
                   <div className="h-12 border-l-2 border-gray-400"></div>
                   <Link
                     href="/home"
-                    className="text-white leading-tight text-sm font-semibold"
+                    className="text-black leading-tight text-sm font-semibold"
                   >
                     <span className="block">Associação</span>
                     <span className="block">Fundo Patrimonial</span>
                     <span className="block font-black">Patronos</span>
                   </Link>
                 </div>
-                <div className="mt-8 text-gray-400 text-sm">
-                  <p className="text-gray-400 text-sm mt-4">
+                <div className="mt-8 text-gray-600 text-sm">
+                  <p className="text-gray-600 text-sm mt-4">
                     Créditos das fotografias acadêmicas usadas neste site<br/>
                     Antoninho Perri, SEC/Unicamp<br/>
                     Antonio Scarpinetti, SEC/Unicamp
@@ -97,7 +97,7 @@ const Footer = () => {
                       <li key={link.label}>
                         <a
                           href={link.href}
-                          className="text-gray-400 hover:text-white text-sm transition duration-150 ease-in-out flex items-center gap-2"
+                          className="text-gray-600 hover:text-black text-sm transition duration-150 ease-in-out flex items-center gap-2"
                         >
                           {link.icon && link.icon}
                           {link.label}
@@ -109,8 +109,8 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8">
-            <div className="text-center text-gray-400 text-xs">
+          <div className="border-t border-gray-300 pt-8"> 
+            <div className="text-center text-gray-600 text-xs">
               <p>CNPJ: 40.418.520/0001-33</p>
               <p>Jd. Nossa Senhora Auxiliadora, 257 - Campinas, SP</p>
             </div>

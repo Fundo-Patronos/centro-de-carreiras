@@ -3,12 +3,13 @@ from typing import Optional
 import jwt
 import os
 import datetime
-import requests
 from urllib.parse import quote
 
 import bcrypt
 
 from pydantic import EmailStr
+
+from app.utils.email_sender import EmailSender
 
 
 class Auth:
@@ -28,7 +29,6 @@ class Auth:
     def __init__(self):
         optional_jwt_key = os.getenv("JWT_KEY", None)
         base_url = os.getenv("FRONT_END_BASE_URL", None)
-        webhook_url = os.getenv("VERIFICATION_EMAIL_WEBHOOK_URL", None)
 
         if optional_jwt_key is None:
             raise ValueError("JWT_KEY environment variable is not set.")
@@ -38,14 +38,9 @@ class Auth:
                 "FRONT_END_BASE_URL environment variable is not set."
             )
 
-        if webhook_url is None:
-            raise ValueError(
-                "VERIFICATION_EMAIL_WEBHOOK_URL environment variable is not set."
-            )
-
         self.jwt_key = optional_jwt_key
         self.base_url = base_url
-        self.webhook_url = webhook_url
+        self.email_sender = EmailSender()
 
     def get_password_hash(self, password: str) -> str:
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -133,32 +128,14 @@ class Auth:
     def decode_jwt_token(self, token: str) -> dict:
         return jwt.decode(token, self.jwt_key, algorithms=["HS256"])
 
-    def send_email(
-        self,
-        email: EmailStr,
-        subject: str,
-        body: str,
-        copy_emails: list[EmailStr] = [],
-    ) -> None:
-        copy_emails_str = ",".join(copy_emails)
-        automation_payload = {
-            "email": email,
-            "subject": subject,
-            "body": body,
-            "copy_emails": copy_emails_str,
-        }
-
-        response = requests.post(self.webhook_url, json=automation_payload)
-
-        if response.status_code != 200:
-            raise RuntimeError("Failed to send email")
-
     def send_verification_email(
         self, email: EmailStr, full_name: str, token: str
     ) -> None:
         user_name = full_name.split()[0]
 
-        verify_url = f"{self.base_url}/verify/{token}"
+        safe_token = quote(token, safe="")
+
+        verify_url = f"{self.base_url}/verify/{safe_token}"
 
         subject = "Verificação de Email"
 
@@ -166,7 +143,7 @@ class Auth:
 
 Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <a href="{verify_url}">Verificar Email</a>."""
 
-        self.send_email(email, subject, body)
+        self.email_sender.send_email(email, subject, body)
 
     def send_password_reset_email(
         self, email: EmailStr, user_name: str
@@ -175,7 +152,7 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
             email
         )
 
-        encoded_token = password_reset_token
+        encoded_token = quote(password_reset_token, safe="")
 
         reset_password_url = f"{self.base_url}/reset-password/{encoded_token}"
 
@@ -185,4 +162,4 @@ Bem-vindo ao Centro de Carreiras! Para finalizar seu cadastro, clique no link: <
 
 Recebemos uma solicitação para redefinir sua senha. Se você fez essa solicitação, clique <a href="{reset_password_url}">aqui</a> para criar uma nova senha."""
 
-        self.send_email(email, subject, body)
+        self.email_sender.send_email(email, subject, body)

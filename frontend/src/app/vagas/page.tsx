@@ -8,8 +8,8 @@ export default function Mentoria() {
 
   const iframeUrl =
     process.env.NEXT_PUBLIC_STAGING === "true"
-      ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shr7wJKJ7gzgd0K72?"
-      : "https://airtable.com/embed/app4uSEqO2S03EO5X/shrNy5EvFgy1ZooZj?";
+      ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shr7wJKJ7gzgd0K72?viewControls=on"
+      : "https://airtable.com/embed/app4uSEqO2S03EO5X/shrNy5EvFgy1ZooZj?viewControls=on";
 
   const handleIframeLoad = () => {
     setIsLoading(false);

@@ -101,22 +101,9 @@ async def signup(
         auth.send_verification_email(user.email, user.name, token)
     except Exception as e:
         print("Failed to send email. Message:", str(e))
-        try:
-            new_user = users_table.get_user(user.email)
-            users_table.delete_user(new_user.id)
-        except Exception as delete_error:
-            print(
-                "Failed to delete user after email error. Message:",
-                str(delete_error),
-            )
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to send verification email and encountered an error while attempting to delete the user. ",
-            )
-
         raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Failed to send verification email. User has been removed.",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send verification email. ",
         )
 
     return {
@@ -266,6 +253,10 @@ async def signin(
         max_age=Auth.REFRESH_TOKEN_EXPIRE_TIME_IN_DAYS * 3600 * 24,
     )
 
+    # Track how many times the user is accessing the platform:
+    existing_user.total_sign_ins += 1
+    users_table.update_user(existing_user)
+
     return {
         "user_name": existing_user.name,
         "email": existing_user.email,
@@ -333,6 +324,66 @@ async def refresh_token(
     return {
         "email": user.email,
         "token": new_access_token,
+    }
+
+
+@router.post(
+    "/resend-verification-email",
+    responses={
+        404: {
+            "model": DefaultErrorResponse,
+            "description": "Not Found - Email does not exist",
+        },
+        406: {
+            "model": DefaultErrorResponse,
+            "description": "Not Acceptable - Email already verified",
+        },
+        500: {
+            "model": DefaultErrorResponse,
+            "description": "Internal Server Error - Failed to send reset token",
+        },
+    },
+    summary="Send Verification Email",
+    description="Allows a user to request a verification email to authenticate the account if not verified yet.",
+)
+async def resend_verification_email(
+    request_data: UserForgotPasswordRequest,
+    users_table: UsersTable = Depends(get_users_table),
+):
+    auth = Auth()
+
+    try:
+        user = users_table.get_user(request_data.user_email)
+    except DataNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this email not found",
+        )
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+    if user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Email already verified. ",
+        )
+
+    try:
+        token = auth.create_jwt_token_from_email(user.email)
+        auth.send_verification_email(user.email, user.name, token)
+    except Exception as e:
+        print("Failed to send email. Message:", str(e))
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send verification email. ",
+        )
+
+    return {
+        "message": "Email verification token sent successfully to your email."
     }
 
 

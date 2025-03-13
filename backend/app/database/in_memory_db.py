@@ -13,16 +13,17 @@ class InMemoryDatabase(Database):
         InMemoryDatabase.data = {}
         InMemoryDatabase.current_id = 0
 
-    def create(self, table_id: str, items: list[BaseModel]):
+    def create(self, table_id: str, items: list[BaseModel]) -> list[dict]:
         if table_id not in self.data:
             self.data[table_id] = []
-        self.data[table_id].extend(
-            [
-                item.model_dump() | {"id": str(self.current_id)}
-                for item in items
-            ]
-        )
+
+        created_items = [
+            item.model_dump() | {"id": str(self.current_id)} for item in items
+        ]
+        self.data[table_id].extend(created_items)
         self.current_id += 1
+
+        return created_items
 
     def read_all(
         self, table_id: str, params: Optional[dict[str, Any]] = None
@@ -47,9 +48,9 @@ class InMemoryDatabase(Database):
             if table_item["id"] == item.model_dump()["id"]:
                 table_item.update(item.model_dump())
 
-    def delete(self, table_id: str, item: BaseModel):
+    def delete(self, table_id: str, item_id: str):
         self.data[table_id] = [
             table_item
             for table_item in self.data.get(table_id, [])
-            if not table_item["id"] == item.model_dump()["id"]
+            if not table_item["id"] == item_id
         ]

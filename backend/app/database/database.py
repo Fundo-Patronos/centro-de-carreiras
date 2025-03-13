@@ -4,6 +4,8 @@ from typing import Any, Optional
 
 from pydantic import BaseModel
 
+from app.models.abstract_item import Item
+
 
 class Database:
     """Base Database class to handle the interaction between the back-end and the databases.
@@ -45,7 +47,7 @@ class Database:
         """
 
     @abstractmethod
-    def create(self, table_id: str, items: list[Item]) -> None:
+    def create(self, table_id: str, items: list[BaseModel]) -> list[dict]:
         """Creates a new record in the database.
 
         Args:

@@ -10,3 +10,6 @@ __pycache__/
 .coverage
 .pytest_cache
 cov_html/
+
+# credentials
+credentials.json
