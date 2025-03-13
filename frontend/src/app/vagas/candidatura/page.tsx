@@ -274,8 +274,8 @@ const Candidatura = () => {
                 src="/images/identidade-visual/Ativo-9assets.svg"
                 alt="Background Pattern"
                 fill
-                style={{ objectFit: "cover" }}
-                priority={false}
+                style={{ objectFit: 'cover' }}
+                priority={true}
               />
             </div>
 
