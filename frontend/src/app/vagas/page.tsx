@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import Hero from "@/components/Vagas/Hero";
 
 export default function Mentoria() {
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+  const [isLoading, setIsLoading] = useState(true); 
 
   const iframeUrl =
     process.env.NEXT_PUBLIC_STAGING === "true"
@@ -19,7 +19,7 @@ export default function Mentoria() {
     <Layout currentPage="vagas">
       <Hero /> {/* Hero Section */}
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center bg-white">
+      <div className="flex flex-col items-center justify-center bg-gray-50 px-4 md:px-8 lg:px-[350px]">
         {/* Display loading spinner while iframe is loading */}
         {isLoading && (
           <div className="flex items-center justify-center mt-8">
@@ -31,7 +31,7 @@ export default function Mentoria() {
           width="100%"
           height="650"
           onLoad={handleIframeLoad}
-          className={isLoading ? "hidden" : ""}
+          className="shadow-lg rounded-lg"
         ></iframe>
       </div>
     </Layout>

@@ -1,18 +1,11 @@
 import Layout from "@/components/Layout";
 import Hero from "@/components/Mentores/Hero";
 
-// Função para buscar a URL do iframe no servidor
-// export async function fetchIframeUrl() {
-//   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
-//   return isStaging
-//     ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?"
-//     : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?";
-// }
-
-// Componente principal
 export default async function Mentoria() {
   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
-  const iframeUrl = isStaging  ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on" : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?viewControls=on";
+  const iframeUrl = isStaging
+    ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
+    : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?viewControls=on";
 
   return (
     <Layout currentPage="mentores">
@@ -20,12 +13,12 @@ export default async function Mentoria() {
       <Hero />
 
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center bg-white">
+      <div className="flex flex-col items-center justify-center bg-gray-50 px-4 md:px-8 lg:px-[350px]">
         <iframe
           src={iframeUrl}
           width="100%"
           height="650"
-          className=""
+          className="shadow-lg rounded-lg"
         ></iframe>
       </div>
     </Layout>
