@@ -153,7 +153,7 @@ const Agendamento = () => {
                   disabled={rowsAvailable && !(selectedRows.length > 0)}
                   onClick={rowsAvailable ? handleButtonClick : handleRequestAvailability}
                 >
-                  {rowsAvailable ? "Confirmar horários" : "Pedir Disponibilidade"}
+                  {rowsAvailable ? "Confirmar horários" : "Solicitar disponibilidade"}
                 </GradientButton>
               </div>
             </div>
