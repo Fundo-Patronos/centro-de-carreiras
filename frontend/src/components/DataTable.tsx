@@ -47,7 +47,7 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
         });
         
         const data = response.data;
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           const formattedRows = data.map((schedule, index) => ({
             id: index, 
             day: schedule.day_of_the_week,
@@ -55,11 +55,13 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
             endTime: add30Minutes(schedule.start_time)
           }));
           setRows(formattedRows);
+          setRowsAvailable(true);
         } else {
-          console.error("Failed to fetch schedules:", data);
+          setRowsAvailable(false);
         }
       } catch (error) {
         console.error("Error fetching schedules:", error);
+        setRowsAvailable(false);
       }
     };
     if (mentor) {
@@ -83,10 +85,9 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
   return (
     <Paper sx={{ height: 400,
       width: '100%',
-      // padding: '16px',
       position: 'relative',
       boxShadow: '0px 0px 1px 0.5px rgba(0, 0, 0, 0.05)', 
-      borderRadius: '8px', // Adiciona borda arredondada para suavizar
+      borderRadius: '8px',
       '&::before': {
         position: 'absolute',
         top: 0,
@@ -113,8 +114,7 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
             },
             footerRowSelected: (count) =>
               count === 1 ? `${count} linha selecionada` : `${count} linhas selecionadas`,
-          
-            noRowsLabel: "Nenhum horário disponível"
+            noRowsLabel: "Buscando horários..."
             }
         }
         sx={{
@@ -123,18 +123,15 @@ export default function TimeIntervalsTable({ mentor, onSelectionChange, setRowsA
           border: 0,
           borderColor: 'secondary.light',
           
-          backgroundColor: '#ffffff', // Adiciona o fundo sólido para a tabela
+          backgroundColor: '#ffffff', 
           '& .MuiDataGrid-cell': {
-            fontSize: '1.1rem', // Aumenta o tamanho do texto das células
+            fontSize: '1.1rem',
           },
           '& .MuiDataGrid-columnHeaders': {
-            fontSize: '1.1rem', // Aumenta o tamanho do texto do cabeçalho
-            fontWeight: 'bold', // Opcional, para deixar o cabeçalho em negrito
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
           },
-          
-          
         }}
-      
       />
     </Paper>
   );

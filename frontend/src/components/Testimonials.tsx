@@ -51,7 +51,7 @@ const Testimonials: React.FC = () => {
               (index === 1 || index === 2) ? "md:col-span-2" : ""
             }`}
           >
-            <p className="text-gray-700 text-lg mb-4">`{testimonial.quote}`</p>
+            <p className="text-gray-700 text-lg mb-4">{testimonial.quote}</p>
             <div className="flex items-center">
               <Image
                 src={testimonial.image}
