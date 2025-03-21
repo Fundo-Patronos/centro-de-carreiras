@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abc import abstractmethod
+from abc import abstractmethod, abstractproperty, ABC
 from typing import Any, Optional
 
 from pydantic import BaseModel
@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.models.abstract_item import Item
 
 
-class Database:
+class Database(ABC):
     """Base Database class to handle the interaction between the back-end and the databases.
     This class should not be directly used, but should be inherited by other classes that will
     """
@@ -19,6 +19,24 @@ class Database:
         if cls not in cls._instances:
             cls._instances[cls] = super(Database, cls).__new__(cls)
         return cls._instances[cls]
+
+    @property
+    @abstractmethod
+    def _base_id(self) -> str:
+        """The base id of the database.
+
+        Returns:
+            str: The base id of the database.
+        """
+
+    def get_base_id(self) -> str:
+        """Gets the base id of the database.
+
+        Returns:
+            str: The base id of the database.
+        """
+
+        return self._base_id
 
     @abstractmethod
     def read_one(self, table_id: str, params: dict[str, Any]) -> dict:
