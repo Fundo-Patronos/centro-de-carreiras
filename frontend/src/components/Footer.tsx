@@ -18,7 +18,7 @@ type FooterColumn = {
 const Footer = () => {
   const footerColumns: FooterColumn[] = [
     {
-      title: "MAIS SOBRE PATRONOS",
+      title: "MAIS SOBRE O PATRONOS",
       links: [
         { 
           label: "www.patronos.org", 
@@ -27,7 +27,7 @@ const Footer = () => {
       ]
     },
     {
-      title: "CONTATO",
+      title: "DÚVIDAS OU SUGESTÕES?",
       links: [
         { label: "contato@patronos.org", href: "#" },
       ]
@@ -81,16 +81,16 @@ const Footer = () => {
                 </div>
                 <div className="mt-8 text-gray-600 text-sm">
                   <p className="text-gray-600 text-sm mt-4">
-                    Créditos das fotografias acadêmicas usadas neste site<br/>
+                    Créditos das fotografias acadêmicas usadas neste site:<br/>
                     Antoninho Perri, SEC/Unicamp<br/>
                     Antonio Scarpinetti, SEC/Unicamp
                   </p>
                 </div>
               </div>
             </div>
-            <div className="md:w-1/2 flex flex-col md:flex-row md:justify-between space-y-8 md:space-y-0">
+            <div className="md:w-1/2 flex flex-col md:flex-row md:justify-between space-y-8 md:space-y-0 md:gap-4">
               {footerColumns.map((column) => (
-                <div key={column.title}>
+                <div key={column.title} className="max-w-[300px]">
                   <h2 className="text-sm font-medium tracking-wider mb-4">{column.title}</h2>
                   <ul className="space-y-2">
                     {column.links.map((link) => (
