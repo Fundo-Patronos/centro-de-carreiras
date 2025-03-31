@@ -1,4 +1,4 @@
-interface LazyLoadingIframeProps {
+interface LazyLoadingCardFrameProps {
   loadingMessage: string;
   isFrameVisible: boolean;
   iframeUrl: string;
@@ -6,7 +6,7 @@ interface LazyLoadingIframeProps {
   setIsLoading: (_: boolean) => void;
 }
 
-export default function LazyLoadingIframe(props: LazyLoadingIframeProps) {
+export default function LazyLoadingCardFrame(props: LazyLoadingCardFrameProps) {
   return (
     <>
       {props.isLoading && (

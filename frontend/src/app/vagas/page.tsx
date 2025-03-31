@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import Hero from "@/components/Vagas/Hero";
-import LazyLoadingIframe from "@/components/LazyLoadingIFrame"
+import LazyLoadingCardFrame from "@/components/LazyLoadingCardFrame"
 import axios from "axios";
 
 interface Opportunity {
@@ -120,7 +120,7 @@ export default function Vagas() {
           </div>
         )}
 
-        <LazyLoadingIframe
+        <LazyLoadingCardFrame
           loadingMessage="Carregando oportunidades exclusivas..."
           isFrameVisible={
             !errorOccurred && !isLoading && opportunities.length !== 0

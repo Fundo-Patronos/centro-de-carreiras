@@ -2,7 +2,7 @@
 
 import Layout from "@/components/Layout";
 import Hero from "@/components/Mentores/Hero";
-import LazyLoadingIframe from "@/components/LazyLoadingIFrame";
+import LazyLoadingCardFrame from "@/components/LazyLoadingCardFrame";
 import { useState } from "react";
 
 export default function Mentoria() {
@@ -17,7 +17,7 @@ export default function Mentoria() {
       <Hero />
 
       <div className="flex flex-col items-center justify-center bg-gray-50 px-4 md:px-8 lg:px-[350px]">
-        <LazyLoadingIframe
+        <LazyLoadingCardFrame
           loadingMessage="Buscando mentores disponíveis..."
           isLoading={isLoading}
           setIsLoading={setIsLoading}
