@@ -1,25 +1,29 @@
+"use client";
+
 import Layout from "@/components/Layout";
 import Hero from "@/components/Mentores/Hero";
+import LazyLoadingCardFrame from "@/components/LazyLoadingCardFrame";
+import { useState } from "react";
 
-export default async function Mentoria() {
+export default function Mentoria() {
   const isStaging = process.env.NEXT_PUBLIC_STAGING === "true";
+  const [isLoading, setIsLoading] = useState(true);
   const iframeUrl = isStaging
     ? "https://airtable.com/embed/app4uSEqO2S03EO5X/shrOzONvjuqtxlN61?viewControls=on"
     : "https://airtable.com/embed/app4uSEqO2S03EO5X/shr9ZDEboM5pT8Kpc?viewControls=on";
 
   return (
     <Layout currentPage="mentores">
-      {/* Hero Section */}
       <Hero />
 
-      {/* Main Content */}
       <div className="flex flex-col items-center justify-center bg-gray-50 px-4 md:px-8 lg:px-[350px]">
-        <iframe
-          src={iframeUrl}
-          width="100%"
-          height="650"
-          className="shadow-lg rounded-lg"
-        ></iframe>
+        <LazyLoadingCardFrame
+          loadingMessage="Buscando mentores disponíveis..."
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          iframeUrl={iframeUrl}
+          isFrameVisible={!isLoading}
+        />
       </div>
     </Layout>
   );
