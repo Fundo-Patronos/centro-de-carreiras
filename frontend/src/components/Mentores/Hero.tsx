@@ -1,3 +1,4 @@
+import React from "react";
 const HeroSection: React.FC = () => {
   return (
     <section className="relative w-full h-[55vh] md:h-[45vh] flex items-center pb-8 overflow-hidden bg-white bg-gradient-to-r from-[#C964E2]/30 via-[#FF6666]/20 to-[#FF9700]/30 shadow-md">
