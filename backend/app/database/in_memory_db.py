@@ -8,6 +8,10 @@ class InMemoryDatabase(Database):
     data: dict[str, Any] = {}
     current_id: int = 0
 
+    @property
+    def _base_id(self) -> str:
+        return "in_memory"
+
     @staticmethod
     def reset():
         InMemoryDatabase.data = {}

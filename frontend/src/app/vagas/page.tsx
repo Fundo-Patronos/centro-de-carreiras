@@ -17,9 +17,10 @@ export default function Mentoria() {
 
   return (
     <Layout currentPage="vagas">
+      <div className="bg-gray-50 min-h-screen">
       <Hero /> {/* Hero Section */}
       {/* Main Content */}
-      <div className="flex flex-col items-center justify-center bg-gray-50 px-4 md:px-8 lg:px-[350px]">
+      <div className="mt-8 flex flex-col items-center justify-center px-4 md:px-8 lg:px-[350px] pb-8">
         {/* Display loading spinner while iframe is loading */}
         {isLoading && (
           <div className="flex items-center justify-center mt-8">
@@ -33,6 +34,7 @@ export default function Mentoria() {
           onLoad={handleIframeLoad}
           className="shadow-lg rounded-lg"
         ></iframe>
+      </div>
       </div>
     </Layout>
   );
